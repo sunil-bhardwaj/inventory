@@ -4,11 +4,13 @@ import {createContext, useState, useReducer} from 'react'
 import Footer from './mycomponents/Footer'
 import Login from './registration/Login'
 import Users from './dashboard/Users'
+import Dashboard from './dashboard/Dashboard'
 import { BrowserRouter, Route, Switch, Redirect  } from 'react-router-dom';
 import {initialState, reducer} from './reducers/Userreducer'
 import Pagenotfound from './mycomponents/Pagenotfound';
 import Unauthorized from './mycomponents/Unauthorized';
 import Navbar from './mycomponents/Navbar';
+import Login1 from './registration/Login1';
 export const UserContext = createContext();
 //app.use(cors())
 function App() {
@@ -42,6 +44,7 @@ function App() {
               
               <Route path="/login" exact component={Login} ></Route>
               <PrivateRoute  path="/home" exact component={Users}></PrivateRoute >
+              <PrivateRoute  path="/dashboard" exact component={Dashboard}></PrivateRoute >
               <Route  path="/" exact component={Users}></Route >
               <Route  path="/unauthorized" exact component={Unauthorized}></Route >
               <Route path="*" exact component={Pagenotfound}></Route>

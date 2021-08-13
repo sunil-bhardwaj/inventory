@@ -59,7 +59,7 @@ export default function Login() {
        
         localStorage.setItem('token',response.data.token)
         dispatch({type:'isLoggedIn', payload:true})
-        history.push('/home')
+        history.push('/dashboard')
       } else {
         setLoginStatus(false);
         setMessage(response.data.message)

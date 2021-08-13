@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const dotenv = require('dotenv');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+const complaintRouter = require('./routes/complaints');
 const port = process.env.PORT || 3001
 const jwt = require('jsonwebtoken')
 dotenv.config();
@@ -40,6 +41,7 @@ app.use(
 
 app.use('/api/users/',verifyToken, userRouter);
 app.use('/auth/', authRouter);
+app.use('/api/complaints/', complaintRouter);
 
 
 
