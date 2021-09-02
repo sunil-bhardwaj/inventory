@@ -21,10 +21,19 @@ const { username, password } = request.body
       }
       else if (isMatch){
         
-        const token = jwt.sign({user:'result.rows[0].username',fullname:'result.rows[0].fullname'}, process.env.ACCESS_TOKEN_SECRET, function(err, token) {
-         
-          return response.status(200).json({auth:true,token:token, message: "Login success" })
-        })
+        const token = jwt.sign(
+          {
+            username: result.rows[0].username,
+            userrole: result.rows[0].userrole,
+            fullname: result.rows[0].fullname,
+          },
+          process.env.ACCESS_TOKEN_SECRET,
+          function (err, token) {
+            return response
+              .status(200)
+              .json({ auth: true, token: token, message: "Login success" });
+          }
+        );
 
 
 

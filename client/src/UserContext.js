@@ -1,0 +1,29 @@
+import React, { useState, createContext } from "react";
+
+export const UserContext = createContext({});
+export const UserProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [stocks, setStocks] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [userName, setUserName] = useState("Guest");
+
+  return (
+    <UserContext.Provider
+      value={{
+        isLoggedIn,
+        isAdmin,
+        stocks,
+        users,
+        userName,
+        setUserName,
+        setStocks,
+        setUsers,
+        setIsLoggedIn,
+        setIsAdmin,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
