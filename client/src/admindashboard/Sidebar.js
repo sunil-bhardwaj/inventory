@@ -39,7 +39,7 @@ const Sidebar = () => {
             <NavLink exact to='/admin' activeClassName='activeClicked'>
               <CDBSidebarMenuItem icon='columns'>Dashboard</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to='/addbranch' activeClassName='activeClicked'>
+            <NavLink exact to='/viewbranch' activeClassName='activeClicked'>
               <CDBSidebarMenuItem icon='table'>Branches</CDBSidebarMenuItem>
             </NavLink>
             <NavLink exact to='/adddesignation' activeClassName='activeClicked'>

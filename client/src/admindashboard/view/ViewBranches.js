@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import {Link} from 'react-router-dom'
 import ListGroup from "react-bootstrap/ListGroup";
 //import api from "../api/api";
 import AddBranch from "../add/AddBranch";
@@ -26,7 +27,7 @@ function ViewBranches(props) {
     const getAllBranches = async () => {
       const allBranches = await retreiveBranches();
       if (allBranches) {
-        Admin.setBranches(  );
+        Admin.setBranches(allBranches);
         console.log(Admin.branches);
         setIsLoading(true);
       }
@@ -39,32 +40,31 @@ function ViewBranches(props) {
       <div className='row'>
         <div className='col-md-8'>
           <div style={{ display: "block", width: 700, padding: 30 }}>
-            <h4>Existing Branches</h4>
+            <h4>Existing Branches</h4><Link to = '/addbranch' className = "primary" style={{color: 'hotpink'}} >Add New </Link>
             <ListGroup>
               {isLoading ? (
-                Admin.branches.map === undefined ? null : (
-                  Admin.branches.map((branch, index) => (
-                    <ListGroup.Item
-                      key={index}
-                      style={{ backgroundColor: "#e7f3f3" }}
-                    >
-                      {branch.branchname}
-                      <EditIcon
-                        style={{ marginLeft: "3rem", float: "right" }}
-                        color='primary'
-                        onClick={() => props.clickHander()}
-                      />
-                      <DeleteIcon
-                        style={{
-                          marginLeft: "3rem",
-                          float: "right",
-                          color: "red",
-                        }}
-                        onClick={() => props.clickHander()}
-                      />
-                    </ListGroup.Item>
-                  ))
-                )
+                Admin.branches.map((branch, index) => (
+               
+                  <ListGroup.Item
+                    key={index}
+                    style={{ backgroundColor: "#e7f3f3" }}
+                  >
+                    {branch.id}.{branch.branchname}
+                    <EditIcon
+                      style={{ marginLeft: "3rem", float: "right" }}
+                      color='primary'
+                      onClick={() => props.clickHander()}
+                    />
+                    <DeleteIcon
+                      style={{
+                        marginLeft: "3rem",
+                        float: "right",
+                        color: "red",
+                      }}
+                      onClick={() => props.clickHander()}
+                    />
+                  </ListGroup.Item>
+                )  )
               ) : (
                 <Loading />
               )}
@@ -72,7 +72,7 @@ function ViewBranches(props) {
           </div>
         </div>
         <div className='col-md-4'>
-          <AddBranch />
+          "Other Window"
         </div>
       </div>
     </div>

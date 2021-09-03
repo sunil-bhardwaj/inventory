@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
+import {useHistory} from 'react-router-dom'
 import "../css/admin.css";
 import { AdminContext } from "../AdminContext";
 import { retreiveBranches } from "../view/ViewBranches";
 function AddBranch() {
+  const history = useHistory()
   const Admin = useContext(AdminContext);
   const token = localStorage.getItem("token");
   var [_allBranches] = useState([]);
@@ -19,8 +21,10 @@ function AddBranch() {
     if (response.data === 1) {
       _allBranches = retreiveBranches();
 
+      Admin.setBranches([]);
       Admin.setBranches(_allBranches);
       console.log(Admin.branches);
+      history.push('/viewbranch')
     }
     // const response = await api.get("/api/branches/all");
     //Admin.setBranches( ...response.data);
@@ -37,12 +41,12 @@ function AddBranch() {
               <form className='requires-validation' novalidate>
                 <div className='col-md-12'>
                   <input
+                    required
                     className='form-control'
                     type='text'
                     name='name'
                     placeholder='Branch Name'
                     onChange={(e) => setBranchName(e.target.value)}
-                    required
                   />
                   <div className='valid-feedback'>
                     Branchname field is valid!

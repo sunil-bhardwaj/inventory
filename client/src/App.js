@@ -24,6 +24,7 @@ import jwtDecode from "jwt-decode";
 import Logout from "./registration/Logout";
 import Sidebar from "./admindashboard/Sidebar";
 import ViewBranch from "./admindashboard/view/ViewBranches";
+import AddBranch from "./admindashboard/add/AddBranch";
 import AddDesignation from "./admindashboard/add/AddDesignation";
 import AddBrand from "./admindashboard/add/AddBrand";
 import AddLocation from "./admindashboard/add/AddLocation";
@@ -85,7 +86,8 @@ function App() {
 
         <AdminProvider>
           <Route path='/admin' exact component={Admin}></Route>
-          <Route exact path='/addbranch' component={ViewBranch}></Route>
+          <Route exact path='/addbranch' component={AddBranch}></Route>
+          <Route exact path='/viewbranch' component={ViewBranch}></Route>
           <Route
             exact
             path='/adddesignation'
