@@ -76,8 +76,8 @@ export default function Footer() {
               <Link to='#'>
                 <i className='fa fa-linkedin'></i>
               </Link>
-              <Link to='#'>
-                <i className='fa fa-pinterest'></i>
+              <Link to='https://www.github.com/sunil-bhardwaj'>
+                <i className='fa fa-github'></i>
               </Link>
               <Link to='#'>
                 <i className='fa fa-google-plus'></i>

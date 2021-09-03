@@ -1,34 +1,82 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
-import api from '../api/api';
+//import api from "../api/api";
+import AddBranch from "../add/AddBranch";
+import axios from "axios";
+import { AdminContext } from "../AdminContext";
+import Loading from "../../mycomponents/Loading";
+import EditIcon from "@material-ui/icons/Assignment";
+import DeleteIcon from "@material-ui/icons/Delete";
+const token = localStorage.getItem("token");
+export const retreiveBranches = async () => {
+  const response = await axios("http://localhost:3001/api/admin/branches/all", {
+    headers: {
+      "x-access-token": token,
+    },
+  });
+  // const response = await api.get("/api/branches/all");
+  console.log(response.data);
+  return response.data;
+};
 function ViewBranches(props) {
-    const retreiveBranches = async ()=>{
+  const Admin = useContext(AdminContext);
+  const [isLoading, setIsLoading] = useState(false);
 
-        const response = await api.get("/api/branches/all")
-        return response.data
-    }
-    useEffect(() => {
-        const getAllBranches = async()=>{
-            const allBranches = await retreiveBranches()
-            if(allBranches) setBranches(allBranches)
-
-        }
-        
-    }, [])
-     return (
-       <div style={{ display: "block", width: 700, padding: 30 }}>
-         <h4>Existing Branches</h4>
-         <ListGroup>
-           <ListGroup.Item>
-             <i
-               className='btn btn-success'
-               style={{ color: "red", marginTop: "7px" }}
-               onClick={() => props.clickHander()}
-             ></i>Hello
-           </ListGroup.Item>
-         </ListGroup>
-       </div>
-     );
+  useEffect(() => {
+    const getAllBranches = async () => {
+      const allBranches = await retreiveBranches();
+      if (allBranches) {
+        Admin.setBranches(  );
+        console.log(Admin.branches);
+        setIsLoading(true);
+      }
+    };
+    getAllBranches();
+  }, []);
+  console.log(Admin.branches);
+  return (
+    <div className='container'>
+      <div className='row'>
+        <div className='col-md-8'>
+          <div style={{ display: "block", width: 700, padding: 30 }}>
+            <h4>Existing Branches</h4>
+            <ListGroup>
+              {isLoading ? (
+                Admin.branches.map === undefined ? null : (
+                  Admin.branches.map((branch, index) => (
+                    <ListGroup.Item
+                      key={index}
+                      style={{ backgroundColor: "#e7f3f3" }}
+                    >
+                      {branch.branchname}
+                      <EditIcon
+                        style={{ marginLeft: "3rem", float: "right" }}
+                        color='primary'
+                        onClick={() => props.clickHander()}
+                      />
+                      <DeleteIcon
+                        style={{
+                          marginLeft: "3rem",
+                          float: "right",
+                          color: "red",
+                        }}
+                        onClick={() => props.clickHander()}
+                      />
+                    </ListGroup.Item>
+                  ))
+                )
+              ) : (
+                <Loading />
+              )}
+            </ListGroup>
+          </div>
+        </div>
+        <div className='col-md-4'>
+          <AddBranch />
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default ViewBranches
+export default ViewBranches;

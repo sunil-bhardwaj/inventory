@@ -11,7 +11,7 @@ export default function Header() {
   return (
     <>
       <nav className='navbar navbar-expand-lg navbar-dark mx-background-top-linear'>
-        <div class='container'>
+        <div className='container'>
           <Link className='navbar-brand' rel='nofollow' target='_blank' to='#'>
             HP HIGH COURT- Inventory (Welcome: {User.userName})
           </Link>

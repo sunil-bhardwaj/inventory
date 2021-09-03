@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
-const branchRouter = require("./routes/branch");
+const adminRouter = require("./routes/admin");
 const complaintRouter = require("./routes/complaints");
 const dashRouter = require("./routes/dashboard");
 const port = process.env.PORT || 3001;
@@ -51,7 +51,7 @@ app.use("/api/users/", verifyToken, userRouter);
 app.use("/auth/", authRouter);
 app.use("/api/complaints/", complaintRouter);
 app.use("/api/dashboard/", dashRouter);
-app.use("/api/branches/", branchRouter);
+app.use("/api/admin/", adminRouter);
 
 app.listen(port, () => {
   console.log(`Node Server is Listening on port ${port}`);

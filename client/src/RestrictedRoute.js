@@ -10,12 +10,12 @@ function RestrictedRoute({ component: Component, ...rest }) {
     <Route
       {...rest}
       render={(props) =>
-        
+        // User.isLoggedIn ? <Component {...props} /> : <Redirect to='/' />
         User.isLoggedIn ? (
           User.isAdmin ? (
-            
-           
-            <Component {...props} />
+            <>
+              <Redirect to='/admin' />
+            </>
           ) : (
             <Component {...props} />
           )

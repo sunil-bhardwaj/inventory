@@ -18,10 +18,12 @@ import PublicRoute from "./PublicRoute";
 import RestrictedRoute from "./RestrictedRoute";
 import { createBrowserHistory } from "history";
 import { UserContext } from "./UserContext";
+import { AdminProvider } from "./admindashboard/AdminContext";
+import { UserProvider } from "./UserContext";
 import jwtDecode from "jwt-decode";
 import Logout from "./registration/Logout";
 import Sidebar from "./admindashboard/Sidebar";
-import AddBranch from "./admindashboard/add/AddBranch";
+import ViewBranch from "./admindashboard/view/ViewBranches";
 import AddDesignation from "./admindashboard/add/AddDesignation";
 import AddBrand from "./admindashboard/add/AddBrand";
 import AddLocation from "./admindashboard/add/AddLocation";
@@ -31,7 +33,6 @@ import AddUser from "./admindashboard/add/AddUser";
 import AddSource from "./admindashboard/add/AddSource";
 import AddItem from "./admindashboard/add/AddItem";
 
-
 const history = createBrowserHistory();
 const Footer = lazy(() => import("./mycomponents/Footer"));
 
@@ -40,19 +41,19 @@ const Footer = lazy(() => import("./mycomponents/Footer"));
 
 //app.use(cors())
 function App() {
-  
   const User = useContext(UserContext);
   const token = localStorage.getItem("token");
-
+  console.log(User);
   if (token) {
-    const decoded = jwtDecode(token)
-    User.setUserName(decoded.username)
+    const decoded = jwtDecode(token);
+    User.setUserName(decoded.username);
     User.setIsLoggedIn(true);
-    if(decoded.userrole === 'admin')
-        User.setIsAdmin(true)    
+    if (decoded.userrole === "admin") {
+      User.setIsAdmin(true);
+      console.log(decoded, User);
+    }
   }
 
-  //console.warn(User);
   // const User = useContext(UserContext);
 
   //const [isLoggedIn, setisLoggedIn] = useState(User.isLoggedIn);
@@ -61,36 +62,44 @@ function App() {
   return (
     <BrowserRouter history={history}>
       <Header />
-      {User.isAdmin ? <Sidebar /> : <Navbar />}
+      {User.isLoading ? null : User.isAdmin ? <Sidebar /> : <Navbar />}
+
       <Switch>
         <PublicRoute path='/' exact={true} component={Login}></PublicRoute>
-        <Route path='/logout' exact={true} component={Logout}></Route>
-        <PrivateRoute path='/dashboard' exact component={Users}></PrivateRoute>
-        <PrivateRoute
-          path='/displayinventory'
-          exact
-          component={displayinventory}
-        ></PrivateRoute>
+        <Route path='/dashboard' exact component={Users}></Route>
 
-        <PrivateRoute path='/home' exact component={Dashnew}></PrivateRoute>
-        <RestrictedRoute  path='/admin'  exact component={Admin} ></RestrictedRoute>
-        <RestrictedRoute  path='/addbranch'  exact component={AddBranch} ></RestrictedRoute>
-        <RestrictedRoute  path='/adddesignation'  exact component={AddDesignation} ></RestrictedRoute>
-        <RestrictedRoute  path='/addbrands'  exact component={AddBrand} ></RestrictedRoute>
-        <RestrictedRoute  path='/addlocation'  exact component={AddLocation} ></RestrictedRoute>
-        <RestrictedRoute  path='/additemtype'  exact component={AddItemType} ></RestrictedRoute>
-        <RestrictedRoute  path='/addos'  exact component={AddOs} ></RestrictedRoute>
-        <RestrictedRoute  path='/adduser'  exact component={AddUser} ></RestrictedRoute>
-        <RestrictedRoute  path='/addsource'  exact component={AddSource} ></RestrictedRoute>
-        <RestrictedRoute  path='/additem'  exact component={AddItem} ></RestrictedRoute>
+        <Route
+          exact
+          path='/displayinventory'
+          component={displayinventory}
+        ></Route>
+        <Route path='/home' exact component={Dashnew}></Route>
+
+        <Route path='/logout' exact component={Logout}></Route>
         <Route path='/printers' exact component={Contact}></Route>
         <Route path='/displayboards' exact component={Contact}></Route>
         <Route path='/tabs' exact component={Contact}></Route>
         <Route path='/laptops' exact component={Contact}></Route>
-
         <Route path='/contact' exact component={Contact}></Route>
         <Route path='/unauthorized' exact component={Unauthorized}></Route>
-        <Route path='*' exact component={Pagenotfound}></Route>
+
+        <AdminProvider>
+          <Route path='/admin' exact component={Admin}></Route>
+          <Route exact path='/addbranch' component={ViewBranch}></Route>
+          <Route
+            exact
+            path='/adddesignation'
+            component={AddDesignation}
+          ></Route>
+          <Route exact path='/addbrands' component={AddBrand}></Route>
+          <Route exact path='/addlocation' component={AddLocation}></Route>
+          <Route exact path='/additemtype' component={AddItemType}></Route>
+          <Route path='/addos' exact component={AddOs}></Route>
+          <Route exact path='/adduser' component={AddUser}></Route>
+          <Route exact path='/addsource' component={AddSource}></Route>
+          <Route exact path='/additem' component={AddItem}></Route>
+        </AdminProvider>
+        <Route path='*' component={Pagenotfound}></Route>
       </Switch>
 
       <Suspense fallback={<div>Loading... </div>}>

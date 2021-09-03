@@ -15,7 +15,26 @@ const getAllBranches = (request, response) => {
     }
   );
 };
+const createBranch = (request, response) => {
+  const {
+    branchname,
+  } = request.body;
+
+  pool.query(
+    "INSERT INTO branches (branchname) VALUES ($1)",
+    [branchname],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+
 
 module.exports = {
   getAllBranches,
+  createBranch,
 };

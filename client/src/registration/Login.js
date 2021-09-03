@@ -15,10 +15,11 @@ export default function Login() {
   const [userrole, setUserrole] = useState("user");
   const [message, setMessage] = useState("Fill Mandatory Fields");
   const history = useHistory();
- console.log(User)
+
   //if (User.isLoggedIn) history.push("/dashboard");
-  const register = () => {
-    axios
+  const register = async (e) => {
+    e.preventDefault();
+    await axios
       .post("http://localhost:3001/auth/register", {
         username: regusername,
         password: regpassword,
@@ -39,28 +40,41 @@ export default function Login() {
         }
       });
   };
-  const login = () => {
-    axios
+  
+  const login = async (e) => {
+    console.log("just after submitting form");
+    User.setIsLoading(true);
+    e.preventDefault();
+     await axios
       .post("http://localhost:3001/auth/login", {
         username: username,
         password: password,
       })
       .then((response) => {
+        console.log("just after submitting form too");
         if (response.data.auth) {
+          
           setMessage(response.data.message);
           var decoded = jwt_decode(response.data.token);
+          console.log("just after submitting form three");
           //console.log(decoded.userrole);
           localStorage.setItem("token", response.data.token);
           User.setIsLoggedIn(true);
           if (decoded.userrole === "user") {
+             console.log("just after submitting form Four");
             User.setUserName(decoded.username);
             User.setIsAdmin(false);
+            User.setIsLoading(false);
             history.push("/dashboard");
           }
+         
           if (decoded.userrole === "admin") {
+            console.log("just after submitting form Four");
+            console.log("inside isAdmin");
             User.setIsAdmin(true);
             User.setUserName(decoded.username);
-            history.push("/admin");
+            User.setIsLoading(false);
+            history.push("/addbranch");
           }
         } else {
           setMessage(response.data.message);
@@ -68,9 +82,10 @@ export default function Login() {
           User.setIsAdmin(false);
         }
       });
+    console.log(User);
   };
   //background-color: #185d5d;
-  // console.log(User);
+  console.log(User);
   return (
     <div className='row' style={{ backgroundColor: "#185d5d" }}>
       <div className='col-md-6 mx-auto p-0'>
@@ -100,7 +115,6 @@ export default function Login() {
               <div className='login-space'>
                 <div className='login'>
                   <div className='group'>
-                   
                     <label htmlFor='user' className='label'>
                       Username
                     </label>
@@ -112,7 +126,6 @@ export default function Login() {
                     />
                   </div>
                   <div className='group'>
-                   
                     <label htmlFor='pass' className='label'>
                       Password
                     </label>
@@ -144,13 +157,11 @@ export default function Login() {
                   </div>
                   <div className='hr'> </div>
                   <div className='foot'>
-                  
                     <Link to='#'>Forgot Password?</Link>
                   </div>
                 </div>
                 <div className='sign-up-form'>
                   <div className='group'>
-                   
                     <label htmlFor='user' className='label'>
                       Username
                     </label>
@@ -162,7 +173,6 @@ export default function Login() {
                     />
                   </div>
                   <div className='group'>
-                   
                     <label htmlFor='pass' className='label'>
                       Password
                     </label>
@@ -175,7 +185,6 @@ export default function Login() {
                     />
                   </div>
                   <div className='group'>
-                   
                     <label htmlFor='pass' className='label'>
                       Repeat Password
                     </label>
@@ -188,7 +197,6 @@ export default function Login() {
                     />
                   </div>
                   <div className='group'>
-                   
                     <label htmlFor='pass' className='label'>
                       Full Name
                     </label>
@@ -200,7 +208,6 @@ export default function Login() {
                     />
                   </div>
                   <div className='group'>
-                   
                     <label htmlFor='pass' className='label'>
                       User Role
                     </label>
@@ -234,7 +241,6 @@ export default function Login() {
                   <div className='hr'></div>
 
                   <div className='foot'>
-                   
                     <label htmlFor='tab-1'>Already Member?</label>
                   </div>
                 </div>

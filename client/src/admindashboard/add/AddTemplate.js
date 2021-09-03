@@ -10,7 +10,7 @@ function AddTemplate() {
                 <div className='form-items'>
                   <h3>Add New Branch</h3>
                   <p>Fill in the data below.</p>
-                  <form className='requires-validation' novalidate>
+                  <form className='requires-validation' >
                     <div className='col-md-12'>
                       <input
                         className='form-control'
