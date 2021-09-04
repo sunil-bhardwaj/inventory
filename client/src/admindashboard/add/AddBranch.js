@@ -17,18 +17,18 @@ function AddBranch() {
         branchname,
       })
       .then("Updation Successfull")
-      .catch((err) => err + "Error State");
+      .catch((err) => err + "Error State")
     if (response.data === 1) {
-      _allBranches = retreiveBranches();
-
-      Admin.setBranches([]);
-      Admin.setBranches(_allBranches);
-      console.log(Admin.branches);
+      _allBranches = retreiveBranches()
+       Admin.setBranches(_allBranches)
+      console.log(Admin.branches)
       history.push('/viewbranch')
     }
     // const response = await api.get("/api/branches/all");
     //Admin.setBranches( ...response.data);
-  };
+  }
+
+
 
   return (
     <div className='form-body'>

@@ -24,6 +24,7 @@ function ViewBranches(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+      debugger
     const getAllBranches = async () => {
       const allBranches = await retreiveBranches();
       if (allBranches) {
