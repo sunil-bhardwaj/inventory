@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-
+import { useHistory } from "react-router-dom";
 import ListGroup from "react-bootstrap/ListGroup";
 import ReactPaginate from "react-paginate";
 import AddBranch from "../add/AddBranch";
@@ -7,11 +7,15 @@ import axios from "axios";
 import { AdminContext } from "../AdminContext";
 import RightBar from "../../mycomponents/RightBar";
 import EditIcon from "@material-ui/icons/Assignment";
+import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
-const token = localStorage.getItem("token");
-
-export const retreiveBranches = async () => {
-  const response = await axios("http://localhost:3001/api/admin/branches/all", {
+import AddSet from "../add/AddSet";
+import Description from "../components/Description";
+import SetSideBar from "../components/SetSideBar";
+import { Redirect } from "react-router-dom";
+ const token = localStorage.getItem("token");
+export const retreiveSets = async () => {
+  const response = await axios("http://localhost:3001/api/admin/sets/all", {
     headers: {
       "x-access-token": token,
     },
@@ -21,43 +25,46 @@ export const retreiveBranches = async () => {
   return response.data;
 };
 
-function ViewBranches(props) {
+function ViewSets(props) {
+ 
+  const history = useHistory();
   const Admin = useContext(AdminContext);
-  const [newBranchWindow, setnewBranchWindow] = useState(false);
+  const [newSetWindow, setnewSetWindow] = useState(false);
+ const [redirected, setredirected] = useState(false)
   const [searchKeywords, setSearchKeywords] = useState("");
   const [pageCount, setPageCount] = useState(0);
-  const [postsPerPage] = useState(12);
+  const [setsPerPage] = useState(10);
   const [offset, setOffset] = useState(1);
-  const [brid, setBrId] = useState("");
-  const [brname, setBrName] = useState("");
+  const [setid, setSetId] = useState("");
+  const [setname, setSetName] = useState("");
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-
+    const [showSetTab, setShowSetTab] = useState(false);
   useEffect(() => {
-    const getAllBranches = async () => {
-      const allBranches = await retreiveBranches();
-      if (allBranches) {
-        const slice = allBranches.slice(offset - 1, offset - 1 + postsPerPage);
-        Admin.setBranches(slice);
-        setPageCount(Math.ceil(allBranches.length / postsPerPage));
+    const getAllSets = async () => {
+      const allSets = await retreiveSets();
+      if (allSets) {
+        const slice = allSets.slice(offset - 1, offset - 1 + setsPerPage);
+        Admin.setSets(slice);
+        setPageCount(Math.ceil(allSets.length / setsPerPage));
       }
     };
-    getAllBranches();
-  }, [offset, newBranchWindow, deleteFlag]);
+    getAllSets();
+  }, [offset, newSetWindow, deleteFlag]);
 
-  const addNewBranch = (isUp, bid, bname) => {
+  const addNewSet = (isUp, setid, setname) => {
     if (isUp) {
       setIsUpdate(true);
-      setBrId(bid);
-      setBrName(bname);
+      setSetId(setid);
+      setSetName(setname);
     } else setIsUpdate(false);
-    setnewBranchWindow(!newBranchWindow);
+    setnewSetWindow(!newSetWindow);
   };
 
-  const deleteBranch = async (id) => {
-    var [_allBranches] = [];
+  const deleteSet = async (id) => {
+    var [_allSets] = [];
     const response = await axios
-      .delete(`http://localhost:3001/api/admin/branches/delete/${id}`, {
+      .delete(`http://localhost:3001/api/admin/sets/delete/${id}`, {
         headers: {
           "x-access-token": token,
         },
@@ -67,24 +74,29 @@ function ViewBranches(props) {
     setDeleteFlag(true);
     setDeleteFlag(false);
   };
+  const showSetItems = (set)=>{
+        setSetName(set.setname)
+        setSetId(set.id);
+        setShowSetTab(!showSetTab);
+  }
   const handlePageClick = (event) => {
     const selectedPage = event.selected;
     setOffset(selectedPage + 1);
   };
   const closeHandler = () => {
-    setnewBranchWindow(!newBranchWindow);
+    setnewSetWindow(!newSetWindow);
   };
   // console.log(Admin.branches);
   return (
     <div className='container'>
       <div className='row'>
-        <h4>Existing Branches</h4>
+        <h4>Existing Sets</h4>
 
         <div className='col-md-4 float-left'>
           <button
             className='btn btn-success'
             style={{ marginBottom: "6px", marginRight: "50%" }}
-            onClick={() => addNewBranch()}
+            onClick={() => addNewSet()}
           >
             Add New
           </button>
@@ -116,23 +128,32 @@ function ViewBranches(props) {
         <div className='col-md-8'>
           <div style={{ display: "block", width: 700, padding: 30 }}>
             <ListGroup>
-              {Admin.branches
+              {Admin.sets
                 .filter((val) => {
                   if (searchKeywords === "") return val;
                   else if (
-                    val.branchname
+                    val.setname
                       .toLowerCase()
                       .includes(searchKeywords.toLowerCase())
                   )
                     return val;
                 })
-                .map((branch, index) => (
+                .map((set, index) => (
                   <ListGroup.Item
-                    key={branch.id}
+                    key={set.id}
                     style={{ backgroundColor: "#e7f3f3" }}
                   >
-                    {branch.id}
-                    --{branch.branchname}
+                    {set.id}
+                    --{set.setname}
+                    <AddIcon
+                      style={{
+                        marginLeft: "3rem",
+                        float: "right",
+                        cursor: "pointer",
+                      }}
+                      color='primary'
+                      onClick={() => showSetItems(set)}
+                    />
                     <EditIcon
                       style={{
                         marginLeft: "3rem",
@@ -140,9 +161,7 @@ function ViewBranches(props) {
                         cursor: "pointer",
                       }}
                       color='primary'
-                      onClick={() =>
-                        addNewBranch(true, branch.id, branch.branchname)
-                      }
+                      onClick={() => addNewSet(true, set.id, set.setname)}
                     />
                     <DeleteIcon
                       style={{
@@ -151,7 +170,7 @@ function ViewBranches(props) {
                         color: "red",
                         cursor: "pointer",
                       }}
-                      onClick={(e) => deleteBranch(branch.id)}
+                      onClick={(e) => deleteSet(set.id)}
                     />
                   </ListGroup.Item>
                 ))}
@@ -176,21 +195,31 @@ function ViewBranches(props) {
             activeClassName={"active"}
           />
         </div>
-        <div className='col-md-4'>
-          {newBranchWindow ? (
-            <AddBranch
-              brId={brid}
-              brName={brname}
+        <div className='col-md-4' style={{ border: "2px solid green" }}>
+          {newSetWindow ? (
+            <AddSet
+              setId={setid}
+              setName={setname}
               isUpdate={isUpdate}
               closehandler={closeHandler}
             />
+          ) : showSetTab ? (
+         
+          
+            history.push({
+              pathname: "/viewstore",
+              state: { redirected:true,setid,setname}
+            })
+          
           ) : (
+            /* <SetSideBar setName = {setname}/>*/
             <RightBar />
           )}
+          {}
         </div>
       </div>
     </div>
   );
 }
 
-export default ViewBranches;
+export default ViewSets;

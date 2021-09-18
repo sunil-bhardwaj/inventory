@@ -54,6 +54,31 @@
 .card:hover {
   box-shadow: 0 15px 10px -10px rgba(31, 31, 31, 0.5);
   transition: all 0.3s ease;
-  transform: scale(1.0);
-  background-color: #ebdacb;
+  transform: scale(1);
+  background-color: #a8e4a8;
+}
+.my-alert-danger {
+  background-color: rgb(251 101 49);
+  color: white;
+  text-decoration: line-through;
+}
+
+.cus-float-left {
+  float: left !important;
+}
+.stock-store,
+.stock-store-header {
+  background-color: #45214299;
+  color: White;
+  border: 1px Solid rgb(85, 165, 138);
+  border-radius: 5px;
+  line-height: 2;
+}
+.stock-store-header {
+  background-color: #45245299;
+}
+
+.stock-store > .cus-float-left {
+  border: 2px Solid #acd5d399;
+  height: 100%;
 }

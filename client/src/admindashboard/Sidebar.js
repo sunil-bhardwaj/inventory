@@ -1,19 +1,32 @@
-import React, { useContext } from "react";
-import { UserContext } from "../UserContext";
 import {
-  CDBSidebar,
-  CDBSidebarContent,
-  CDBSidebarFooter,
-  CDBSidebarHeader,
-  CDBSidebarMenu,
-  CDBSidebarMenuItem,
-} from "cdbreact";
-import { NavLink, Link } from "react-router-dom";
+  ProSidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  Menu,
+  MenuItem,
+  SubMenu,
+} from "react-pro-sidebar";
+import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
+import jwtDecode from "jwt-decode";
+import "react-pro-sidebar/dist/css/styles.css";
+import React, {useContext, useState} from "react";
+import { UserContext } from "../UserContext";
+import { Link } from "react-router-dom";
 
-const Sidebar = () => {
-  
+function Sidebar() {
+  const [userOName, setUserOName] = useState("Guest");
+  const [showSideBar, setShowSideBar] = useState(true)
+  const token = localStorage.getItem("token");
+  var decoded=''
+  if (token) {
+   decoded = jwtDecode(token);
+    
+    }
+  const closeSideBar=()=>{
+    setShowSideBar(!showSideBar)
+  }
   const User = useContext(UserContext);
-  console.log(User);
   return (
     <div
       style={{
@@ -22,76 +35,139 @@ const Sidebar = () => {
         overflow: "scroll initial",
       }}
     >
-      <CDBSidebar textColor='#fff' backgroundColor='#333'>
-        <CDBSidebarHeader
-          style={{ backgroundColor: "green", textColor: "fff" }}
-          prefix={<i className='fa fa-bars fa-large'></i>}
-        >
-          <Link
-            to='/'
-            className='text-decoration-none'
-            style={{ color: "inherit" }}
-          ></Link>
-        </CDBSidebarHeader>
+      {showSideBar ? (
+        <ProSidebar>
+          <SidebarHeader>
+            {" "}
+            <div className='sidebar-brand'>
+              <Link to='#'>INVENTORY</Link>
+              <div id='close-sidebar'>
+                <i className='fas fa-times' onClick={closeSideBar}></i>
+              </div>
+            </div>
+            <div className='sidebar-header'>
+              <div className='user-pic' style={{ color: "#fff" }}>
+                <i className='fa fa-user-circle fa-4x' aria-hidden='true'></i>
+              </div>
+              <div className='user-info'>
+                <span className='user-name'>
+                  {" "}
+                  <strong>{decoded.fullname}</strong>
+                </span>
+                {User.isAdmin ? (
+                  <span className='user-role'>Administrator</span>
+                ) : (
+                  <span className='user-role'>User</span>
+                )}
 
-        <CDBSidebarContent className='sidebar-content'>
-          <CDBSidebarMenu>
-            <NavLink exact to='/admin' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='columns'>Dashboard</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/viewbranch' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='table'>Branches</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/adddesignation' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='user'>Designations</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/addbrands' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='chart-line'>Brands</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/addlocation' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='bars'>Locations</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/additemtype' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='amazon'>Item Types</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/addos' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='apple'>
-                Operating System
-              </CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/adduser' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='angellist'>Users</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/addsource' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='american-sign-language-interpreting'>
-                Sources
-              </CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/additem' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='anchor'>Items</CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to='/logout' activeClassName='activeClicked'>
-              <CDBSidebarMenuItem icon='assistive-listening-systems'>
+                <span className='user-status'>
+                  <i className='fa fa-circle'></i> <span>Online</span>
+                </span>
+              </div>
+            </div>
+            <div className='sidebar-search'>
+              <div className='input-group'>
+                <input
+                  type='text'
+                  className='form-control search-menu'
+                  placeholder='Search...'
+                />
+                <div className='input-group-append'>
+                  <span className='input-group-text'>
+                    <i className='fa fa-search' aria-hidden='true'></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </SidebarHeader>
+          <SidebarContent>
+            <Menu iconShape='square'>
+              <MenuItem icon=''>
+                Dashboard
+                <Link to='/admin' />
+              </MenuItem>
+
+              <SubMenu title='Masters'>
+                <MenuItem>
+                  Branches
+                  <Link to='/viewbranch' />
+                </MenuItem>
+                <MenuItem>
+                  Designation <Link to='/adddesignation' />
+                </MenuItem>
+                <MenuItem>
+                  Source
+                  <Link to='/addsource' />
+                </MenuItem>
+                <MenuItem>
+                  Brands
+                  <Link to='/addbrands' />
+                </MenuItem>
+              </SubMenu>
+              <SubMenu title='Stocks'>
+                <MenuItem>
+                  Store
+                  <Link to='/viewstore' />
+                </MenuItem>
+                <MenuItem>
+                  Component Testing <Link to='/testing' />
+                </MenuItem>
+                <MenuItem>
+                  Create Sets
+                  <Link to='/viewsets' />
+                </MenuItem>
+                <MenuItem>Component 2</MenuItem>
+              </SubMenu>
+              <SubMenu title='Allotments'>
+                <MenuItem>
+                  Allocate Inventory
+                  <Link to='/allotitems' />
+                </MenuItem>
+                <MenuItem>Component 2</MenuItem>
+                <MenuItem>Component 1</MenuItem>
+                <MenuItem>Component 2</MenuItem>
+              </SubMenu>
+              <SubMenu title='Reports'>
+                <MenuItem>Component 1</MenuItem>
+                <MenuItem>Component 2</MenuItem>
+                <MenuItem>Component 1</MenuItem>
+                <MenuItem>Component 2</MenuItem>
+              </SubMenu>
+              <MenuItem>
                 Logout
-              </CDBSidebarMenuItem>
-            </NavLink>
-          </CDBSidebarMenu>
-        </CDBSidebarContent>
-
-        <CDBSidebarFooter style={{ textAlign: "center" }}>
-          <div
-            style={{
-              padding: "20px 5px",
-              backgroundColor: "green",
-              textColor: "fff",
-            }}
-          >
-            <p>Ravenswood, Shimla 171001</p>
-          </div>
-        </CDBSidebarFooter>
-      </CDBSidebar>
+                <Link to='/logout' />
+              </MenuItem>
+            </Menu>
+          </SidebarContent>
+          <SidebarFooter>
+            <div className='sidebar-footer'>
+              <Link to='#'>
+                <i className='fa fa-bell'></i>
+                <span className='badge badge-pill badge-warning notification'>
+                  3
+                </span>
+              </Link>
+              <Link to='#'>
+                <i className='fa fa-envelope'></i>
+                <span className='badge badge-pill badge-success notification'>
+                  7
+                </span>
+              </Link>
+              <Link to='#'>
+                <i className='fa fa-cog'></i>
+                <span className='badge-sonar'></span>
+              </Link>
+              <Link to='/logout'>
+                <i className='fa fa-power-off'></i>
+              </Link>
+            </div>
+          </SidebarFooter>
+        </ProSidebar>
+      ) : (
+        <DoubleArrowIcon onClick={closeSideBar} style={{ cursor: "pointer" }} />
+      )}
     </div>
   );
-};
+}
 
 export default Sidebar;

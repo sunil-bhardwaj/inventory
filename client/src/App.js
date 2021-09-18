@@ -24,6 +24,8 @@ import jwtDecode from "jwt-decode";
 import Logout from "./registration/Logout";
 import Sidebar from "./admindashboard/Sidebar";
 import ViewBranch from "./admindashboard/view/ViewBranches";
+import ViewStore from "./admindashboard/view/ViewStore";
+import Testing from "./admindashboard/Testing";
 import AddBranch from "./admindashboard/add/AddBranch";
 import AddDesignation from "./admindashboard/add/AddDesignation";
 import AddBrand from "./admindashboard/add/AddBrand";
@@ -33,6 +35,8 @@ import AddOs from "./admindashboard/add/AddOs";
 import AddUser from "./admindashboard/add/AddUser";
 import AddSource from "./admindashboard/add/AddSource";
 import AddItem from "./admindashboard/add/AddItem";
+import AllocateInventory from "./admindashboard/view/AllocateInventory";
+import ViewSets from "./admindashboard/view/ViewSets";
 
 const history = createBrowserHistory();
 const Footer = lazy(() => import("./mycomponents/Footer"));
@@ -86,8 +90,11 @@ function App() {
 
         <AdminProvider>
           <Route path='/admin' exact component={Admin}></Route>
-          <Route exact path='/addbranch' component={AddBranch}></Route>
           <Route exact path='/viewbranch' component={ViewBranch}></Route>
+          <Route exact path='/viewstore' component={ViewStore}></Route>
+          <Route exact path='/testing' component={Testing}></Route>
+          <Route exact path='/allotitems' component={AllocateInventory}></Route>
+          <Route exact path='/viewsets' component={ViewSets}></Route>
           <Route
             exact
             path='/adddesignation'

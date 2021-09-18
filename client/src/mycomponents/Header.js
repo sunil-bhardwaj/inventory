@@ -12,9 +12,17 @@ export default function Header() {
     <>
       <nav className='navbar navbar-expand-lg navbar-dark mx-background-top-linear'>
         <div className='container'>
+          {User.isAdmin
+          ?
           <Link className='navbar-brand' rel='nofollow' target='_blank' to='#'>
-            HP HIGH COURT- Inventory (Welcome: {User.userName})
+            HP HIGH COURT
           </Link>
+          :
+          <Link className='navbar-brand' rel='nofollow' target='_blank' to='#'>
+            HP HIGH COURT- INVENTORY (Welcome: {User.userName})
+          </Link>
+          }
+          
         </div>
       </nav>
       <div className='fixed-top'>

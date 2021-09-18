@@ -30,11 +30,10 @@ const login = (request, response) => {
 };
 const getUsers = (request, response) => {
   pool.query(
-    "SELECT   users.name,   users.phoneno,   users.email,   branches.branchname, \
-  designation.designame,   users.usertype,   users.id , count(mapping.userid) as invcount FROM   public.users,   public.branches, \
-  public.designation,public.mapping WHERE users.id = mapping.userid AND  users.branchid = branches.id AND  \
-   designation.id = users.designationid  GROUP BY  users.name,   users.phoneno,   users.email,   branches.branchname, \
-  designation.designame,   users.usertype,   users.id  ORDER BY users.id", (error, results) => {
+    "SELECT users.name,   users.phoneno,   users.email, branches.branchname, \
+    designation.designame, users.usertype, users.id  FROM public.users \
+    LEFT JOIN public.branches  ON users.branchid = branches.id \
+    LEFT JOIN public.designation ON designation.id = users.designationid ORDER by users.id ", (error, results) => {
       if (error) {
         console.log("Inside GetUsers Error");
         throw error;
@@ -47,9 +46,10 @@ const getUsers = (request, response) => {
   );
 };
 const getUsersInventoryCount = (request, response) => {
+  const userid = request.params.userid;
   pool.query(
-    "SELECT count(*) as count,  users.name,   users.id FROM   public.users,  \
-   public.mapping WHERE   users.id = mapping.userid   GROUP BY   users.id ",
+    `SELECT count(*) as count,  users.name,   users.id FROM   public.users,  \
+   public.mapping WHERE   users.id = mapping.userid where users.id=${userid}  GROUP BY   users.id `,
     (error, results) => {
       if (error) {
         console.log("Inside GetUsers Error");
@@ -83,7 +83,7 @@ const createUser = (request, response) => {
       }
       response.status(201).send("User added ScucessFully");
     }
-  );
+  );321111
 };
 const updateUser = (request, response) => {
   const id = parseInt(request.params.id);
@@ -97,7 +97,7 @@ const updateUser = (request, response) => {
   } = request.body;
 
   pool.query(
-    "UPDATE users SET name = $1, phoneno =$2, email = $3, designationid = $4, branchid=$5, id=$6, usertype=$7 WHERE id = $3",
+    "UPDATE users SET name = $1, phoneno =$2, email = $3, designationid = $4, branchid=$5, id=$6, usertype=$7 WHERE id = $6",
     [name, phoneno, email, designationid, branchid, id, usertype],
     (error, results) => {
       if (error) {
@@ -112,7 +112,7 @@ const deleteUser = (request, response) => {
 
   pool.query("DELETE FROM users WHERE id = $1", [id], (error, results) => {
     if (error) {
-      throw error;
+      throw error
     }
     response.status(200).send(`User deleted with ID: ${id}`);
   });
@@ -124,4 +124,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  getUsersInventoryCount,
 };
