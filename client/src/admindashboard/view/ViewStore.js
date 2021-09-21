@@ -9,7 +9,7 @@ function ViewStore(props) {
   const User = useContext(UserContext);
 
   const [searchKeywords, setSearchKeywords] = useState("");
-  //const [cartItems, setCartItems] = useState([])
+  const [showSideBar, setShowSideBar] = useState(false);
   //console.log(User);
   var redirected = false;
   if (props.location.state) redirected = props.location.state.redirected;
@@ -37,6 +37,8 @@ function ViewStore(props) {
     .filter((stock) => stock.id == null || stock.isdeallocated === true)
     .map((stock, srno) => (
       <Product
+        showSideBar={showSideBar}
+        setShowSideBar={setShowSideBar}
         stock={stock}
         redirect={redirected}
         key={uuidv4()}
@@ -78,7 +80,7 @@ function ViewStore(props) {
       <div className='row'>
         <div className='col-md-11'>{listItems}</div>
 
-        {redirected ? (
+        {redirected && showSideBar ? (
           <div
             className='col-md-2'
             style={{
@@ -89,14 +91,13 @@ function ViewStore(props) {
               bottom: "10px",
               overflowY: "scroll",
               backgroundColor: "#254063",
-              zIndex:9999,
+              zIndex: 9999,
             }}
           >
             <SetSideBar
-             
+              setShowSideBar={setShowSideBar}
               setName={props.location.state.setname}
               setid={props.location.state.setid}
-             
             />
           </div>
         ) : (

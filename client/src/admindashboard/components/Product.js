@@ -21,26 +21,26 @@ import WarrantyExpired from "../../admindashboard/images/warrantyexpired.png";
 import "./Product.css";
 
 function Product(props) {
- // console.log(props)
-  const Admin  = useContext(AdminContext);
+  // console.log(props)
+  const Admin = useContext(AdminContext);
   const [showDescriptionTab, setShowDescriptionTab] = useState(false);
-  
+
   const [showRemovebutton, setShowRemovebutton] = useState(false);
   const openDetails = () => {
     setShowDescriptionTab(!showDescriptionTab);
   };
-  const addtocart = (redirect)=>{
-
-        setShowRemovebutton(true);
-        Admin.setBox([...Admin.box, props.stock]);
-       // console.log(Admin.box);
-      
-  }
-  const removefromcart = (inventoryid) => {
-   // console.log(inventoryid);
-    setShowRemovebutton(false);
-    const arr = Admin.box.filter((bo) => bo.inventoryid !== inventoryid) 
+  const addtocart = (redirect) => {
+    props.setShowSideBar(true)
    
+    setShowRemovebutton(true);
+    Admin.setBox([...Admin.box, props.stock]);
+   
+  };
+  const removefromcart = (inventoryid) => {
+    console.log(inventoryid);
+    setShowRemovebutton(false);
+    const arr = Admin.box.filter((bo) => bo.inventoryid !== inventoryid);
+
     Admin.setBox([...arr]);
   };
   var cusimage =
@@ -59,12 +59,12 @@ function Product(props) {
   if (props.itemtype === "Projector") cusimage = Projector;
   if (props.itemtype === "VC") cusimage = VC;
   if (props.itemname === "All In One") cusimage = AllInOne;
- // console.log(GetCurrentDate());
+  // console.log(GetCurrentDate());
   //console.log(props.isRedirectedFromViewSets)
   return (
     /*{props.warranty_end_date}, "mmmm dS, yyyy"*/
     <>
-      <div style={{ float: "left", padding: "10px", backgroundColor: 'cornsilk' }}>
+      <div style={{ float: "left", padding: "10px" }}>
         <div className='card-image'>
           {props.image ? (
             <img
@@ -124,7 +124,7 @@ function Product(props) {
                 View Details
               </button>
               <button
-                className='card-button'
+                className='card-button bg-color-red'
                 onClick={() => removefromcart(props.inventoryid)}
               >
                 {" "}

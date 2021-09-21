@@ -79,3 +79,10 @@ a {
     box-shadow: 0 0 0 0 rgba(90, 153, 212, 0);
   }
 }
+
+.bg-color-red {
+  background-color: #e20303eb;
+}
+.bg-color-red:hover {
+  background-color: #d13c3ceb;
+}

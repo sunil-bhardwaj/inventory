@@ -1,11 +1,18 @@
 import React, {useContext} from "react";
 import {AdminContext} from '../AdminContext'
+import { UserContext } from "../../UserContext";
 import { Link } from "react-router-dom";
 import "./SetSideBar.css";
 import { v4 as uuidv4 } from "uuid";
 import Product from "./Product";
 function SetSideBar(props) {
-const Admin = useContext(AdminContext);  
+  
+const Admin = useContext(AdminContext); 
+const User = useContext(UserContext); 
+const closeBox = () => {
+  props.setShowSideBar(false)
+  Admin.setBox([])
+}; 
 console.log(props)
   return (
     <>
@@ -65,10 +72,10 @@ console.log(props)
                 </Link>
               </li>
               <li className='list-group-item-action btn-style-1 mb-2 rounded'>
-                <Link to='/viewsets'>
+                <i  onClick={() => closeBox()}>
                   {" "}
-                  <span className='fa fa-close'></span> Close{" "}
-                </Link>
+                  <span className='fa fa-close'></span> Clear{" "}
+                </i>
               </li>
             </ul>
           </div>
