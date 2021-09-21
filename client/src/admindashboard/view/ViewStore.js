@@ -9,7 +9,7 @@ function ViewStore(props) {
   const User = useContext(UserContext);
 
   const [searchKeywords, setSearchKeywords] = useState("");
-
+  //const [cartItems, setCartItems] = useState([])
   //console.log(User);
   var redirected = false;
   if (props.location.state) redirected = props.location.state.redirected;
@@ -37,10 +37,12 @@ function ViewStore(props) {
     .filter((stock) => stock.id == null || stock.isdeallocated === true)
     .map((stock, srno) => (
       <Product
+        stock={stock}
         redirect={redirected}
         key={uuidv4()}
         srno={srno + 1}
         image={stock.image}
+        inventoryid={stock.inventoryid}
         brandname={stock.brandname}
         serialno={stock.serialno}
         itemtype={stock.itemtype}
@@ -83,15 +85,18 @@ function ViewStore(props) {
               position: "fixed",
               right: "1px",
               border: "2px solid green",
-              top: "10px",
+              top: "29px",
               bottom: "10px",
               overflowY: "scroll",
               backgroundColor: "#254063",
+              zIndex:9999,
             }}
           >
             <SetSideBar
+             
               setName={props.location.state.setname}
-              setid={props.location.state.id}
+              setid={props.location.state.setid}
+             
             />
           </div>
         ) : (

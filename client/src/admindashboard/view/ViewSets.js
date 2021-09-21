@@ -30,7 +30,7 @@ function ViewSets(props) {
   const history = useHistory();
   const Admin = useContext(AdminContext);
   const [newSetWindow, setnewSetWindow] = useState(false);
- const [redirected, setredirected] = useState(false)
+ 
   const [searchKeywords, setSearchKeywords] = useState("");
   const [pageCount, setPageCount] = useState(0);
   const [setsPerPage] = useState(10);

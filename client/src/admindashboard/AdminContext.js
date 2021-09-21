@@ -4,7 +4,8 @@ export const AdminContext = createContext({});
 export const AdminProvider = ({ children }) => {
   const [branches, setBranches] = useState([]);
   const [sets, setSets] = useState([]);
-
+  const [box, setBox] = useState([]);
+  
   return (
     <AdminContext.Provider
       value={{
@@ -12,6 +13,9 @@ export const AdminProvider = ({ children }) => {
         setBranches,
         sets,
         setSets,
+        box,
+        setBox,
+        
       }}
     >
       {children}

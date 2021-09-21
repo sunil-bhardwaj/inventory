@@ -30,7 +30,7 @@ export default function Users() {
       },
     })
       .then((rrr) => {
-        // console.log("hjggdfgsdfgsdf")
+        //console.log(rrr.data);
         User.setStocks(rrr.data);
       })
       .catch((err) => {

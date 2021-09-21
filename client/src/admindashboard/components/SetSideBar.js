@@ -1,81 +1,77 @@
-import React from "react";
+import React, {useContext} from "react";
+import {AdminContext} from '../AdminContext'
 import { Link } from "react-router-dom";
 import "./SetSideBar.css";
+import { v4 as uuidv4 } from "uuid";
+import Product from "./Product";
 function SetSideBar(props) {
+const Admin = useContext(AdminContext);  
+console.log(props)
   return (
     <>
       <div id='mobile-filter'>
-        <div>
-          <h6
-            className='p-1 border-bottom'
-            style={{
-              color: "#c0d2ea",
-              fontWeight: "bold",
-              textTransform: "uppercase",
-              textDecoration: "none",
-                textAlign: "center"
-            }}
-          >{`Items Added To ${props.setName}`}</h6>
-          <ul>
-            <li className='btn-style-2'>
-              <Link to='#'>Living</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Dining</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Office</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Bedroom</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Kitchen</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Living</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Dining</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Office</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Bedroom</Link>
-            </li>
-            <li className='btn-style-2'>
-              <Link to='#'>Kitchen</Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h6
-            className='p-1 border-bottom'
-            style={{
-              color: "#c0d2ea",
-              fontWeight: "bold",
-              textTransform: "uppercase",
-              textDecoration: "none",
-            }}
-          >
-            Actions
-          </h6>
-          <p className='mb-2'></p>
-          <ul className='list-group'>
-            <li className=' list-group-item-action btn-style-1 mb-2 rounded'>
-              <Link to='/viewsets'>
-                {" "}
-                <span className='fas fa-upload'></span> Publish Set{" "}
-              </Link>
-            </li>
-            <li className='list-group-item-action btn-style-1 mb-2 rounded'>
-              <Link to='/viewsets'>
-                {" "}
-                <span className='fa fa-close'></span> Close{" "}
-              </Link>
-            </li>
-          </ul>
+        <div className='row'>
+          <div className='col-md-12'>
+            <h6
+              className='p-1 border-bottom'
+              style={{
+                color: "#c0d2ea",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                textAlign: "center",
+              }}
+            >{`Items Added To ${props.setName}`}</h6>
+          </div>
+          {Array.isArray(Admin.box) && Admin.box.length ? (
+            <div className='row col-md-12'>
+              {Admin.box.map((stock, srno) => (
+                <Product
+                  key={uuidv4()}
+                  srno={srno + 1}
+                  image={stock.image}
+                  brandname={stock.brandname}
+                  serialno={stock.serialno}
+                  itemtype={stock.itemtype}
+                  itemname={stock.itemname}
+                  warranty_end_date={stock.warranty_ends_on}
+                  orderno={stock.orderno}
+                  ordername={stock.ordername}
+                />
+              ))}
+            </div>
+          ) : (
+            <h6
+              className='p-1 border-bottom'
+              style={{
+                color: "#c0d2ea",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                textAlign: "center",
+              }}
+            >
+              Empty Set
+            </h6>
+          )}
+
+          <div className='row col-md-12'>
+            {" "}
+            <ul className='list-group'>
+              <li className=' list-group-item-action btn-style-1 mb-2 rounded'>
+                <Link to='/viewsets'>
+                  {" "}
+                  <span className='fas fa-upload'></span> Publish Set{" "}
+                </Link>
+              </li>
+              <li className='list-group-item-action btn-style-1 mb-2 rounded'>
+                <Link to='/viewsets'>
+                  {" "}
+                  <span className='fa fa-close'></span> Close{" "}
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </>

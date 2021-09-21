@@ -1,13 +1,15 @@
 const pool = require("../db");
 
 const getAllInventory = (request, response) => {
-  pool.query("SELECT itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
+  pool.query(
+    "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
   mapping.isdeallocated,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
   inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
   RIGHT JOIN public.mapping ON users.id=mapping.userid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
    RIGHT JOIN public.items ON items.id = inventory.itemid    RIGHT JOIN public.itemstypes\
     ON itemstypes.id = items.typeid INNER JOIN public.source ON source.id = inventory.sourceid \
-    INNER JOIN public.brands ON brands.id = inventory.brandid  ORDER BY items.itemname", (error, results) => {
+    INNER JOIN public.brands ON brands.id = inventory.brandid  ORDER BY items.itemname",
+    (error, results) => {
       if (error) {
         console.log("Inside GetUsers Error");
         throw error;
