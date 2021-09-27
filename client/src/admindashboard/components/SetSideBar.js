@@ -44,7 +44,7 @@ console.log(props)
             <div className='row col-md-12'>
               {Admin.box.map((stock, srno) => (
                 <Product
-                  
+                  redirect={true}
                   key={uuidv4()}
                   in='sidebar'
                   srno={srno + 1}

@@ -103,6 +103,7 @@ function ViewStore(props) {
             }}
           >
             <SetSideBar
+              showSideBar = {showSideBar}
               setShowSideBar={setShowSideBar}
               setName={props.location.state.setname}
               setid={props.location.state.setid}

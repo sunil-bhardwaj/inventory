@@ -46,6 +46,8 @@ function Product(props) {
 
     Admin.setBox([...arr]);
      setShowRemovebutton(false);
+     
+    
    
   };
   
@@ -121,9 +123,10 @@ function Product(props) {
             "N/A"
           )}
         </div>
-
-        {props.in === "viewstore" ? (
-          showRemovebutton ? (
+        {props.redirect ? (
+          showRemovebutton &&
+          props.in === "viewstore" ||
+          props.in === "sidebar" ? (
             <>
               <button onClick={() => openDetails} className='card-button'>
                 {console.log("here i am again")}
@@ -140,7 +143,6 @@ function Product(props) {
           ) : (
             <>
               <button onClick={() => openDetails} className='card-button'>
-               
                 View Details
               </button>
               <button
@@ -152,17 +154,6 @@ function Product(props) {
               </button>
             </>
           )
-        ) : props.in === "sidebar" ? (
-          <>
-            {" "}
-            <button
-              className='card-button bg-color-red'
-              onClick={() => removefromcart(props.inventoryid)}
-            >
-              {" "}
-              Remove From Set
-            </button>
-          </>
         ) : (
           <>
             {" "}
@@ -172,6 +163,8 @@ function Product(props) {
             </button>
           </>
         )}
+
+        
       </div>
       {showDescriptionTab ? (
         <Description
