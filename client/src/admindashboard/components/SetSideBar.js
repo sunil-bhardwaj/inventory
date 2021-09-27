@@ -10,7 +10,7 @@ function SetSideBar(props) {
 const Admin = useContext(AdminContext); 
 const User = useContext(UserContext); 
 const closeBox = () => {
-  props.setShowSideBar(false)
+  //props.setShowSideBar(false)
   Admin.setBox([])
 }; 
 console.log(props)
@@ -29,13 +29,26 @@ console.log(props)
                 textAlign: "center",
               }}
             >{`Items Added To ${props.setName}`}</h6>
+            <h6
+              className='p-1 border-bottom'
+              style={{
+                color: "#c0d2ea",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                textAlign: "center",
+              }}
+            >{`Total Items In Set ${Admin.box.length}`}</h6>
           </div>
           {Array.isArray(Admin.box) && Admin.box.length ? (
             <div className='row col-md-12'>
               {Admin.box.map((stock, srno) => (
                 <Product
+                  
                   key={uuidv4()}
+                  in='sidebar'
                   srno={srno + 1}
+                  inventoryid={stock.inventoryid}
                   image={stock.image}
                   brandname={stock.brandname}
                   serialno={stock.serialno}
@@ -72,7 +85,7 @@ console.log(props)
                 </Link>
               </li>
               <li className='list-group-item-action btn-style-1 mb-2 rounded'>
-                <i  onClick={() => closeBox()}>
+                <i onClick={() => closeBox()}>
                   {" "}
                   <span className='fa fa-close'></span> Clear{" "}
                 </i>

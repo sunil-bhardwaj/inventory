@@ -2,14 +2,16 @@ import React, { useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../dashboard/Users.css";
 import RightBar from "../../mycomponents/RightBar";
+import { AdminContext } from "../AdminContext";
 import { UserContext } from "../../UserContext";
+
 import Product from "../components/Product";
 import SetSideBar from "../components/SetSideBar";
 function ViewStore(props) {
   const User = useContext(UserContext);
-
+ //const Admin = useContext(AdminContext)
   const [searchKeywords, setSearchKeywords] = useState("");
-  const [showSideBar, setShowSideBar] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(true);
   //console.log(User);
   var redirected = false;
   if (props.location.state) redirected = props.location.state.redirected;
@@ -35,11 +37,16 @@ function ViewStore(props) {
         return val;
     })
     .filter((stock) => stock.id == null || stock.isdeallocated === true)
-    .map((stock, srno) => (
+    .map((stock, srno) => 
+    <>
+   {/*Admin.box.find(()=>{
+
+   })*/}
       <Product
         showSideBar={showSideBar}
         setShowSideBar={setShowSideBar}
         stock={stock}
+        in='viewstore'
         redirect={redirected}
         key={uuidv4()}
         srno={srno + 1}
@@ -53,7 +60,8 @@ function ViewStore(props) {
         orderno={stock.orderno}
         ordername={stock.ordername}
       />
-    ));
+      </>
+    );
 
   return (
     <div className='container'>
