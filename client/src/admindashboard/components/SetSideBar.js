@@ -10,6 +10,7 @@ function SetSideBar(props) {
 const Admin = useContext(AdminContext); 
 const User = useContext(UserContext); 
 const closeBox = () => {
+  User.setStocks([...User.stocks, User.stocks]);
   //props.setShowSideBar(false)
   Admin.setBox([])
 }; 

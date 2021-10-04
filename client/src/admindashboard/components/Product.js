@@ -25,14 +25,19 @@ function Product(props) {
 
   // console.log(props)
   const Admin = useContext(AdminContext);
-  
+  const User = useContext(UserContext);
   const [showDescriptionTab, setShowDescriptionTab] = useState(false);
-
+  const [isInCart, setIsInCart] = useState(false)
   const [showRemovebutton, setShowRemovebutton] = useState(false);
   const openDetails = () => {
     setShowDescriptionTab(!showDescriptionTab);
   };
-  
+  const isItemInCart = (inventoryid) => {
+    const found = Admin.box.find((element) => (element = inventoryid))
+    if(found)
+    setIsInCart(true)
+    
+  };
   const addtocart = (inventoryid) => {
    console.log(inventoryid);
      Admin.setBox([...Admin.box, props.stock]);
@@ -41,13 +46,11 @@ function Product(props) {
   };
   const removefromcart = (inventoryid) => {
    
-   console.log(inventoryid);
-    const arr = Admin.box.filter((bo) => bo.inventoryid !== inventoryid);
-
-    Admin.setBox([...arr]);
-     setShowRemovebutton(false);
-     
-    
+    console.log(inventoryid)
+    const arr = Admin.box.filter((bo) => bo.inventoryid !== inventoryid)
+    Admin.setBox([...arr])
+    //User.setStocks([...User.stocks, User.stocks]);
+    setShowRemovebutton(false)
    
   };
   

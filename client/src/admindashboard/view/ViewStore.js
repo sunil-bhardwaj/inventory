@@ -9,9 +9,10 @@ import Product from "../components/Product";
 import SetSideBar from "../components/SetSideBar";
 function ViewStore(props) {
   const User = useContext(UserContext);
- //const Admin = useContext(AdminContext)
+  //const Admin = useContext(AdminContext)
   const [searchKeywords, setSearchKeywords] = useState("");
   const [showSideBar, setShowSideBar] = useState(true);
+  
   //console.log(User);
   var redirected = false;
   if (props.location.state) redirected = props.location.state.redirected;
@@ -37,31 +38,31 @@ function ViewStore(props) {
         return val;
     })
     .filter((stock) => stock.id == null || stock.isdeallocated === true)
-    .map((stock, srno) => 
-    <>
-   {/*Admin.box.find(()=>{
+    .map((stock, srno) => (
+      <>
+        {/*Admin.box.find(()=>{
 
-   })*/}
-      <Product
-        showSideBar={showSideBar}
-        setShowSideBar={setShowSideBar}
-        stock={stock}
-        in='viewstore'
-        redirect={redirected}
-        key={uuidv4()}
-        srno={srno + 1}
-        image={stock.image}
-        inventoryid={stock.inventoryid}
-        brandname={stock.brandname}
-        serialno={stock.serialno}
-        itemtype={stock.itemtype}
-        itemname={stock.itemname}
-        warranty_end_date={stock.warranty_ends_on}
-        orderno={stock.orderno}
-        ordername={stock.ordername}
-      />
+    })*/}
+        <Product
+          showSideBar={showSideBar}
+          setShowSideBar={setShowSideBar}
+          stock={stock}
+          in='viewstore'
+          redirect={redirected}
+          key={uuidv4()}
+          srno={srno + 1}
+          image={stock.image}
+          inventoryid={stock.inventoryid}
+          brandname={stock.brandname}
+          serialno={stock.serialno}
+          itemtype={stock.itemtype}
+          itemname={stock.itemname}
+          warranty_end_date={stock.warranty_ends_on}
+          orderno={stock.orderno}
+          ordername={stock.ordername}
+        />
       </>
-    );
+    ));
 
   return (
     <div className='container'>
@@ -103,7 +104,8 @@ function ViewStore(props) {
             }}
           >
             <SetSideBar
-              showSideBar = {showSideBar}
+              
+              showSideBar={showSideBar}
               setShowSideBar={setShowSideBar}
               setName={props.location.state.setname}
               setid={props.location.state.setid}

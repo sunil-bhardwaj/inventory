@@ -14,7 +14,7 @@ const getUserById = (request, response) => {
 };
 const login = (request, response) => {
   const name = request.params.username;
-  const password = request.params.password;
+  const password = request.params.password;;;;;
 
   pool.query(
     "SELECT * FROM users WHERE name = $1",
