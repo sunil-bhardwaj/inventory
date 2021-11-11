@@ -13,7 +13,7 @@ import AddSet from "../add/AddSet";
 import Description from "../components/Description";
 import SetSideBar from "../components/SetSideBar";
 import { Redirect } from "react-router-dom";
- const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
 export const retreiveSets = async () => {
   const response = await axios("http://localhost:3001/api/admin/sets/all", {
     headers: {
@@ -26,11 +26,10 @@ export const retreiveSets = async () => {
 };
 
 function ViewSets(props) {
- 
   const history = useHistory();
   const Admin = useContext(AdminContext);
   const [newSetWindow, setnewSetWindow] = useState(false);
- 
+
   const [searchKeywords, setSearchKeywords] = useState("");
   const [pageCount, setPageCount] = useState(0);
   const [setsPerPage] = useState(10);
@@ -39,18 +38,20 @@ function ViewSets(props) {
   const [setname, setSetName] = useState("");
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-    const [showSetTab, setShowSetTab] = useState(false);
+  const [showSetTab, setShowSetTab] = useState(false);
   useEffect(() => {
     const getAllSets = async () => {
       const allSets = await retreiveSets();
-      if (allSets) {
+      /*if (allSets) {
         const slice = allSets.slice(offset - 1, offset - 1 + setsPerPage);
         Admin.setSets(slice);
         setPageCount(Math.ceil(allSets.length / setsPerPage));
-      }
+        console.log(allSets)
+      }*/
+       Admin.setSets(allSets);
     };
     getAllSets();
-  }, [offset, newSetWindow, deleteFlag]);
+  }, []);
 
   const addNewSet = (isUp, setid, setname) => {
     if (isUp) {
@@ -74,11 +75,11 @@ function ViewSets(props) {
     setDeleteFlag(true);
     setDeleteFlag(false);
   };
-  const showSetItems = (set)=>{
-        setSetName(set.setname)
-        setSetId(set.id);
-        setShowSetTab(!showSetTab);
-  }
+  const showSetItems = (set) => {
+    setSetName(set.setname);
+    setSetId(set.id);
+    setShowSetTab(!showSetTab);
+  };
   const handlePageClick = (event) => {
     const selectedPage = event.selected;
     setOffset(selectedPage + 1);
@@ -126,7 +127,15 @@ function ViewSets(props) {
 
       <div className='row'>
         <div className='col-md-8'>
-          <div style={{ display: "block", width: 700, padding: 30 }}>
+          <div
+            style={{
+              display: "block",
+              width: 700,
+              padding: 30,
+              height: "75vh",
+              overflowY: "scroll",
+            }}
+          >
             <ListGroup>
               {Admin.sets
                 .filter((val) => {
@@ -176,24 +185,6 @@ function ViewSets(props) {
                 ))}
             </ListGroup>
           </div>
-          <ReactPaginate
-            previousLabel={"Previous"}
-            nextLabel={"Next"}
-            breakLabel={"..."}
-            breakClassName={"break-me"}
-            pageCount={pageCount}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination"}
-            subContainerClassName={"pages pagination"}
-            breakLinkClassName={"page-link"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link"}
-            previousClassName={"page-item"}
-            previousLinkClassName={"page-link"}
-            nextClassName={"page-item"}
-            nextLinkClassName={"page-link"}
-            activeClassName={"active"}
-          />
         </div>
         <div className='col-md-4' style={{ border: "2px solid green" }}>
           {newSetWindow ? (
@@ -204,13 +195,17 @@ function ViewSets(props) {
               closehandler={closeHandler}
             />
           ) : showSetTab ? (
-         
-          
-            history.push({
+            /*history.push({
               pathname: "/viewstore",
-              state: { redirected:true,setid,setname}
-            })
-          
+              state: { redirected: true, setid, setname },
+            })*/
+            <Redirect
+              to={{
+                pathname: `/viewstore/`,
+               // state:{redirected:true}
+                state:{redirected:true,setName:setname,setId:setid}
+              }}
+            />
           ) : (
             /* <SetSideBar setName = {setname}/>*/
             <RightBar />

@@ -6,7 +6,7 @@ import 'font-awesome/css/font-awesome.css'
 import './index.css';
 import App from './App';
 import {UserProvider} from './UserContext'
-
+import index from "./new/index";
 ReactDOM.render(
   <React.StrictMode>
     <UserProvider>

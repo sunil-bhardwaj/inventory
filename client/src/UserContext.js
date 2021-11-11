@@ -5,7 +5,8 @@ export const UserProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [stocks, setStocks] = useState([]);
+  const [product, setProduct] = useState([])
+  const [stocks, setStocks] = useState([...product]);
   const [users, setUsers] = useState([]);
   const [userName, setUserName] = useState("Guest");
 

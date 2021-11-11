@@ -3,7 +3,7 @@ const pool = require("../db");
 const getAllInventory = (request, response) => {
   pool.query(
     "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
-  mapping.isdeallocated,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
+  mapping.isdeallocated,mapping.userid,mapping.setid,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
   inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
   RIGHT JOIN public.mapping ON users.id=mapping.userid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
    RIGHT JOIN public.items ON items.id = inventory.itemid    RIGHT JOIN public.itemstypes\

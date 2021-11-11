@@ -1,0 +1,9 @@
+export const ADD_INVENTORY = "ADD_INVENTORY";
+export const REMOVE_INVENTORY = "REMOVE_INVENTORY";
+export const ADD_USER = "ADD_USER";
+export const REMOVE_USER = "REMOVE_USER";
+export const ADD_TO_CART = "ADD_TO_CART";
+export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
+export const SHOW_STORE_STOCK = "SHOW_STORE_STOCK";
+export const SHOW_TOTAL_INVENTORY = "SHOW_TOTAL_INVENTORY";
+export const SHOW_USERS = "SHOW_USERS";

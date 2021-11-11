@@ -1,20 +1,65 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import {AdminContext} from '../AdminContext'
 import { UserContext } from "../../UserContext";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 import "./SetSideBar.css";
 import { v4 as uuidv4 } from "uuid";
 import Product from "./Product";
 function SetSideBar(props) {
-  
+   const history = useHistory();
+  const token = localStorage.getItem("token");
 const Admin = useContext(AdminContext); 
 const User = useContext(UserContext); 
 const closeBox = () => {
   User.setStocks([...User.stocks, User.stocks]);
   //props.setShowSideBar(false)
   Admin.setBox([])
-}; 
-console.log(props)
+}
+ const fetchSetItems = async () => {
+   const results = await axios(
+     `http://localhost:3001/api/admin/sets/view/${props.setid}`,
+     {
+       headers: {
+         "x-access-token": token,
+       },
+     }
+   )
+     .then((rrr) => Admin.setBox([...rrr.data]))
+     .catch((err) => {
+       if (err.response.status === 401) {
+         history.push("/unauthorized");
+       }
+     });
+  // console.log(Admin.box);
+ };
+ /*useEffect(() => {
+    fetchSetItems();
+  }, []);*/
+  const publishSet = async (e) => {
+    //if(Admin.box.length <0){Admin.setBox([])}
+       // console.log(Admin.box);
+        const response = await axios
+          .post(
+            `http://localhost:3001/api/admin/sets/publish/${props.setid}`,
+            {
+              box: Admin.box,
+            },
+            {
+              headers: {
+                "x-access-token": token,
+              },
+            }
+          )
+          .then("Updation Successfull")
+          .catch((err) => err + "Error State during publishing of Set");
+    
+   
+    //e.preventDefault();
+    
+  };
+//console.log(props)
+//console.log(Admin.box);
   return (
     <>
       <div id='mobile-filter'>
@@ -29,7 +74,7 @@ console.log(props)
                 textDecoration: "none",
                 textAlign: "center",
               }}
-            >{`Items Added To ${props.setName}`}</h6>
+            >{`Items Alloted To ${props.setName}`}</h6>
             <h6
               className='p-1 border-bottom'
               style={{
@@ -39,9 +84,9 @@ console.log(props)
                 textDecoration: "none",
                 textAlign: "center",
               }}
-            >{`Total Items In Set ${Admin.box.length}`}</h6>
+            >{`Total Items In Set ${Admin.box.length>0?Admin.box.length:0}`}</h6>
           </div>
-          {Array.isArray(Admin.box) && Admin.box.length ? (
+          {Array.isArray(Admin.box) && Admin.box.length>0 ? (
             <div className='row col-md-12'>
               {Admin.box.map((stock, srno) => (
                 <Product
@@ -80,10 +125,10 @@ console.log(props)
             {" "}
             <ul className='list-group'>
               <li className=' list-group-item-action btn-style-1 mb-2 rounded'>
-                <Link to='/viewsets'>
+                <button className='list-group-item-action btn-style-1  rounded' onClick={() => publishSet()}>
                   {" "}
-                  <span className='fas fa-upload'></span> Publish Set{" "}
-                </Link>
+                  Publish Set
+                </button>
               </li>
               <li className='list-group-item-action btn-style-1 mb-2 rounded'>
                 <i onClick={() => closeBox()}>

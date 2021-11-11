@@ -1,19 +1,94 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 import "../../dashboard/Users.css";
 import RightBar from "../../mycomponents/RightBar";
 import { AdminContext } from "../AdminContext";
 import { UserContext } from "../../UserContext";
-
+import { Prompt, useHistory } from "react-router";
 import Product from "../components/Product";
 import SetSideBar from "../components/SetSideBar";
+import { Prev } from "react-bootstrap/esm/PageItem";
+
 function ViewStore(props) {
+  const history = useHistory();
   const User = useContext(UserContext);
-  //const Admin = useContext(AdminContext)
+  const Admin = useContext(AdminContext);
+  const token = localStorage.getItem("token");
   const [searchKeywords, setSearchKeywords] = useState("");
   const [showSideBar, setShowSideBar] = useState(true);
+  const [resetStock, setResetStock] = useState(false);
+  const [published, setPublished] = useState(false);
+  const [inCart, setInCart] = useState([])
   
-  //console.log(User);
+  console.log("Start")
+  
+  const fetchSetItems = async () => {
+   
+    const results = await axios(
+      `http://localhost:3001/api/admin/sets/view/${props.location.state.setId}`,
+      {
+        headers: {
+          "x-access-token": token,
+        },
+      }
+    )
+      .then((rrr) => Admin.setBox([...rrr.data]))
+      .catch((err) => {
+        if (err.response.status === 401) {
+          history.push("/unauthorized");
+        }
+      });
+    
+  };
+
+  useEffect(() => {
+    if (props.location.state !== undefined) {
+      fetchSetItems();
+      
+    }
+  }, []);
+  
+  
+  
+  const addtocart = (stock) => {
+  
+ 
+  Admin.setBox([...Admin.box, stock]);
+  
+  //let result = User.stocks.filter((o1) => Admin.box.some((o2) => o1.id !== o2.id));
+  //res = listItems.filter((f) => !Admin.box.includes(f));
+  //setArr([res]);
+  setResetStock(true)
+    // console.log(Admin.box, listItems, res, result);
+    
+ //console.log(Admin.box)
+    //User.setStocks([...arr]);
+    //setShowRemovebutton(true);
+  };
+  useEffect(() => {
+    
+    console.log(User.stocks,Admin.box,resetStock);
+    //addtocart
+        if(resetStock){
+           
+         User.setStocks(
+           User.stocks.filter(function (stock) {
+             return Admin.box.some(function (o2) {
+               return stock.inventoryid === o2.inventoryid;
+             });
+           })
+         );
+          
+          console.log(User.stocks,Admin.box,"Reset Stock="+ resetStock);
+           //User.setStocks([User.stock]);
+            setResetStock(false)
+        }
+          
+    //addtocart()
+  }, [resetStock]);
+  
+  
   var redirected = false;
   if (props.location.state) redirected = props.location.state.redirected;
 
@@ -37,15 +112,39 @@ function ViewStore(props) {
       )
         return val;
     })
-    .filter((stock) => stock.id == null || stock.isdeallocated === true)
+    /*var result = result1.filter(function (o1) {
+    return result2.some(function (o2) {
+        return o1.id === o2.id; // return the ones with equal id
+   });
+});*/.filter(function(stock) {
+         return Admin.box.some(function(o2){ 
+          return (
+            stock.inventoryid !== o2.inventoryid &&
+            (stock.isdeallocated === true ||
+              stock.setid === null ||
+              stock.setid === 0)
+          );
+        })
+    
+      
+
+       
+      })
     .map((stock, srno) => (
       <>
-        {/*Admin.box.find(()=>{
+        {
+          /*Admin.box.find(()=>{
+            
+    })*/
+          // Admin.box.some((o2) => stock.inventoryId === o2.inventoryId?setInCart(true):setInCart(false))
 
-    })*/}
+
+
+          
+        }
         <Product
-          showSideBar={showSideBar}
-          setShowSideBar={setShowSideBar}
+          inCart={inCart}
+          addcart={() => addtocart(stock)}
           stock={stock}
           in='viewstore'
           redirect={redirected}
@@ -63,7 +162,7 @@ function ViewStore(props) {
         />
       </>
     ));
-
+// var arr = listItems;
   return (
     <div className='container'>
       <input
@@ -104,11 +203,10 @@ function ViewStore(props) {
             }}
           >
             <SetSideBar
-              
               showSideBar={showSideBar}
               setShowSideBar={setShowSideBar}
-              setName={props.location.state.setname}
-              setid={props.location.state.setid}
+              setName={props.location.state.setName}
+              setId={props.location.state.setId}
             />
           </div>
         ) : (

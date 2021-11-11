@@ -35,14 +35,14 @@ export default function Users() {
           <>
             <div className='col-sm'>
               <Card border='primary' style={{ width: "18rem" }}>
-                <Card.Header key={item.id}>
+                <Card.Header key={`${item.orderno}${item.id}${index}`}>
                   <b>Inventory Order No--({item.orderno})</b>
                 </Card.Header>
-                <Card.Body key={item.id}>
-                  <Card.Title key={item.id}>
+                <Card.Body key={`${item.orderno}${item.id}${index}`}>
+                  <Card.Title key={`${item.orderno}${item.id}${index}`}>
                     {item.serialno}/{item.itemname}
                   </Card.Title>
-                  <Card.Text key={item.id}>
+                  <Card.Text key={`${item.orderno}${item.id}${index}`}>
                     User Name -{item.name}
                     <br />
                     UserId-{item.id}

@@ -19,8 +19,8 @@ function AddSet(props) {
       .post("http://localhost:3001/api/admin/sets/add", {
         setname,setremark
       })
-      .then("Addition Successfull")
-      .catch((err) => err + "Error State during Addition of Branch");
+      .then("Set Added Successfully")
+      .catch((err) => err + "Error State during Addition of Set");
     
   };
 
@@ -29,9 +29,10 @@ function AddSet(props) {
    
     const response = await axios
       .put(
-        `http://localhost:3001/api/admin/sets/update/${props.brId}`,
+        `http://localhost:3001/api/admin/sets/update/${props.setid}`,
         {
-          setname,setremark
+          setname,
+          setremark,
         },
         {
           headers: {
@@ -87,10 +88,10 @@ function AddSet(props) {
                       value={setremark}
                       onChange={(e) => setSetRemark(e.target.value)} />
                   <div className='valid-feedback'>
-                    Branchname field is valid!
+                    Setname field is valid!
                   </div>
                   <div className='invalid-feedback'>
-                    Branchname field cannot be blank!
+                    Setname field cannot be blank!
                   </div>
                 </div>
                 {props.isUpdate ? (

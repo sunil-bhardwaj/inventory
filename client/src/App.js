@@ -37,6 +37,9 @@ import AddSource from "./admindashboard/add/AddSource";
 import AddItem from "./admindashboard/add/AddItem";
 import AllocateInventory from "./admindashboard/view/AllocateInventory";
 import ViewSets from "./admindashboard/view/ViewSets";
+import store from "./store/Store";
+import { addInventory } from "./actions";
+//import Alert from "./admindashboard/utils/Alert";
 
 const history = createBrowserHistory();
 const Footer = lazy(() => import("./mycomponents/Footer"));
@@ -46,9 +49,14 @@ const Footer = lazy(() => import("./mycomponents/Footer"));
 
 //app.use(cors())
 function App() {
+  
   const User = useContext(UserContext);
   const token = localStorage.getItem("token");
   console.log(User);
+  store.subscribe(() => console.log("Look ma, Redux!!"));
+  store.dispatch(
+    addInventory({ title: "React Redux Tutorial for Beginners", id: 1 })
+  );
   if (token) {
     const decoded = jwtDecode(token);
     User.setUserName(decoded.username);
@@ -58,7 +66,8 @@ function App() {
       console.log(decoded, User);
     }
   }
-
+ 
+ 
   // const User = useContext(UserContext);
 
   //const [isLoggedIn, setisLoggedIn] = useState(User.isLoggedIn);
@@ -91,7 +100,12 @@ function App() {
         <AdminProvider>
           <Route path='/admin' exact component={Admin}></Route>
           <Route exact path='/viewbranch' component={ViewBranch}></Route>
-          <Route exact path='/viewstore' component={ViewStore}></Route>
+          <Route
+            exact
+            path='/viewstore'
+            component={ViewStore}
+           
+          ></Route>
           <Route exact path='/testing' component={Testing}></Route>
           <Route exact path='/allotitems' component={AllocateInventory}></Route>
           <Route exact path='/viewsets' component={ViewSets}></Route>

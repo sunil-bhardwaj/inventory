@@ -12,7 +12,7 @@ export default function Users() {
   const [deallocate, setDeallocate] = useState(false);
   const token = localStorage.getItem("token");
   const [searchKeywords, setSearchKeywords] = useState("");
-   var length = 0
+  var length = 0;
   //const apiURL = "http://localhost:3001/api/users/all";
   useEffect(() => {
     console.log("Inside Use Effect1");
@@ -32,6 +32,7 @@ export default function Users() {
       .then((rrr) => {
         //console.log(rrr.data);
         User.setStocks(rrr.data);
+        
       })
       .catch((err) => {
         // if (err.response.status === 401) {
