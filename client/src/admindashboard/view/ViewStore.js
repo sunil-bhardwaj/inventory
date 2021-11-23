@@ -1,98 +1,39 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, {  useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import "../../dashboard/Users.css";
 import RightBar from "../../mycomponents/RightBar";
-import { AdminContext } from "../AdminContext";
-import { UserContext } from "../../UserContext";
-import { Prompt, useHistory } from "react-router";
 import Product from "../components/Product";
+import {inventoryActions} from "../../_actions/"
 import SetSideBar from "../components/SetSideBar";
-import { Prev } from "react-bootstrap/esm/PageItem";
-
+import { useDispatch, useSelector } from "react-redux";
 function ViewStore(props) {
-  const history = useHistory();
-  const User = useContext(UserContext);
-  const Admin = useContext(AdminContext);
-  const token = localStorage.getItem("token");
-  const [searchKeywords, setSearchKeywords] = useState("");
-  const [showSideBar, setShowSideBar] = useState(true);
-  const [resetStock, setResetStock] = useState(false);
-  const [published, setPublished] = useState(false);
-  const [inCart, setInCart] = useState([])
-  
-  console.log("Start")
-  
-  const fetchSetItems = async () => {
-   
-    const results = await axios(
-      `http://localhost:3001/api/admin/sets/view/${props.location.state.setId}`,
-      {
-        headers: {
-          "x-access-token": token,
-        },
-      }
-    )
-      .then((rrr) => Admin.setBox([...rrr.data]))
-      .catch((err) => {
-        if (err.response.status === 401) {
-          history.push("/unauthorized");
-        }
-      });
-    
-  };
 
-  useEffect(() => {
-    if (props.location.state !== undefined) {
-      fetchSetItems();
-      
-    }
-  }, []);
-  
-  
-  
-  const addtocart = (stock) => {
+  const dispatch = useDispatch();
+   //const InventoryInfo = useSelector((state) => state.inventoryData.inventoryList)
+   
+   const storeItemsInfo = useSelector((state) => state.inventoryData.storeItems);
+  //const setItemsInfo = useSelector((state) => state.inventoryData.setItems);
+   useEffect(() => {
+     dispatch(inventoryActions.getStoreInventory());
+     
+   }, []);
+ 
   
  
-  Admin.setBox([...Admin.box, stock]);
-  
-  //let result = User.stocks.filter((o1) => Admin.box.some((o2) => o1.id !== o2.id));
-  //res = listItems.filter((f) => !Admin.box.includes(f));
-  //setArr([res]);
-  setResetStock(true)
-    // console.log(Admin.box, listItems, res, result);
-    
- //console.log(Admin.box)
-    //User.setStocks([...arr]);
-    //setShowRemovebutton(true);
-  };
-  useEffect(() => {
-    
-    console.log(User.stocks,Admin.box,resetStock);
-    //addtocart
-        if(resetStock){
-           
-         User.setStocks(
-           User.stocks.filter(function (stock) {
-             return Admin.box.some(function (o2) {
-               return stock.inventoryid === o2.inventoryid;
-             });
-           })
-         );
-          
-          console.log(User.stocks,Admin.box,"Reset Stock="+ resetStock);
-           //User.setStocks([User.stock]);
-            setResetStock(false)
-        }
-          
-    //addtocart()
-  }, [resetStock]);
+  const [searchKeywords, setSearchKeywords] = useState("");
   
   
-  var redirected = false;
-  if (props.location.state) redirected = props.location.state.redirected;
-
-  const listItems = User.stocks
+ 
+  var redirected = false 
+  var selectedSetId = null 
+  var selectedSetName = ''
+  if (props.location.state) {
+    redirected = props.location.state.redirected
+    selectedSetId = props.location.state.setId;
+    selectedSetName = props.location.state.setName;
+  }
+ console.log(selectedSetId,selectedSetName)
+  const listItems = storeItemsInfo
     .filter((val) => {
       if (searchKeywords === "") return val;
       else if (
@@ -116,20 +57,7 @@ function ViewStore(props) {
     return result2.some(function (o2) {
         return o1.id === o2.id; // return the ones with equal id
    });
-});*/.filter(function(stock) {
-         return Admin.box.some(function(o2){ 
-          return (
-            stock.inventoryid !== o2.inventoryid &&
-            (stock.isdeallocated === true ||
-              stock.setid === null ||
-              stock.setid === 0)
-          );
-        })
-    
-      
-
-       
-      })
+});*/
     .map((stock, srno) => (
       <>
         {
@@ -137,28 +65,15 @@ function ViewStore(props) {
             
     })*/
           // Admin.box.some((o2) => stock.inventoryId === o2.inventoryId?setInCart(true):setInCart(false))
-
-
-
-          
         }
         <Product
-          inCart={inCart}
-          addcart={() => addtocart(stock)}
-          stock={stock}
+          product={stock}
           in='viewstore'
           redirect={redirected}
           key={uuidv4()}
           srno={srno + 1}
-          image={stock.image}
-          inventoryid={stock.inventoryid}
-          brandname={stock.brandname}
-          serialno={stock.serialno}
-          itemtype={stock.itemtype}
-          itemname={stock.itemname}
-          warranty_end_date={stock.warranty_ends_on}
-          orderno={stock.orderno}
-          ordername={stock.ordername}
+          setName={selectedSetName}
+          setId={selectedSetId}
         />
       </>
     ));
@@ -188,7 +103,7 @@ function ViewStore(props) {
       <div className='row'>
         <div className='col-md-11'>{listItems}</div>
 
-        {redirected && showSideBar ? (
+        {redirected ? (
           <div
             className='col-md-2'
             style={{
@@ -203,10 +118,9 @@ function ViewStore(props) {
             }}
           >
             <SetSideBar
-              showSideBar={showSideBar}
-              setShowSideBar={setShowSideBar}
-              setName={props.location.state.setName}
-              setId={props.location.state.setId}
+             // addtoset={(item) => addtoset(item)}
+              setName={selectedSetName}
+              setId={selectedSetId}
             />
           </div>
         ) : (

@@ -50,7 +50,7 @@ const verifyToken = (req, res, next) => {
 app.use("/api/users/", verifyToken, userRouter);
 app.use("/auth/", authRouter);
 app.use("/api/complaints/", complaintRouter);
-app.use("/api/dashboard/", dashRouter);
+app.use("/api/inventory/", dashRouter)
 app.use("/api/admin/", adminRouter);
 
 app.listen(port, () => {

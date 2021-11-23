@@ -4,7 +4,7 @@ const getAllComplaints = (request, response) => {
   
     pool.query('SELECT * FROM complaints ', (error, results) => {
       if (error) {
-        console.log("Inside GetUsersByID Error");
+       
         throw error
       }
       
@@ -17,7 +17,7 @@ const getAllComplaints = (request, response) => {
   
     pool.query('SELECT * FROM complaints WHERE id = $1', [id], (error, results) => {
       if (error) {
-        console.log("Inside GetUsersByID Error");
+        
         throw error
       }
       

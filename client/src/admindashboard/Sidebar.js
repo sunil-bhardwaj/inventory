@@ -84,7 +84,7 @@ function Sidebar() {
             <Menu iconShape='square'>
               <MenuItem icon=''>
                 Dashboard
-                <Link to='/admin' />
+                <Link to='/' />
               </MenuItem>
 
               <SubMenu title='Masters'>

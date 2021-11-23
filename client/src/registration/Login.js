@@ -1,91 +1,74 @@
-import React, { useContext, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import "../registration/css/Login.css";
-import jwt_decode from "jwt-decode";
-import { useHistory, Link } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import {userActions} from "../_actions";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 export default function Login() {
-  const User = useContext(UserContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [regusername, setRegusername] = useState("");
-  const [regpassword, setRegpassword] = useState("");
-  const [confirmpassword, setConfirmpassword] = useState("");
-  const [fullname, setFullname] = useState("");
-  const [userrole, setUserrole] = useState("user");
-  const [message, setMessage] = useState("Fill Mandatory Fields");
-  const history = useHistory();
+  const [inputsLogin, setInputsLogin] = useState({
+    username: "",
+    password: "",
+  });
+   const [inputsReg, setInputsReg] = useState({
+     regusername: "",
+     regpassword: "",
+     confirmpassword:"",
+     fullname:"",
+     userrole:"",
+   });
+  const [submitted, setSubmitted] = useState(false);
+  const [message, setMessage] = useState("");
+  const { username, password } = inputsLogin;
+  const { regusername,regpassword,confirmpassword,fullname,userrole } = inputsReg;
+   
+  const loggingIn = useSelector((state) => state.authenticationData.loggingIn);
+  const dispatch = useDispatch();
+  const location = useLocation();
 
-  //if (User.isLoggedIn) history.push("/dashboard");
-  const register = async (e) => {
+  // reset login status
+  useEffect(() => {
+    dispatch(userActions.logout());
+  }, []);
+
+  function handleChangeLogin(e) {
+      
+    const { name, value } = e.target;
+    //console.log(name,value);
+    setInputsLogin((inputs) => ({ ...inputs, [name]: value }));
+  }
+  function handleChangeReg(e) {
+    const { name, value } = e.target;
+    //console.log(name, value);
+    setInputsReg((inputs) => ({ ...inputs, [name]: value }));
+  }
+  function handleSubmit(e) {
+    
     e.preventDefault();
-    await axios
-      .post("http://localhost:3001/auth/register", {
-        username: regusername,
-        password: regpassword,
-        fullname: fullname,
-        userrole: userrole,
-      })
-      .then((response) => {
-        if (response.data.auth) {
-          setMessage(response.data.message);
-          localStorage.setItem("token", response.data.token);
+   
+    setSubmitted(true);
+    if (username && password) {
+      // get return url from location state or default to home page
+      const { from } = location.state || { from: { pathname: "/login" } };
 
-          User.setIsLoggedIn(true);
-          User.setIsAdmin(true);
-        } else {
-          setMessage(response.data.message);
-          User.setIsLoggedIn(false);
-          User.setIsAdmin(false);
-        }
-      });
-  };
+      dispatch(userActions.login(username, password, from));
+    }
+    if (regusername && regpassword && confirmpassword) {
+      // get return url from location state or default to home page
+      const { from } = location.state || { from: { pathname: "/login" } };
+      dispatch(
+        userActions.register(
+          username,
+          password,
+          confirmpassword,
+          fullname,
+          userrole,
+          from
+        )
+      );
+    }
+  }
+
   
-  const login = async (e) => {
-    console.log("just after submitting form");
-    User.setIsLoading(true);
-    e.preventDefault();
-     await axios
-      .post("http://localhost:3001/auth/login", {
-        username: username,
-        password: password,
-      })
-      .then((response) => {
-        console.log("just after submitting form too");
-        if (response.data.auth) {
-          
-          setMessage(response.data.message);
-          var decoded = jwt_decode(response.data.token);
-          console.log("just after submitting form three");
-          //console.log(decoded.userrole);
-          localStorage.setItem("token", response.data.token);
-          User.setIsLoggedIn(true);
-          if (decoded.userrole === "user") {
-             console.log("just after submitting form Four");
-            User.setUserName(decoded.username);
-            User.setIsAdmin(false);
-            User.setIsLoading(false);
-            history.push("/dashboard");
-          }
-         
-          if (decoded.userrole === "admin") {
-            console.log("just after submitting form Four");
-            console.log("inside isAdmin");
-            User.setIsAdmin(true);
-            User.setUserName(decoded.username);
-            User.setIsLoading(false);
-            history.push("/addbranch");
-          }
-        } else {
-          setMessage(response.data.message);
-          User.setIsLoggedIn(false);
-          User.setIsAdmin(false);
-        }
-      });
-    console.log(User);
-  };
-  //background-color: #185d5d;
-  console.log(User);
   return (
     <div className='row' style={{ backgroundColor: "#185d5d" }}>
       <div className='col-md-6 mx-auto p-0'>
@@ -98,153 +81,194 @@ export default function Login() {
               className='login-snip'
               style={{ backgroundColor: "black", opacity: "0.8" }}
             >
-              <input
-                id='tab-1'
-                type='radio'
-                name='tab'
-                className='sign-in'
-                defaultChecked
-              />
-              <label htmlFor='tab-1' className='tab'>
-                Login
-              </label>
-              <input id='tab-2' type='radio' name='tab' className='sign-up' />
-              <label htmlFor='tab-2' className='tab'>
-                Sign Up
-              </label>
-              <div className='login-space'>
-                <div className='login'>
-                  <div className='group'>
-                    <label htmlFor='user' className='label'>
-                      Username
-                    </label>
-                    <input
-                      onChange={(e) => setUsername(e.target.value)}
-                      type='text'
-                      className='input'
-                      placeholder='Enter your username'
-                    />
-                  </div>
-                  <div className='group'>
-                    <label htmlFor='pass' className='label'>
-                      Password
-                    </label>
-                    <input
-                      onChange={(e) => setPassword(e.target.value)}
-                      type='password'
-                      className='input'
-                      data-type='password'
-                      placeholder='Enter your password'
-                    />
-                  </div>
+              <form name='form' onSubmit={handleSubmit}>
+                {" "}
+                <input
+                  id='tab-1'
+                  type='radio'
+                  name='tab'
+                  className='sign-in'
+                  defaultChecked
+                />
+                <label htmlFor='tab-1' className='tab'>
+                  Login
+                </label>
+                <input id='tab-2' type='radio' name='tab' className='sign-up' />
+                <label htmlFor='tab-2' className='tab'>
+                  Sign Up
+                </label>
+                <div className='login-space'>
+                  <div className='login'>
+                    <div className='group'>
+                      <label htmlFor='user' className='label'>
+                        Username
+                      </label>
+                      <input
+                        onChange={handleChangeLogin}
+                        type='text'
+                        className='input'
+                        value={username}
+                        placeholder='Enter your username'
+                        name='username'
+                      />
+                      {submitted && !username && (
+                        <div className='invalid-feedback'>
+                          Username is required
+                        </div>
+                      )}
+                    </div>
+                    <div className='group'>
+                      <label htmlFor='pass' className='label'>
+                        Password
+                      </label>
+                      <input
+                        onChange={handleChangeLogin}
+                        type='password'
+                        className='input'
+                        data-type='password'
+                        name='password'
+                        value={password}
+                        placeholder='Enter your password'
+                      />
+                      {submitted && !password && (
+                        <div className='invalid-feedback'>
+                          Password is required
+                        </div>
+                      )}
+                    </div>
 
-                  <div
-                    className='group'
-                    style={{
-                      textAlign: "center",
-                      color: "chartreuse",
-                      marginTop: "10%",
-                    }}
-                  >
-                    <input
-                      onClick={login}
-                      type='submit'
-                      className='button'
-                      value='Sign In'
-                    />
-                    <br />
-                    {message}
-                  </div>
-                  <div className='hr'> </div>
-                  <div className='foot'>
-                    <Link to='#'>Forgot Password?</Link>
-                  </div>
-                </div>
-                <div className='sign-up-form'>
-                  <div className='group'>
-                    <label htmlFor='user' className='label'>
-                      Username
-                    </label>
-                    <input
-                      onChange={(e) => setRegusername(e.target.value)}
-                      type='text'
-                      className='input'
-                      placeholder='Create your Username'
-                    />
-                  </div>
-                  <div className='group'>
-                    <label htmlFor='pass' className='label'>
-                      Password
-                    </label>
-                    <input
-                      onChange={(e) => setRegpassword(e.target.value)}
-                      type='password'
-                      className='input'
-                      data-type='password'
-                      placeholder='Create your password'
-                    />
-                  </div>
-                  <div className='group'>
-                    <label htmlFor='pass' className='label'>
-                      Repeat Password
-                    </label>
-                    <input
-                      onChange={(e) => setConfirmpassword(e.target.value)}
-                      type='password'
-                      className='input'
-                      data-type='password'
-                      placeholder='Repeat your password'
-                    />
-                  </div>
-                  <div className='group'>
-                    <label htmlFor='pass' className='label'>
-                      Full Name
-                    </label>
-                    <input
-                      onChange={(e) => setFullname(e.target.value)}
-                      type='text'
-                      className='input'
-                      placeholder='Enter your full name'
-                    />
-                  </div>
-                  <div className='group'>
-                    <label htmlFor='pass' className='label'>
-                      User Role
-                    </label>
-                    <select
-                      className='input'
-                      onChange={(e) => setUserrole(e.target.value)}
-                      name='cars'
+                    <div
+                      className='group'
+                      style={{
+                        textAlign: "center",
+                        color: "chartreuse",
+                        marginTop: "10%",
+                      }}
                     >
-                      <option value='volvo'>User</option>
-                    </select>
+                      {loggingIn && (
+                        <span className='spinner-border spinner-border-sm mr-1'></span>
+                      )}
+                      <input type='submit' name='signin' id='signin' className='button' value='Sign In' />
+                      <br />
+                      {message}
+                    </div>
+                    <div className='hr'> </div>
+                    <div className='foot'>
+                      <Link to='#'>Forgot Password?</Link>
+                    </div>
                   </div>
+                  <div className='sign-up-form'>
+                    <div className='group'>
+                      <label htmlFor='user' className='label'>
+                        Username
+                      </label>
+                      <input
+                        onChange={handleChangeReg}
+                        type='text'
+                        className='input'
+                        name='regusername'
+                        value={regusername}
+                        placeholder='Create your Username'
+                      />
+                      {submitted && !regusername && (
+                        <div className='invalid-feedbacku'>
+                          Username is required
+                        </div>
+                      )}
+                    </div>
+                    <div className='group'>
+                      <label htmlFor='pass' className='label'>
+                        Password
+                      </label>
+                      <input
+                        onChange={handleChangeReg}
+                        type='password'
+                        value={regpassword}
+                        className='input'
+                        data-type='password'
+                        name='regpassword'
+                        placeholder='Create your password'
+                      />
+                      {submitted && !regpassword && (
+                        <div className='invalid-feedbacku'>
+                          Password is required
+                        </div>
+                      )}
+                    </div>
+                    <div className='group'>
+                      <label htmlFor='pass' className='label'>
+                        Repeat Password
+                      </label>
+                      <input
+                        onChange={handleChangeReg}
+                        type='password'
+                        className='input'
+                        data-type='password'
+                        value={confirmpassword}
+                        name='confirmpassword'
+                        placeholder='Repeat your password'
+                      />
+                      {submitted && !confirmpassword && (
+                        <div className='invalid-feedback'>
+                          Confirmation Password is required
+                        </div>
+                      )}
+                    </div>
+                    <div className='group'>
+                      <label htmlFor='pass' className='label'>
+                        Full Name
+                      </label>
+                      <input
+                        onChange={handleChangeReg}
+                        type='text'
+                        className='input'
+                        name='fullname'
+                        value={fullname}
+                        placeholder='Enter your full name'
+                      />
+                      {submitted && !fullname && (
+                        <div className='invalid-feedback'>
+                          Your Name is required
+                        </div>
+                      )}
+                    </div>
+                    <div className='group'>
+                      <label htmlFor='pass' className='label'>
+                        User Role
+                      </label>
+                      <select
+                        className='input'
+                        onChange={handleChangeReg}
+                        name='userrole'
+                      >
+                        <option value={userrole}>User</option>
+                      </select>
+                    </div>
 
-                  <div
-                    className='group'
-                    style={{
-                      textAlign: "center",
-                      color: "chartreuse",
-                      marginTop: "10%",
-                    }}
-                  >
-                    <input
-                      onClick={register}
-                      type='submit'
-                      className='button'
-                      value='Sign Up'
-                    />
-                    <br />
-                    {message}
-                  </div>
+                    <div
+                      className='group'
+                      style={{
+                        textAlign: "center",
+                        color: "chartreuse",
+                        marginTop: "10%",
+                      }}
+                    >
+                      {loggingIn && (
+                        <span className='spinner-border spinner-border-sm mr-1'></span>
+                      )}
+                      <input type='submit' name='signup' id = 'signup' className='button' value='Sign Up' />
+                      <br />
+                      {message}
+                    </div>
 
-                  <div className='hr'></div>
+                    <div className='hr'></div>
 
-                  <div className='foot'>
-                    <label htmlFor='tab-1'>Already Member?</label>
+                    <div className='foot'>
+                      <label htmlFor='tab-1'>Already Member?</label>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>

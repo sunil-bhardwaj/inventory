@@ -4,15 +4,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import 'font-awesome/css/font-awesome.css'
 import './index.css';
+import {store} from "./_helpers"
 import App from './App';
-import {UserProvider} from './UserContext'
-import index from "./new/index";
+import { Provider } from "react-redux";
+
 ReactDOM.render(
-  <React.StrictMode>
-    <UserProvider>
+  <Provider store={store}>
+    <React.StrictMode>
       <App />
-    </UserProvider>
-  </React.StrictMode>,
+   
+  </React.StrictMode>
+   </Provider>,
   document.getElementById("root")
 );
 

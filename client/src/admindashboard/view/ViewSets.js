@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, {  useEffect, useState } from "react";
+
 import ListGroup from "react-bootstrap/ListGroup";
-import ReactPaginate from "react-paginate";
+import SideBar from "../Sidebar"
 import AddBranch from "../add/AddBranch";
-import axios from "axios";
-import { AdminContext } from "../AdminContext";
+
 import RightBar from "../../mycomponents/RightBar";
 import EditIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
@@ -13,80 +12,53 @@ import AddSet from "../add/AddSet";
 import Description from "../components/Description";
 import SetSideBar from "../components/SetSideBar";
 import { Redirect } from "react-router-dom";
-const token = localStorage.getItem("token");
-export const retreiveSets = async () => {
-  const response = await axios("http://localhost:3001/api/admin/sets/all", {
-    headers: {
-      "x-access-token": token,
-    },
-  });
-  // const response = await api.get("/api/branches/all");
-  // console.log(response.data);
-  return response.data;
-};
+import {inventoryActions} from "../../_actions"
+import {useDispatch, useSelector} from "react-redux"
 
-function ViewSets(props) {
-  const history = useHistory();
-  const Admin = useContext(AdminContext);
+
+function ViewSets() {
+  const dispatch = useDispatch()
+  const setsInfo = useSelector((state)=>state.inventoryData.sets) 
+  
   const [newSetWindow, setnewSetWindow] = useState(false);
-
-  const [searchKeywords, setSearchKeywords] = useState("");
-  const [pageCount, setPageCount] = useState(0);
-  const [setsPerPage] = useState(10);
-  const [offset, setOffset] = useState(1);
-  const [setid, setSetId] = useState("");
-  const [setname, setSetName] = useState("");
-  const [deleteFlag, setDeleteFlag] = useState(false);
+   const [viewSetWindow, setViewSetWindow] = useState(false);
+   const [setId, setSetId] = useState("");
+   const [setName, setSetName] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [showSetTab, setShowSetTab] = useState(false);
+  const [searchKeywords, setSearchKeywords] = useState("");
+  
+  //const [showSetTab, setShowSetTab] = useState(false);
+  
   useEffect(() => {
-    const getAllSets = async () => {
-      const allSets = await retreiveSets();
-      /*if (allSets) {
-        const slice = allSets.slice(offset - 1, offset - 1 + setsPerPage);
-        Admin.setSets(slice);
-        setPageCount(Math.ceil(allSets.length / setsPerPage));
-        console.log(allSets)
-      }*/
-       Admin.setSets(allSets);
-    };
-    getAllSets();
+    
+   dispatch(inventoryActions.getAllSets())
+    
   }, []);
+ 
+  const add = (edit,set)=>{
+   
+      if(edit)
+      {
+         setSetId(set.id);
+         setSetName(set.setname);
+        setIsUpdate(true)
+        setnewSetWindow(!newSetWindow);
 
-  const addNewSet = (isUp, setid, setname) => {
-    if (isUp) {
-      setIsUpdate(true);
-      setSetId(setid);
-      setSetName(setname);
-    } else setIsUpdate(false);
-    setnewSetWindow(!newSetWindow);
+      }else{
+        setIsUpdate(false);
+        setnewSetWindow(!newSetWindow);  
+      }
+  }
+  const viewsetitems = (set) => {
+      console.log(set)
+      setSetId(set.id);
+      setSetName(set.setname);
+      setViewSetWindow(!viewSetWindow);
+   
   };
-
-  const deleteSet = async (id) => {
-    var [_allSets] = [];
-    const response = await axios
-      .delete(`http://localhost:3001/api/admin/sets/delete/${id}`, {
-        headers: {
-          "x-access-token": token,
-        },
-      })
-      .then("Deletion Successfull")
-      .catch((err) => err + "Error State during Deletion of Branch");
-    setDeleteFlag(true);
-    setDeleteFlag(false);
-  };
-  const showSetItems = (set) => {
-    setSetName(set.setname);
-    setSetId(set.id);
-    setShowSetTab(!showSetTab);
-  };
-  const handlePageClick = (event) => {
-    const selectedPage = event.selected;
-    setOffset(selectedPage + 1);
-  };
-  const closeHandler = () => {
-    setnewSetWindow(!newSetWindow);
-  };
+  
+ 
+  
   // console.log(Admin.branches);
   return (
     <div className='container'>
@@ -97,7 +69,7 @@ function ViewSets(props) {
           <button
             className='btn btn-success'
             style={{ marginBottom: "6px", marginRight: "50%" }}
-            onClick={() => addNewSet()}
+            onClick={() => add(false)}
           >
             Add New
           </button>
@@ -110,7 +82,7 @@ function ViewSets(props) {
               borderRight: "3px solid #00b4cc",
               padding: "5px",
               height: "40px",
-              borderRadius: "5px 5px 5px 5px;",
+              borderRadius: "5px 5px 5px 5px",
               outline: "none",
               color: "#9dbfaf",
             }}
@@ -137,7 +109,7 @@ function ViewSets(props) {
             }}
           >
             <ListGroup>
-              {Admin.sets
+              {setsInfo
                 .filter((val) => {
                   if (searchKeywords === "") return val;
                   else if (
@@ -149,11 +121,10 @@ function ViewSets(props) {
                 })
                 .map((set, index) => (
                   <ListGroup.Item
-                    key={set.id}
+                    key={set.id + index}
                     style={{ backgroundColor: "#e7f3f3" }}
                   >
-                    {set.id}
-                    --{set.setname}
+                    {set.id}--{set.setname}
                     <AddIcon
                       style={{
                         marginLeft: "3rem",
@@ -161,7 +132,7 @@ function ViewSets(props) {
                         cursor: "pointer",
                       }}
                       color='primary'
-                      onClick={() => showSetItems(set)}
+                      onClick={() => viewsetitems(set)}
                     />
                     <EditIcon
                       style={{
@@ -170,7 +141,7 @@ function ViewSets(props) {
                         cursor: "pointer",
                       }}
                       color='primary'
-                      onClick={() => addNewSet(true, set.id, set.setname)}
+                      onClick={() => add(true, set)}
                     />
                     <DeleteIcon
                       style={{
@@ -179,7 +150,6 @@ function ViewSets(props) {
                         color: "red",
                         cursor: "pointer",
                       }}
-                      onClick={(e) => deleteSet(set.id)}
                     />
                   </ListGroup.Item>
                 ))}
@@ -189,28 +159,20 @@ function ViewSets(props) {
         <div className='col-md-4' style={{ border: "2px solid green" }}>
           {newSetWindow ? (
             <AddSet
-              setId={setid}
-              setName={setname}
+              closehandler={() => add()}
               isUpdate={isUpdate}
-              closehandler={closeHandler}
+              setid={setId}
             />
-          ) : showSetTab ? (
-            /*history.push({
-              pathname: "/viewstore",
-              state: { redirected: true, setid, setname },
-            })*/
+          ) : null}
+          {viewSetWindow ? (
             <Redirect
               to={{
                 pathname: `/viewstore/`,
-               // state:{redirected:true}
-                state:{redirected:true,setName:setname,setId:setid}
+                state: { redirected: true, setName: setName, setId: setId },
               }}
             />
-          ) : (
-            /* <SetSideBar setName = {setname}/>*/
-            <RightBar />
-          )}
-          {}
+          ) : null}
+          <RightBar />
         </div>
       </div>
     </div>
