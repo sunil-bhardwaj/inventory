@@ -7,7 +7,7 @@ export const inventoryService = {
   getSetItems,
   getAllSets,
   getSetById,
-  _deleteSet,
+  deleteSet: _deleteSet,
   addNewSet,
   getById,
   update,
@@ -17,6 +17,8 @@ export const inventoryService = {
   removeItemFromSet,
   releaseAllSetItems,
   transferSet,
+  moveSetToStore,
+  allocateSetFromStore,
 };
 
 
@@ -91,7 +93,32 @@ function transferSet(sidebarItems, oldUserId, newUserId) {
     requestOptions
   ).then(handleResponse);
 }
+function moveSetToStore(setid,items) {
+  
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({setid,items}),
+  };
 
+  return fetch(
+    `http://localhost:3001/api/admin/sets/movetostore`,
+    requestOptions
+  ).then(handleResponse);
+}
+function allocateSetFromStore(newsetid, items, oldsetid) {
+  console.log(newsetid, items, oldsetid);
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ newsetid, items, oldsetid }),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/sets/allocate`,
+    requestOptions
+  ).then(handleResponse);
+}
 function removeItemFromSet(itemId) {
   
   const requestOptions = {
@@ -127,14 +154,16 @@ function getAllSets() {
     handleResponse
   );
 }
-function _deleteSet(id) {
+function _deleteSet(setid) {
   const requestOptions = {
     method: "DELETE",
     headers: authHeader(),
   };
 
   return fetch(
-    `http://localhost:3001/api/admin/sets/delete/${id}`, requestOptions ).then(handleResponse);
+    `http://localhost:3001/api/admin/sets/delete/${setid}`,
+    requestOptions
+  ).then(handleResponse);
 }
 
 function getById(id) {

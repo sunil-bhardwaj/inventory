@@ -1,40 +1,25 @@
-import React, {  useState, useEffect } from "react";
-import {Link } from "react-router-dom"
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../dashboard/Users.css";
 import RightBar from "../../mycomponents/RightBar";
 import Product from "../components/Product";
-import {inventoryActions} from "../../_actions/"
+import { inventoryActions } from "../../_actions/";
 import SetSideBar from "../components/SetSideBar";
 import { useDispatch, useSelector } from "react-redux";
-function ViewStore(props) {
-
+function ViewInventory() {
   const dispatch = useDispatch();
-   //const InventoryInfo = useSelector((state) => state.inventoryData.inventoryList)
-   
-   const storeItemsInfo = useSelector((state) => state.inventoryData.storeItems);
+  //const InventoryInfo = useSelector((state) => state.inventoryData.inventoryList)
+
+  const inventoryInfo = useSelector((state) => state.inventoryData.inventoryList);
   //const setItemsInfo = useSelector((state) => state.inventoryData.setItems);
-   useEffect(() => {
-     dispatch(inventoryActions.getStoreInventory());
-     
-   }, []);
- 
-  
- 
+  useEffect(() => {
+    dispatch(inventoryActions.getAllInventory());
+  }, []);
+
   const [searchKeywords, setSearchKeywords] = useState("");
-  
-  
+
  
-  var redirected = false 
-  var selectedSetId = null 
-  var selectedSetName = ''
-  if (props.location.state) {
-    redirected = props.location.state.redirected
-    selectedSetId = props.location.state.setId;
-    selectedSetName = props.location.state.setName;
-  }
- console.log(selectedSetId,selectedSetName)
-  const listItems = storeItemsInfo
+  const listItems = inventoryInfo
     .filter((val) => {
       if (searchKeywords === "") return val;
       else if (
@@ -70,15 +55,13 @@ function ViewStore(props) {
         <Product
           product={stock}
           in='viewstore'
-          redirect={redirected}
           key={uuidv4()}
           srno={srno + 1}
-          setName={selectedSetName}
-          setId={selectedSetId}
+          
         />
       </>
     ));
-// var arr = listItems;
+  // var arr = listItems;
   return (
     <div className='container'>
       <input
@@ -101,54 +84,17 @@ function ViewStore(props) {
         className='input'
         placeholder='Search...'
       />
-      {redirected ? (
-        <div
-          style={{
-            position: "relative",
-            float: "right",
-            marginRight: "160px",
-            fontSize: "x-large",
-            textDecoration: "underline",
-            textDecorationColor: "olive",
-          }}
-        >
-          <Link to= "/viewsets">Back</Link>
-        </div>
-      ) : null}
       <div className='row'>
         <div className='col-md-11'>{listItems}</div>
-
-        {redirected ? (
-          <div
-            className='col-md-2'
-            style={{
-              position: "fixed",
-              right: "1px",
-              border: "2px solid green",
-              top: "29px",
-              bottom: "10px",
-              overflowY: "scroll",
-              backgroundColor: "#254063",
-              zIndex: 9999,
-            }}
-          >
-            <SetSideBar
-              // addtoset={(item) => addtoset(item)}
-              setName={selectedSetName}
-              setId={selectedSetId}
-            />
-          </div>
-        ) : (
-          <div
-            style={{ position: "absolute", right: "109px" }}
-            className='col-md-2'
-          >
-            <RightBar />
-          </div>
-        )}
+        <div
+          style={{ position: "absolute", right: "109px" }}
+          className='col-md-2'
+        >
+          <RightBar />
+        </div>
       </div>
     </div>
   );
 }
 
-export default ViewStore;
+export default ViewInventory;

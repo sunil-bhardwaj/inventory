@@ -191,6 +191,62 @@ const transferSet = (request, response) => {
  
 };
 
+const moveSetToStore = (request, response) => {
+  const { setid, items } = request.body;
+
+  items.forEach((item) =>{
+    pool.query(
+     `update mapping set instore = 't' where setid = $1 and inventoryid = $2`,
+     [setid,item.inventoryid],
+      (error, results) => {
+        if (error) {
+          throw error
+        }
+      }
+    )
+  })
+  
+    pool.query(
+      `update set set instore = 't' where id = $1`,
+      [setid],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+      }
+    );
+ 
+  
+  response.status(200).send(JSON.stringify("Success"));
+
+}
+const allocateSet = (request, response) => {
+  const { newsetid, items, oldsetid } = request.body;
+  console.log(oldsetid);
+  items.forEach((item) => {
+    pool.query(
+      `update mapping set setid = $1, instore = 'f' where inventoryid = $2 and setid = $3`,
+      [newsetid, item.inventoryid,oldsetid],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+      }
+    );
+  });
+
+  pool.query(
+    `update set set instore = 'f' where id = $1`,
+    [oldsetid],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+    }
+  );
+
+  response.status(200).send(JSON.stringify("Success"));
+};
 const updateBranch = (request, response) => {
   const id = parseInt(request.params.id);
   const { branchname } = request.body;
@@ -287,4 +343,6 @@ module.exports = {
   removeItemFromSet,
   releaseAllSetItems,
   transferSet,
+  moveSetToStore,
+  allocateSet,
 };

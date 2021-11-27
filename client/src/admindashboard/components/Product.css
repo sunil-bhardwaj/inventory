@@ -86,3 +86,10 @@ a {
 .bg-color-red:hover {
   background-color: #d13c3ceb;
 }
+
+  .productdiv:hover {
+    box-shadow: 0 15px 10px -10px rgb(31 31 31 / 50%);
+    transition: all 0.3s ease;
+    transform: scale(1);
+    background-color: #491111;
+  }

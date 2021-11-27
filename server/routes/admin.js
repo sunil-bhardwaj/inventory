@@ -14,6 +14,8 @@ adminRouter
   .put("/sets/removeitem", db.removeItemFromSet)
   .put("/sets/removeallitems", db.releaseAllSetItems)
   .put("/sets/transfer", db.transferSet)
+  .put("/sets/movetostore", db.moveSetToStore)
+  .put("/sets/allocate", db.allocateSet)
   .put("/sets/update/:id", db.updateSet)
   .post("/sets/publish/:id", db.publishSet)
   .delete("/sets/delete/:id", db.deleteSet);

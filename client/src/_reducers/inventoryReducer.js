@@ -4,7 +4,7 @@ const initialState = {
   inventoryList: [],
   set: { id: "", setname: "", setremark: "" },
   sets: [],
-  setItems: [{}],
+  setItems: [],
   storeItems: [],
   loading: false,
   error: false,
@@ -161,11 +161,25 @@ export function inventory(state = initialState, action) {
     case invConstants.TRANSFER_SET_FALIURE:
       return { ...state, error: true, loading: false };
 
+    case invConstants.SAVE_SET_TO_STORE_REQUEST:
+      return { ...state, error: false, loading: true };
+    case invConstants.SAVE_SET_TO_STORE_SCUCESS:
+      return { ...state, error: false, loading: false };
+    case invConstants.SAVE_SET_TO_STORE_FALIURE:
+      return { ...state, error: true, loading: false };
+
     case invConstants.RELEASE_ALL_SET_ITEM_REQUEST:
       return { ...state, error: false, loading: true };
     case invConstants.RELEASE_ALL_SET_ITEM_SUCCESS:
       return { ...state, error: false, loading: false };
     case invConstants.RELEASE_ALL_SET_ITEM_FALIURE:
+      return { ...state, error: true, loading: false };
+
+    case invConstants.ALLOCATE_SET_REQUEST:
+      return { ...state, error: false, loading: true };
+    case invConstants.ALLOCATE_SET_SCUCESS:
+      return { ...state, error: false, loading: false };
+    case invConstants.ALLOCATE_SET_FALIURE:
       return { ...state, error: true, loading: false };
 
     case invConstants.GET_SET_BYID_REQUEST:

@@ -15,17 +15,12 @@ import Navbar from "./mycomponents/Navbar";
 import Users from "./dashboard/Users";
 import displayinventory from "./dashboard/displayinventory";
 import {PrivateRoute} from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
-import RestrictedRoute from "./RestrictedRoute";
-import { createBrowserHistory } from "history";
-import { UserContext } from "./UserContext";
-import { AdminProvider } from "./admindashboard/AdminContext";
-import { UserProvider } from "./UserContext";
-import jwtDecode from "jwt-decode";
+
 import Logout from "./registration/Logout";
 import Sidebar from "./admindashboard/Sidebar";
 import ViewBranch from "./admindashboard/view/ViewBranches";
 import ViewStore from "./admindashboard/view/ViewStore";
+import ViewInventory from "./admindashboard/view/ViewInventory";
 import Testing from "./admindashboard/Testing";
 import AddBranch from "./admindashboard/add/AddBranch";
 import AddDesignation from "./admindashboard/add/AddDesignation";
@@ -71,6 +66,7 @@ function App() {
         <Route path='/login' component={LoginPage} />
         <Route exact path='/viewbranch' component={ViewBranch}></Route>
         <Route exact path='/viewstore' component={ViewStore}></Route>
+        <Route exact path='/viewinventory' component={ViewInventory}></Route>
         <Route exact path='/testing' component={Testing}></Route>
         <Route exact path='/allotitems' component={AllocateInventory}></Route>
         <Route exact path='/viewsets' component={ViewSets}></Route>

@@ -5,7 +5,7 @@ const getInventoryById = (request, response) => {
     "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
   mapping.isdeallocated,mapping.userid,mapping.setid,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
   inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
-  RIGHT JOIN public.mapping ON users.id=mapping.userid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
+  RIGHT JOIN public.mapping ON users.id=mapping.setid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
    RIGHT JOIN public.items ON items.id = inventory.itemid    RIGHT JOIN public.itemstypes\
     ON itemstypes.id = items.typeid INNER JOIN public.source ON source.id = inventory.sourceid \
     INNER JOIN public.brands ON brands.id = inventory.brandid where inventory.id = $1  ORDER BY items.itemname",[id],
@@ -24,10 +24,10 @@ const getInventoryById = (request, response) => {
 const getAllInventory = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
-    "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
+    "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,mapping.instore,\
   mapping.isdeallocated,mapping.userid,mapping.setid,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
   inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
-  RIGHT JOIN public.mapping ON users.id=mapping.userid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
+  RIGHT JOIN public.mapping ON users.id=mapping.setid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
    RIGHT JOIN public.items ON items.id = inventory.itemid    RIGHT JOIN public.itemstypes\
     ON itemstypes.id = items.typeid INNER JOIN public.source ON source.id = inventory.sourceid \
     INNER JOIN public.brands ON brands.id = inventory.brandid  ORDER BY items.itemname",
@@ -39,7 +39,7 @@ const getAllInventory = (request, response) => {
       // console.log(request.user);
       //console.log("Inside GetUsers ");
 
-      response.status(200).json(results.rows)
+      response.status(200).json(results.rows);
     }
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState,useEffect} from "react";
 import {useSelector, useDispatch} from "react-redux"
 import "./SetSideBar.css";
+import {useLocation} from "react-router-dom"
 import { v4 as uuidv4 } from "uuid";
 import Product from "./Product";
 import { inventoryActions } from "../../_actions";
@@ -8,12 +9,16 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import NotFound from "../../admindashboard/images/notfound.jpg";
 function SetSideBar(props) {
+   const location = useLocation();
 const dispatch = useDispatch()
 const sidebarItems = useSelector((state)=>state.inventoryData.setItems)
 const userInfo = useSelector((state) => state.userData.userList);
 
 const releaseAllItems = (e) => {
+ 
   const newUserName = e.target.value 
+  
+  const { action } = { action: { action: "/releaseallitems" } };
   confirmAlert({
     title: "Release Request",
     message: `Release All items alloted to ${newUserName}! Are You Sure? Items will get added back to store.`,
@@ -21,7 +26,7 @@ const releaseAllItems = (e) => {
       {
         label: "Yes",
         onClick: () =>
-         dispatch(inventoryActions.releaseAllSetItems(props.setId))
+          dispatch(inventoryActions.releaseAllSetItems(props.setId, action)),
       },
       {
         label: "No",
@@ -53,9 +58,9 @@ const transferSet = (newUserId, newUserName) => {
     ],
   });
 };
-
+ const { action } = { action: { action: "/setsidebar" } };
  useEffect(() => {
-    dispatch(inventoryActions.getSetItems(props.setId));
+    dispatch(inventoryActions.getSetItems(props.setId,action));
   }, []);
 
   return (

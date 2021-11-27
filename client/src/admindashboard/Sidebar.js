@@ -89,6 +89,10 @@ function Sidebar() {
 
               <SubMenu title='Masters'>
                 <MenuItem>
+                  Inventory
+                  <Link to='/viewinventory' />
+                </MenuItem>
+                <MenuItem>
                   Branches
                   <Link to='/viewbranch' />
                 </MenuItem>
@@ -113,7 +117,7 @@ function Sidebar() {
                   Component Testing <Link to='/testing' />
                 </MenuItem>
                 <MenuItem>
-                  Create Sets
+                  Sets
                   <Link to='/viewsets' />
                 </MenuItem>
                 <MenuItem>Component 2</MenuItem>

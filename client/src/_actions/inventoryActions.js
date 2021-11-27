@@ -18,6 +18,8 @@ export const inventoryActions = {
   removeItemFromSet,
   releaseAllSetItems,
   transferSet,
+  moveSetToStore,
+  allocateSetFromStore,
 };
 
 function getStoreInventory() {
@@ -42,6 +44,7 @@ function getStoreInventory() {
 }
 
 function addItemToSet(itemId,setId) {
+   const { action } = { action: { action: "/additemtoset" } };
   return (dispatch) => {
     dispatch(request());
 
@@ -51,7 +54,7 @@ function addItemToSet(itemId,setId) {
       
        dispatch(inventoryActions.getStoreInventory())
        
-       dispatch(inventoryActions.getSetItems(setId));
+       dispatch(inventoryActions.getSetItems(setId, action));
       },
       (error) => dispatch(failure(error.toString()))
     );
@@ -68,21 +71,28 @@ function addItemToSet(itemId,setId) {
   }
 }
 
-function releaseAllSetItems(setId) {
+function releaseAllSetItems(setId,from) {
+  const { action } = { action: { action: "/releaseallsetitems" } };
+  
   return (dispatch) => {
-    dispatch(request());
+    dispatch(request())
 
     inventoryService.releaseAllSetItems(setId).then(
       (setIds) => {
         dispatch(success(setIds));
-
-        dispatch(inventoryActions.getStoreInventory());
-
-        dispatch(inventoryActions.getSetItems(setId));
+        if (from.action === "/releaseallitems")
+          dispatch(inventoryActions.getStoreInventory());
+        if (from.action === '/deleteset'){
+          dispatch(inventoryActions.deleteSet(setId));
+          
+          
+        }
+        dispatch(inventoryActions.getAllSets());  
+        dispatch(inventoryActions.getSetItems(setId,action));
       },
       (error) => dispatch(failure(error.toString()))
-    );
-  };
+    )
+  }
 
   function request() {
     return { type: invConstants.RELEASE_ALL_SET_ITEM_REQUEST };
@@ -95,6 +105,7 @@ function releaseAllSetItems(setId) {
   }
 }
 function transferSet(sidebarItems,oldUserId,newUserId) {
+   const { action } = { action: { action: "/transferset" } };
   return (dispatch) => {
     dispatch(request());
 
@@ -104,7 +115,7 @@ function transferSet(sidebarItems,oldUserId,newUserId) {
 
         dispatch(inventoryActions.getStoreInventory());
 
-        dispatch(inventoryActions.getSetItems(oldUserId));
+        dispatch(inventoryActions.getSetItems(oldUserId,action));
       },
       (error) => dispatch(failure(error.toString()))
     );
@@ -120,7 +131,66 @@ function transferSet(sidebarItems,oldUserId,newUserId) {
     return { type: invConstants.TRANSFER_SET_FALIURE, error };
   }
 }
+function allocateSetFromStore(newsetid, items, oldsetid,from) {
+  console.log(newsetid, items, oldsetid, from)
+  
+  return (dispatch) => {
+    dispatch(request());
+
+    inventoryService.allocateSetFromStore(newsetid, items, oldsetid).then(
+      (set) => {
+        dispatch(success(set));
+        if (from === "/allocateset")
+          dispatch(inventoryActions.getAllSets());
+        //dispatch(inventoryActions.getStoreInventory());
+
+        //dispatch(inventoryActions.getSetItems(set));
+      },
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: invConstants.ALLOCATE_SET_REQUEST };
+  }
+  function success(set) {
+    return { type: invConstants.ALLOCATE_SET_SCUCESS, set };
+  }
+  function failure(error) {
+    return { type: invConstants.ALLOCATE_SET_FALIURE, error };
+  }
+}
+function moveSetToStore(setid,items,from) {
+  
+  
+  return (dispatch) => {
+    dispatch(request());
+    
+    inventoryService.moveSetToStore(setid, items).then(
+      (set) => {
+        dispatch(success(set));
+        if(from.action === '/movesettostore')
+          dispatch(inventoryActions.getAllSets());
+        //dispatch(inventoryActions.getStoreInventory());
+
+        //dispatch(inventoryActions.getSetItems(set));
+      },
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: invConstants.SAVE_SET_TO_STORE_REQUEST };
+  }
+  function success(set) {
+    return { type: invConstants.SAVE_SET_TO_STORE_SCUCESS, set };
+  }
+  function failure(error) {
+    return { type: invConstants.SAVE_SET_TO_STORE_FALIURE, error };
+  }
+}
 function removeItemFromSet(itemId, setId) {
+   const { action } = { action: { action: "/removeitemfromset" } };
   return (dispatch) => {
     dispatch(request());
 
@@ -130,7 +200,7 @@ function removeItemFromSet(itemId, setId) {
 
         dispatch(inventoryActions.getStoreInventory());
 
-        dispatch(inventoryActions.getSetItems(setId));
+        dispatch(inventoryActions.getSetItems(setId,action));
       },
       (error) => dispatch(failure(error.toString()))
     );
@@ -173,12 +243,24 @@ function getAllInventory() {
 }
 
 
-function getSetItems(setid) {
+function getSetItems(setid,from) {
+  
+ console.log(from)
   return (dispatch) => {
     dispatch(request());
 
     inventoryService.getSetItems(setid).then(
-      (set) => dispatch(success(set)),
+      (items) => {
+        
+        dispatch(success(items))
+        if(from.action === '/movesettostore')
+        {
+          dispatch(inventoryActions.moveSetToStore(setid,items,from))
+        }
+        if (from.action === "/allocateset") {
+          dispatch(inventoryActions.allocateSetFromStore(setid, items,from.payload.oldsetid, from.action));
+        }
+      },
       (error) => dispatch(failure(error.toString()))
     );
   };
@@ -196,8 +278,9 @@ function getSetItems(setid) {
 }
 function getAllSets() {
   return (dispatch) => {
+   
     dispatch(request());
-
+    
     inventoryService.getAllSets().then(
       (sets) => dispatch(success(sets)),
       (error) => dispatch(failure(error.toString()))
@@ -281,24 +364,24 @@ function addNewSet(set) {
     return { type: invConstants.ADD_SET_FALIURE, error };
   }
 }
-function _deleteSet(id) {
+function _deleteSet(setid) {
   return (dispatch) => {
-    dispatch(request(id));
+    dispatch(request(setid));
 
-    inventoryService.deleteSet(id).then(
-      (set) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    inventoryService.deleteSet(setid).then(
+      (set) => dispatch(success(setid)),
+      (error) => dispatch(failure(setid, error.toString()))
     );
   };
 
-  function request(id) {
-    return { type: invConstants.DELETE_SET_REQUEST, id };
+  function request(setid) {
+    return { type: invConstants.DELETE_SET_REQUEST, setid };
   }
-  function success(id) {
-    return { type: invConstants.DELETE_SET_SUCCESS, id };
+  function success(setid) {
+    return { type: invConstants.DELETE_SET_SUCCESS, setid };
   }
-  function failure(id, error) {
-    return { type: invConstants.DELETE_SET_FAILURE, id, error };
+  function failure(setid, error) {
+    return { type: invConstants.DELETE_SET_FAILURE, setid, error };
   }
 }
 
