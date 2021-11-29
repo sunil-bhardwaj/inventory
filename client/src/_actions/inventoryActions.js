@@ -131,23 +131,24 @@ function transferSet(sidebarItems,oldUserId,newUserId) {
     return { type: invConstants.TRANSFER_SET_FALIURE, error };
   }
 }
-function allocateSetFromStore(newsetid, items, oldsetid,from) {
-  console.log(newsetid, items, oldsetid, from)
-  
+function allocateSetFromStore(oldsetid, items, newsetid, newsetname,from) {
+  console.log(newsetid, items, oldsetid,newsetname, from)
+
   return (dispatch) => {
     dispatch(request());
 
-    inventoryService.allocateSetFromStore(newsetid, items, oldsetid).then(
-      (set) => {
-        dispatch(success(set));
-        if (from === "/allocateset")
-          dispatch(inventoryActions.getAllSets());
-        //dispatch(inventoryActions.getStoreInventory());
+    inventoryService
+      .allocateSetFromStore(newsetid, items, oldsetid, newsetname)
+      .then(
+        (set) => {
+          dispatch(success(set));
+          if (from === "/allocateset") dispatch(inventoryActions.getAllSets());
+          //dispatch(inventoryActions.getStoreInventory());
 
-        //dispatch(inventoryActions.getSetItems(set));
-      },
-      (error) => dispatch(failure(error.toString()))
-    );
+          //dispatch(inventoryActions.getSetItems(set));
+        },
+        (error) => dispatch(failure(error.toString()))
+      );
   };
 
   function request() {
@@ -258,7 +259,15 @@ function getSetItems(setid,from) {
           dispatch(inventoryActions.moveSetToStore(setid,items,from))
         }
         if (from.action === "/allocateset") {
-          dispatch(inventoryActions.allocateSetFromStore(setid, items,from.payload.oldsetid, from.action));
+          dispatch(
+            inventoryActions.allocateSetFromStore(
+              setid,
+              items,
+              from.payload.newsetid,
+              from.payload.newsetname,
+              from.action
+            )
+          );
         }
       },
       (error) => dispatch(failure(error.toString()))

@@ -40,3 +40,51 @@
 .card {
 	flex: 0 1 24%;
 }
+.itemscontainer {
+            
+            padding-left:2px;
+            padding-right:2px;
+        }
+.st-box {
+            float:left;
+            width:30%;
+            height:233px;
+            background-color:white;
+			border:solid black;
+			margin-left:2%	
+        }
+ .nd-box {
+            float:left;
+            width:180px;
+            height:160px;
+            background-color:white; 
+            border:solid black;
+            margin-left:20px;
+        }
+.rd-box {
+            float:right;
+            width:180px;
+            height:160px;
+            background-color:white;
+            border:solid black;
+        }
+.mainDiv {
+           
+            
+            font-size: 20px;
+            font-weight: bold;
+			color: white;
+			display:flex
+        }
+        .leftDiv {
+            float: left;
+            width: 180px;
+            height: 100%;
+           
+        }
+        .rightDiv {
+            width: 100%;
+			height:100%;
+			
+           
+        }

@@ -94,7 +94,7 @@ function ViewSets() {
     console.log(newUserId, newUserName, oldUserId, oldUserName);
     //e.preventDefault();
     const { action } = {
-      action: { action: "/allocateset", payload: { newsetid:newUserId, oldsetid:oldUserId } },
+      action: { action: "/allocateset", payload: { newsetid:newUserId, newsetname:newUserName, oldsetid:oldUserId } },
     };
     confirmAlert({
       title: "Allocate Set Request",
@@ -244,150 +244,148 @@ function ViewSets() {
         </div>
       </div>
 
-      <div
-        className='row'
-        style={
-          {
-            // overflowY: "scroll",
-          }
-        }
-      >
+      <div className='mainDiv'>
         <div
-          className='col-md-9'
-          style={{
+          className='rightDiv'
+          /*style={{
             display: "flex",
             //width: 700,
             padding: 30,
             height: "75vh",
-          }}
+          }}*/
         >
-          {setsInfo
-            .filter((val) => {
-              if (searchKeywords === "") return val;
-              else if (
-                val.setname.toLowerCase().includes(searchKeywords.toLowerCase())
-              )
-                return val;
-            })
-            .map((set, index) => (
-              <>
-                <article style={{ maxWidth: "max-content" }} class='car6d'>
-                  {set.instore ? (
-                    <div>
-                      <p
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          fontSize: "25px",
-                          padding: "10px 10px 10px 10px",
-                        }}
-                      >
-                        InStore
-                      </p>
-                    </div>
-                  ) : (
-                    <div>
-                      <p
-                        style={{
-                          backgroundColor: "green",
-                          color: "white",
-                          fontSize: "25px",
-                          padding: "10px 10px 10px 10px",
-                        }}
-                      >
-                        Allocated
-                      </p>
-                    </div>
-                  )}
-
-                  <div
-                    style={{ backgroundColor: "cadetblue" }}
-                    class='card-content'
-                  >
-                    <h2>
-                      {set.id}--{set.setname}
-                    </h2>
-                    <p> </p>
-                  </div>
-                  <div
-                    style={{
-                      border: "3px solid black",
-                      //display: "inline-block",
-                      backgroundColor: "seagreen",
-                    }}
-                  >
-                    <p style={{ fontSize: "2.0rem" }}>
-                      {" "}
-                      <AddIcon
-                        style={{
-                          //float: "right",
-                          cursor: "pointer",
-                        }}
-                        color='primary'
-                        onClick={() => viewsetitems(set)}
-                      />{" "}
-                      <EditIcon
-                        style={{
-                          marginLeft: "2rem",
-                          // float: "right",
-                          cursor: "pointer",
-                        }}
-                        color='primary'
-                        onClick={() => add(true, set)}
-                      />{" "}
-                      <DeleteIcon
-                        onClick={(e) => deleteset(e, set)}
-                        style={{
-                          marginLeft: "2rem",
-                          // float: "right",
-                          color: "red",
-                          cursor: "pointer",
-                        }}
-                      />
+          <div className='itemscontainer'>
+            {setsInfo
+              .filter((val) => {
+                if (searchKeywords === "") return val;
+                else if (
+                  val.setname
+                    .toLowerCase()
+                    .includes(searchKeywords.toLowerCase())
+                )
+                  return val;
+              })
+              .map((set, index) => (
+                <>
+                  <div className='st-box'>
+                    <article class='card' style={{ position: "inherit" }}>
                       {set.instore ? (
-                        <StoreIcon
-                          onClick={() =>
-                            selectuser(set, { action: "/storeicon" })
-                          }
-                          style={{
-                            marginLeft: "2rem",
-                            // float: "right",
-                            color: "blue",
-                            cursor: "pointer",
-                          }}
-                        />
+                        <div>
+                          <p
+                            style={{
+                              backgroundColor: "red",
+                              color: "white",
+                              fontSize: "25px",
+                              padding: "10px 10px 10px 10px",
+                            }}
+                          >
+                            InStore
+                          </p>
+                        </div>
                       ) : (
-                        <StoreIcon
-                          onClick={() => movesettostore(set)}
-                          style={{
-                            marginLeft: "2rem",
-                            // float: "right",
-                            color: "red",
-                            cursor: "pointer",
-                          }}
-                        />
+                        <div>
+                          <p
+                            style={{
+                              backgroundColor: "green",
+                              color: "white",
+                              fontSize: "25px",
+                              padding: "10px 10px 10px 10px",
+                            }}
+                          >
+                            Allocated
+                          </p>
+                        </div>
                       )}
-                    </p>
+
+                      <div
+                        style={{ backgroundColor: "cadetblue" }}
+                        class='card-content'
+                      >
+                        <h5>{set.setname}</h5>
+                        <p> </p>
+                      </div>
+                      <div
+                        style={{
+                          border: "3px solid black",
+                          //display: "inline-block",
+                          backgroundColor: "seagreen",
+                        }}
+                      >
+                        <p style={{ fontSize: "2.0rem" }}>
+                          {" "}
+                          <AddIcon
+                            style={{
+                              //float: "right",
+                              cursor: "pointer",
+                            }}
+                            color='primary'
+                            onClick={() => viewsetitems(set)}
+                          />{" "}
+                          <EditIcon
+                            style={{
+                              marginLeft: "2rem",
+                              // float: "right",
+                              cursor: "pointer",
+                            }}
+                            color='primary'
+                            onClick={() => add(true, set)}
+                          />{" "}
+                          <DeleteIcon
+                            onClick={(e) => deleteset(e, set)}
+                            style={{
+                              marginLeft: "2rem",
+                              // float: "right",
+                              color: "red",
+                              cursor: "pointer",
+                            }}
+                          />
+                          {set.instore ? (
+                            <StoreIcon
+                              onClick={() =>
+                                selectuser(set, { action: "/storeicon" })
+                              }
+                              style={{
+                                marginLeft: "2rem",
+                                // float: "right",
+                                color: "blue",
+                                cursor: "pointer",
+                              }}
+                            />
+                          ) : (
+                            <StoreIcon
+                              onClick={() => movesettostore(set)}
+                              style={{
+                                marginLeft: "2rem",
+                                // float: "right",
+                                color: "red",
+                                cursor: "pointer",
+                              }}
+                            />
+                          )}
+                        </p>
+                      </div>
+                      <picture class='thumbnail'>
+                        <div
+                          style={{ backgroundColor: "#3c2a2a" }}
+                          class='card-content'
+                        >
+                          <h5>ITEMS IN SET</h5>
+                        </div>
+                        <div style={{ backgroundColor: "#033a4c" }}>
+                          {filteredInventory(set.id)}
+                        </div>
+                      </picture>
+                    </article>
                   </div>
-                  <picture class='thumbnail'>
-                    <div
-                      style={{ backgroundColor: "#3c2a2a" }}
-                      class='card-content'
-                    >
-                      ITEMS ALLOTED TO USER
-                    </div>
-                    <div style={{ backgroundColor: "lightblue" }}>
-                      {filteredInventory(set.id)}
-                    </div>
-                  </picture>
-                </article>
-              </>
-            ))}
+                </>
+              ))}
+          </div>
         </div>
         <div
-          className='col-md-3'
-          style={{ border: "2px solid green", position: "relative" }}
+          className='leftDiv'
+          //style={{ border: "2px solid green" }}
         >
+          Second Window
           {newSetWindow ? (
             <AddSet
               closehandler={() => add()}
@@ -411,6 +409,7 @@ function ViewSets() {
               }}
             />
           ) : null}
+          <RightBar/>
         </div>
       </div>
     </div>

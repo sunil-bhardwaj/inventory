@@ -106,12 +106,12 @@ function moveSetToStore(setid,items) {
     requestOptions
   ).then(handleResponse);
 }
-function allocateSetFromStore(newsetid, items, oldsetid) {
-  console.log(newsetid, items, oldsetid);
+function allocateSetFromStore(newsetid, items, oldsetid, newsetname) {
+  console.log(newsetid, items, oldsetid, newsetname);
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ newsetid, items, oldsetid }),
+    body: JSON.stringify({ newsetid, items, oldsetid, newsetname }),
   };
 
   return fetch(

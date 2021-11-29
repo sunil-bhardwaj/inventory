@@ -207,7 +207,7 @@ const moveSetToStore = (request, response) => {
   })
   
     pool.query(
-      `update set set instore = 't' where id = $1`,
+      `update set set instore = 't', userid = null, setname= 'Store-' || id where id = $1`,
       [setid],
       (error, results) => {
         if (error) {
@@ -221,12 +221,12 @@ const moveSetToStore = (request, response) => {
 
 }
 const allocateSet = (request, response) => {
-  const { newsetid, items, oldsetid } = request.body;
+  const { newsetid, items, oldsetid,newsetname } = request.body;
   console.log(oldsetid);
   items.forEach((item) => {
     pool.query(
-      `update mapping set setid = $1, instore = 'f' where inventoryid = $2 and setid = $3`,
-      [newsetid, item.inventoryid,oldsetid],
+      `update mapping set instore = 'f' where inventoryid = $1 and setid = $2`,
+      [item.inventoryid,oldsetid],
       (error, results) => {
         if (error) {
           throw error;
@@ -236,8 +236,8 @@ const allocateSet = (request, response) => {
   });
 
   pool.query(
-    `update set set instore = 'f' where id = $1`,
-    [oldsetid],
+    `update set set instore = 'f', userid = $2, setname=$3 where id = $1`,
+    [oldsetid, newsetid, newsetname],
     (error, results) => {
       if (error) {
         throw error;
