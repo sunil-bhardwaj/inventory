@@ -8,7 +8,9 @@ export const userActions = {
     logout,
     register,
     getAll,
-    delete: _delete
+    delete: _delete,
+    getById,
+    addNewUser,
 };
 
 function login(username, password, from) {
@@ -38,7 +40,26 @@ function logout() {
     userService.logout();
     return { type: userConstants.LOGOUT };
 }
+function getById(id) {
+  return (dispatch) => {
+    dispatch(request(id));
 
+    userService.getById(id).then(
+      (set) => dispatch(success(set)),
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.GET_BY_ID_REQUEST };
+  }
+  function success(set) {
+    return { type: userConstants.GET_BY_ID_SUCCESS, set };
+  }
+  function failure(error) {
+    return { type: userConstants.GET_BY_ID_FAILURE, error };
+  }
+}
 function register(user) {
     return dispatch => {
         dispatch(request(user));
@@ -60,6 +81,35 @@ function register(user) {
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
     function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
+}
+
+function addNewUser(user) {
+  return (dispatch) => {
+    dispatch(request());
+
+    userService.addNewUser(user).then(
+      (user) => {
+        dispatch(success(user));
+        dispatch(userActions.getAll())
+        dispatch(alertActions.success("User Addition successful"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+         console.log("After Addition Error");
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request() {
+    return { type: userConstants.CREATE_USER_REQUEST };
+  }
+  function success(user) {
+    return { type: userConstants.CREATE_USER_SUCCESS,user };
+  }
+  function failure(error) {
+    return { type: userConstants.CREATE_USER_FAILURE, error };
+  }
 }
 
 function getAll() {

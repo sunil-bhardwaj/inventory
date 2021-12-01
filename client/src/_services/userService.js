@@ -8,6 +8,8 @@ export const userService = {
   getById,
   update,
   delete: _delete,
+  addNewUser,
+  
 };
 
 function login(username, password) {
@@ -66,6 +68,18 @@ function register(user) {
     handleResponse
   );
 }
+function addNewUser(user) {
+ 
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+  };
+
+  return fetch(`http://10.146.19.127:3001/api/users/add`, requestOptions).then(
+    handleResponse
+  );
+}
 
 function update(user) {
   const requestOptions = {
@@ -94,9 +108,10 @@ function _delete(id) {
 }
 
 function handleResponse(response) {
+ 
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
-    // console.log(data)
+    
     if (!response.ok) {
       if (response.status === 401) {
         // auto logout if 401 response returned from api
@@ -107,7 +122,7 @@ function handleResponse(response) {
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);
     }
-
+  
     return data;
   });
 }

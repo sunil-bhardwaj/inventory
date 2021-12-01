@@ -385,7 +385,7 @@ function ViewSets() {
           className='leftDiv'
           //style={{ border: "2px solid green" }}
         >
-          Second Window
+          
           {newSetWindow ? (
             <AddSet
               closehandler={() => add()}
@@ -399,6 +399,7 @@ function ViewSets() {
               oldsetid={setId}
               oldsetname={setName}
               closehandler={selectuser}
+              redirected = {true}
             />
           ) : null}
           {viewSetWindow ? (

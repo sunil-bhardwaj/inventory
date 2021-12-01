@@ -1,5 +1,19 @@
 const pool = require("../db");
+const createBranch = (request, response) => {
+  const { branch } = request.body;
 
+  pool.query(
+    "INSERT INTO branches (branchname) VALUES ($1)",
+    [branch.branchname],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
 const getAllBranches = (request, response) => {
   pool.query(
     "SELECT * FROM branches ;",
@@ -9,6 +23,92 @@ const getAllBranches = (request, response) => {
         throw error;
       }
      
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+const updateBranch = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { branchname } = request.body;
+
+  pool.query(
+    "UPDATE branches SET branchname = $1 WHERE id = $2",
+    [branchname, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response
+        .status(200)
+        .send(`Branch modified with ID: ${id}->${branchname}`);
+    }
+  );
+};
+const deleteBranch = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM branches where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+const getAllDesignations = (request, response) => {
+  pool.query("SELECT * FROM designation ;", (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(200).json(results.rows);
+  });
+};
+const createDesignation = (request, response) => {
+  const { designation } = request.body;
+
+  pool.query(
+    "INSERT INTO designation (designame) VALUES ($1)",
+    [designation.designame],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+const updateDesignation = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { designame } = request.body;
+
+  pool.query(
+    "UPDATE designation SET designame = $1 WHERE id = $2",
+    [designame, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).send(`Designation modified with ID: ${id}->${designame}`);
+    }
+  );
+};
+const deleteDesignation = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM designation where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
 
       response.status(200).json(results.rows);
     }
@@ -57,23 +157,7 @@ const getSetItemsById = (request, response) => {
       }
     );
   };
-const createBranch = (request, response) => {
-  const {
-    branchname,
-  } = request.body;
 
-  pool.query(
-    "INSERT INTO branches (branchname) VALUES ($1)",
-    [branchname],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      
-      response.status(200).json(results.rowCount);
-    }
-  );
-};
 const createSet = (request, response) => {
   const { setname, setremark } = request.body;
 
@@ -89,19 +173,7 @@ const createSet = (request, response) => {
     }
   );
 };
-const deleteBranch = (request, response) => {
-  const id = parseInt(request.params.id);
-   
-  pool.query("DELETE  FROM branches where id = ($1) ;",[id] ,(error, results) => {
-    if (error) {
-      
-      throw error;
-    }
-   
 
-    response.status(200).json(results.rows);
-  });
-};
 const deleteSet = (request, response) => {
   const id = parseInt(request.params.id);
 
@@ -247,23 +319,7 @@ const allocateSet = (request, response) => {
 
   response.status(200).send(JSON.stringify("Success"));
 };
-const updateBranch = (request, response) => {
-  const id = parseInt(request.params.id);
-  const { branchname } = request.body;
- 
-  pool.query(
-    "UPDATE branches SET branchname = $1 WHERE id = $2",
-    [branchname, id],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      response
-        .status(200)
-        .send(`Branch modified with ID: ${id}->${branchname}`);
-    }
-  );
-};
+
 const updateSet = (request, response) => {
   const id = parseInt(request.params.id);
   const { setname, setremark } = request.body;
@@ -332,6 +388,10 @@ module.exports = {
   createBranch,
   deleteBranch,
   updateBranch,
+  getAllDesignations,
+  createDesignation,
+  deleteDesignation,
+  updateDesignation,
   createSet,
   updateSet,
   getAllSets,

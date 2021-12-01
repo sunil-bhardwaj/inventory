@@ -19,6 +19,7 @@ import {PrivateRoute} from "./PrivateRoute";
 import Logout from "./registration/Logout";
 import Sidebar from "./admindashboard/Sidebar";
 import ViewBranch from "./admindashboard/view/ViewBranches";
+import ViewUsers from "./admindashboard/view/ViewUsers";
 import ViewStore from "./admindashboard/view/ViewStore";
 import ViewInventory from "./admindashboard/view/ViewInventory";
 import Testing from "./admindashboard/Testing";
@@ -37,6 +38,7 @@ import {history } from "./_helpers"
 import { useDispatch, useSelector } from "react-redux";
 import {userConstants} from "./_constants"
 import { alertActions } from "./_actions";
+import ViewDesignations from "./admindashboard/view/ViewDesignations";
 
 
 
@@ -53,9 +55,9 @@ function App() {
    useEffect(() => {
      history.listen((location, action) => {
        // clear alert on location change
-       dispatch(alertActions.clear());
+      // dispatch(alertActions.clear());
      });
-   }, []);
+   }, [])
   
   return (
     <Router history={history}>
@@ -65,6 +67,8 @@ function App() {
         <PrivateRoute exact path='/' component={HomePage} />
         <Route path='/login' component={LoginPage} />
         <Route exact path='/viewbranch' component={ViewBranch}></Route>
+        <Route exact path='/viewusers' component={ViewUsers}></Route>
+        <Route exact path='/viewdesignation' component={ViewDesignations}></Route>
         <Route exact path='/viewstore' component={ViewStore}></Route>
         <Route exact path='/viewinventory' component={ViewInventory}></Route>
         <Route exact path='/testing' component={Testing}></Route>

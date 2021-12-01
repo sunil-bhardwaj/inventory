@@ -89,6 +89,10 @@ function Sidebar() {
 
               <SubMenu title='Masters'>
                 <MenuItem>
+                  Users
+                  <Link to='/viewusers' />
+                </MenuItem>
+                <MenuItem>
                   Inventory
                   <Link to='/viewinventory' />
                 </MenuItem>
@@ -97,7 +101,7 @@ function Sidebar() {
                   <Link to='/viewbranch' />
                 </MenuItem>
                 <MenuItem>
-                  Designation <Link to='/adddesignation' />
+                  Designation <Link to='/viewdesignation' />
                 </MenuItem>
                 <MenuItem>
                   Source

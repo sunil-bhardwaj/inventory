@@ -1,9 +1,9 @@
 import { userConstants } from "../_constants";
 const initialState = {
   userList: [],
+  user:'',
   loading: false,
   error: false,
- 
 };
 export function users(state = initialState, action) {
   switch (action.type) {
@@ -20,7 +20,23 @@ export function users(state = initialState, action) {
     case userConstants.GETALL_FAILURE:
       return { ...state, userList: [], error: true, loading: false };
 
-    case userConstants.DELETE_REQUEST:
+    case userConstants.GET_BY_ID_REQUEST:
+      return {loading: true,};
+    case userConstants.GET_BY_ID_SUCCESS:
+      return { ...state, user: action.user, error: false, loading: false };
+    case userConstants.GET_BY_ID_FAILURE:
+      return {error: action.error,};
+
+    case userConstants.CREATE_USER_REQUEST:
+      return {...state,loading: true,};
+    case userConstants.CREATE_USER_SUCCESS:
+       return {...state, user:action.user,error: false, loading: false };
+    case userConstants.CREATE_USER_FAILURE:
+      return {...state,error: action.error,};
+    
+    
+    
+      case userConstants.DELETE_REQUEST:
       // add 'deleting:true' property to user being deleted
       return {
         ...state,

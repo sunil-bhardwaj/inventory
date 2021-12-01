@@ -64,26 +64,27 @@ const getUsersInventoryCount = (request, response) => {
 };
 //SELECT count(*) as count,  users.name,   users.id FROM   public.users,   public.mapping WHERE   users.id = mapping.userid   GROUP BY   users.id
 const createUser = (request, response) => {
+ 
   const {
-    name,
+    username,
     phoneno,
     email,
-    designationid,
-    branchid,
-    id,
+    designation,
+    branch,
     usertype,
   } = request.body;
 
   pool.query(
-    "INSERT INTO users (name, phoneno,email,designationid,branchid,id,usertype) VALUES ($1, $2,$3,$4,$5,$6,$7)",
-    [name, phoneno, email, designationid, branchid, id, usertype],
+    "INSERT INTO users (name, phoneno,email,designationid,branchid,usertype) VALUES ($1, $2,$3,$4,$5,$6)",
+    [username, phoneno, email, designation, branch, usertype],
     (error, results) => {
       if (error) {
         throw error;
       }
-      response.status(201).send("User added ScucessFully");
+      
+      response.status(201).json(results.rowCount);
     }
-  );321111
+  );
 };
 const updateUser = (request, response) => {
   const id = parseInt(request.params.id);
@@ -103,7 +104,7 @@ const updateUser = (request, response) => {
       if (error) {
         throw error;
       }
-      response.status(200).send(`User modified with ID: ${id}`);
+      response.status(200).json(`User modified with ID: ${id}`);
     }
   );
 };
@@ -114,7 +115,7 @@ const deleteUser = (request, response) => {
     if (error) {
       throw error
     }
-    response.status(200).send(`User deleted with ID: ${id}`);
+    response.status(200).json(`User deleted with ID: ${id}`);
   });
 };
 module.exports = {

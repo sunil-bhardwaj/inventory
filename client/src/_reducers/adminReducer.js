@@ -1,7 +1,9 @@
 import { adminConstants } from "../_constants";
 const initialState = {
-  branchData: [],
- 
+  branchList: [],
+  branch:'',
+  designation:'',
+  designationList: [],
 };
 export function admin(state = initialState, action) {
   switch (action.type) {
@@ -10,12 +12,25 @@ export function admin(state = initialState, action) {
     case adminConstants.VIEW_BRANCH_SUCCESS:
       return {
         ...state,
-        branchData: action.branches,
+        branchList: action.branches,
         error: false,
         loading: false,
       };
 
-    case adminConstants.VIEW_BRANCH_FAILURE:
+    case adminConstants.VIEW_BRANCH_FALIURE:
+      return { ...state, error: true, loading: false };
+
+    case adminConstants.VIEW_DESIGNATION_REQUEST:
+      return { ...state, error: false, loading: true };
+    case adminConstants.VIEW_DESIGNATION_SUCCESS:
+      return {
+        ...state,
+        designationList: action.designations,
+        error: false,
+        loading: false,
+      };
+
+    case adminConstants.VIEW_DESIGNATION_FALIURE:
       return { ...state, error: true, loading: false };
 
     case adminConstants.ADD_BRANCH_REQUEST:
@@ -23,28 +38,41 @@ export function admin(state = initialState, action) {
     case adminConstants.ADD_BRANCH_SUCCESS:
       return {
         ...state,
-        branchData: action.branch,
+        branch: action.branch,
         error: false,
         loading: false,
       };
 
-    case adminConstants.ADD_BRANCH_FAILURE:
+    case adminConstants.ADD_BRANCH_FALIURE:
       return { ...state, error: true, loading: false };
-////////////////////////////////////////////////////////
+
+    case adminConstants.ADD_DESIGNATION_REQUEST:
+      return { ...state, error: false, loading: true };
+    case adminConstants.ADD_DESIGNATION_SUCCESS:
+      return {
+        ...state,
+        designation: action.designation,
+        error: false,
+        loading: false,
+      };
+
+    case adminConstants.ADD_DESIGNATION_FALIURE:
+      return { ...state, error: true, loading: false };
+    ////////////////////////////////////////////////////////
     case adminConstants.UPDATE_BRANCH_REQUEST:
       // add 'deleting:true' property to inventory being deleted
       return {
         ...state,
-        branchData: state.branchData.map((branch) =>
-          branch.id === action.id
-            ? { ...branch, updating: true }
-            : branch
+        branchList: state.branchList.map((branch) =>
+          branch.id === action.id ? { ...branch, updating: true } : branch
         ),
       };
     case adminConstants.UPDATE_BRANCH_SUCCESS:
       // update inventory from state
       return {
-        branchData: state.branchData.filter((branch) => branch.id !== action.id),
+        branchData: state.branchData.filter(
+          (branch) => branch.id !== action.id
+        ),
       };
     case adminConstants.UPDATE_BRANCH_FAILURE:
       // remove 'deleting:true' property and add 'deleteError:[error]' property to inventory
@@ -61,7 +89,7 @@ export function admin(state = initialState, action) {
           return branch;
         }),
       };
-///////////////////////////////////////////////
+    ///////////////////////////////////////////////
     case adminConstants.DELETE_BRANCH_REQUEST:
       // add 'deleting:true' property to user being deleted
       return {
