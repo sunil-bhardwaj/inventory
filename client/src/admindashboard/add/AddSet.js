@@ -10,7 +10,7 @@ function AddSet(props) {
   const newSet = useSelector((state) => state.inventoryData.set);
    const location = useLocation();
    const [submitted, setSubmitted] = useState(false);
-   const { from } = location.state || { from: { pathname: "/viewsets" } };
+   const { from } = location.state || { from: { pathname: "/addsets" } };
   const [set, setInputsSet] = useState({
     setname: "",
     setremark: "",

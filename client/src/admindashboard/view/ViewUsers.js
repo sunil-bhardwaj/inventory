@@ -41,7 +41,7 @@ function ViewUsers(props) {
               <button
                 className='btn btn-success'
                 style={{ marginBottom: "6px", marginRight: "50%" }}
-                onClick={(e) => add()}
+                onClick={add}
               >
                 Add New
               </button>
@@ -113,7 +113,7 @@ function ViewUsers(props) {
             </div>
             <div className='col-md-4'>
               {newUserWindow ? (
-                <AddUser closehandler={(e) => add()}  isupdate={isUpdate} />
+                <AddUser closehandler={add}  isupdate={isUpdate} />
               ) : null}
             </div>
           </div>

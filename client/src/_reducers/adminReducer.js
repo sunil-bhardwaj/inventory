@@ -3,6 +3,10 @@ const initialState = {
   branchList: [],
   branch:'',
   designation:'',
+  brandList:[],
+  brand:"",
+  sourceList:[],
+  source:"",
   designationList: [],
 };
 export function admin(state = initialState, action) {
@@ -19,7 +23,7 @@ export function admin(state = initialState, action) {
 
     case adminConstants.VIEW_BRANCH_FALIURE:
       return { ...state, error: true, loading: false };
-
+/////////////////////////////////////////////////////
     case adminConstants.VIEW_DESIGNATION_REQUEST:
       return { ...state, error: false, loading: true };
     case adminConstants.VIEW_DESIGNATION_SUCCESS:
@@ -32,7 +36,36 @@ export function admin(state = initialState, action) {
 
     case adminConstants.VIEW_DESIGNATION_FALIURE:
       return { ...state, error: true, loading: false };
+//////////////////////////////////////////
+    case adminConstants.VIEW_SOURCE_REQUEST:
+      return { ...state, error: false, loading: true };
+    case adminConstants.VIEW_SOURCE_SUCCESS:
+      return {
+        ...state,
+        sourceList: action.sources,
+        error: false,
+        loading: false,
+      };
 
+    case adminConstants.VIEW_SOURCE_FALIURE:
+      return { ...state, error: true, loading: false };
+
+
+
+      //////////////////////////////////////
+    case adminConstants.VIEW_BRAND_REQUEST:
+      return { ...state, error: false, loading: true };
+    case adminConstants.VIEW_BRAND_SUCCESS:
+      return {
+        ...state,
+        brandList: action.brands,
+        error: false,
+        loading: false,
+      };
+
+    case adminConstants.VIEW_BRAND_FALIURE:
+      return { ...state, error: true, loading: false };
+////////////////////////////////////////////////////
     case adminConstants.ADD_BRANCH_REQUEST:
       return { ...state, error: false, loading: true };
     case adminConstants.ADD_BRANCH_SUCCESS:
@@ -45,7 +78,7 @@ export function admin(state = initialState, action) {
 
     case adminConstants.ADD_BRANCH_FALIURE:
       return { ...state, error: true, loading: false };
-
+///////////////////////////////////////////////////////////
     case adminConstants.ADD_DESIGNATION_REQUEST:
       return { ...state, error: false, loading: true };
     case adminConstants.ADD_DESIGNATION_SUCCESS:
@@ -57,6 +90,32 @@ export function admin(state = initialState, action) {
       };
 
     case adminConstants.ADD_DESIGNATION_FALIURE:
+      return { ...state, error: true, loading: false };
+////////////////////////////////////////////////
+    case adminConstants.ADD_SOURCE_REQUEST:
+      return { ...state, error: false, loading: true };
+    case adminConstants.ADD_SOURCE_SUCCESS:
+      return {
+       ...state,
+        source: action.source,
+        error: false,
+        loading: false,
+      };
+
+    case adminConstants.ADD_SOURCE_FALIURE:
+      return { ...state, error: true, loading: false };
+
+    case adminConstants.ADD_BRAND_REQUEST:
+      return { ...state, error: false, loading: true };
+    case adminConstants.ADD_BRAND_SUCCESS:
+      return {
+        ...state,
+        brand: action.brand,
+        error: false,
+        loading: false,
+      };
+
+    case adminConstants.ADD_BRAND_FALIURE:
       return { ...state, error: true, loading: false };
     ////////////////////////////////////////////////////////
     case adminConstants.UPDATE_BRANCH_REQUEST:

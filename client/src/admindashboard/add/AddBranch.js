@@ -9,7 +9,7 @@ function AddBranch(props) {
   const newBranch = useSelector((state) => state.userData.branch);
   const location = useLocation();
   const [submitted, setSubmitted] = useState(false);
-  const { from } = location.state || { from: { pathname: "/viewusers" } };
+  const { from } = location.state || { from: { pathname: "/addbranch" } };
   const [branch, setInputsBranch] = useState({
     branchname: "",
    

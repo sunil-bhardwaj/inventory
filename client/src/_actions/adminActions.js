@@ -11,6 +11,14 @@ export const adminActions = {
   updateDesignation,
   viewAllDesignations,
   deleteDesignation: _deleteDesignation,
+  addNewSource,
+  updateSource,
+  viewAllSources,
+  deleteSource: _deleteSource,
+  addNewBrand,
+  updateBrand,
+  viewAllBrands,
+  deleteBrand: _deleteBrand,
 };
 
 function addNewBranch(branch, from) {
@@ -191,5 +199,190 @@ function _deleteDesignation(id) {
   }
   function failure(id, error) {
     return { type: adminConstants.DELETE_DESIGNATION__FAILURE, id, error };
+  }
+}
+
+///////////////////////////////////////////////////////////
+
+function addNewBrand(brand, from) {
+  return (dispatch) => {
+    dispatch(request());
+
+    adminService.addNewBrand(brand).then(
+      (brand) => {
+        dispatch(success(brand));
+        dispatch(adminActions.viewAllBrands());
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request() {
+    return { type: adminConstants.ADD_BRAND_REQUEST };
+  }
+  function success(brand) {
+    return { type: adminConstants.ADD_BRAND_SUCCESS, brand };
+  }
+  function failure(error) {
+    return { type: adminConstants.ADD_BRAND_FALIURE, error };
+  }
+}
+
+function viewAllBrands() {
+  return (dispatch) => {
+    dispatch(request());
+
+    adminService.viewAllBrands().then(
+      (brands) => dispatch(success(brands)),
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: adminConstants.VIEW_BRAND_REQUEST };
+  }
+  function success(brands) {
+    return { type: adminConstants.VIEW_BRAND_SUCCESS, brands };
+  }
+  function failure(error) {
+    return { type: adminConstants.VIEW_BRAND_FALIURE, error };
+  }
+}
+function updateBrand(id) {
+  return (dispatch) => {
+    dispatch(request(id));
+
+    adminService.updateBrand(id).then(
+      (brand) => dispatch(success(id)),
+      (error) => dispatch(failure(id, error.toString()))
+    );
+  };
+
+  function request(id) {
+    return { type: adminConstants.UPDATE_BRAND_REQUEST, id };
+  }
+  function success(id) {
+    return { type: adminConstants.UPDATE_BRAND_SUCCESS, id };
+  }
+  function failure(id, error) {
+    return { type: adminConstants.UPDATE_BRAND_FAILURE, id, error };
+  }
+}
+
+// prefixed function name with underscore because delete is a reserved word in javascript
+function _deleteBrand(id) {
+  return (dispatch) => {
+    dispatch(request(id));
+
+    adminService.deleteBrand(id).then(
+      (brand) => dispatch(success(id)),
+      (error) => dispatch(failure(id, error.toString()))
+    );
+  };
+
+  function request(id) {
+    return { type: adminConstants.DELETE_BRAND_REQUEST, id };
+  }
+  function success(id) {
+    return { type: adminConstants.DELETE_BRAND_SUCCESS, id };
+  }
+  function failure(id, error) {
+    return { type: adminConstants.DELETE_BRAND_FAILURE, id, error };
+  }
+}
+
+///////////////////////////////////////////
+
+function addNewSource(source, from) {
+  return (dispatch) => {
+    dispatch(request());
+
+    adminService.addNewSource(source).then(
+      (source) => {
+        dispatch(success(source));
+        dispatch(adminActions.viewAllSources());
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request() {
+    return { type: adminConstants.ADD_SOURCE_REQUEST };
+  }
+  function success(source) {
+    return { type: adminConstants.ADD_SOURCE_SUCCESS, source };
+  }
+  function failure(error) {
+    return { type: adminConstants.ADD_SOURCE_FALIURE, error };
+  }
+}
+
+function viewAllSources() {
+ 
+  return (dispatch) => {
+    dispatch(request());
+
+    adminService.viewAllSources().then(
+      (sources) => dispatch(success(sources)),
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: adminConstants.VIEW_SOURCE_REQUEST };
+  }
+  function success(sources) {
+    return { type: adminConstants.VIEW_SOURCE_SUCCESS, sources };
+  }
+  function failure(error) {
+    return { type: adminConstants.VIEW_SOURCE_FALIURE, error };
+  }
+}
+function updateSource(id) {
+  return (dispatch) => {
+    dispatch(request(id));
+
+    adminService.updateSource(id).then(
+      (source) => dispatch(success(id)),
+      (error) => dispatch(failure(id, error.toString()))
+    );
+  };
+
+  function request(id) {
+    return { type: adminConstants.UPDATE_SOURCE_REQUEST, id };
+  }
+  function success(id) {
+    return { type: adminConstants.UPDATE_SOURCE_SUCCESS, id };
+  }
+  function failure(id, error) {
+    return { type: adminConstants.UPDATE_SOURCE_FAILURE, id, error };
+  }
+}
+
+// prefixed function name with underscore because delete is a reserved word in javascript
+function _deleteSource(id) {
+  return (dispatch) => {
+    dispatch(request(id));
+
+    adminService.deleteSource(id).then(
+      (source) => dispatch(success(id)),
+      (error) => dispatch(failure(id, error.toString()))
+    );
+  };
+
+  function request(id) {
+    return { type: adminConstants.DELETE_SOURCE_REQUEST, id };
+  }
+  function success(id) {
+    return { type: adminConstants.DELETE_SOURCE_SUCCESS, id };
+  }
+  function failure(id, error) {
+    return { type: adminConstants.DELETE_SOURCE_FAILURE, id, error };
   }
 }

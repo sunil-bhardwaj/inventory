@@ -5,10 +5,13 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Login() {
+  const [submitted, setSubmitted] = useState(false);
+  const [message, setMessage] = useState("");
   const [inputsLogin, setInputsLogin] = useState({
     username: "",
     password: "",
-  });
+  })
+  const { username, password } = setInputsLogin;
    const [inputsReg, setInputsReg] = useState({
      regusername: "",
      regpassword: "",
@@ -16,10 +19,9 @@ export default function Login() {
      fullname:"",
      userrole:"",
    });
-  const [submitted, setSubmitted] = useState(false);
-  const [message, setMessage] = useState("");
-  const { username, password } = inputsLogin;
-  const { regusername,regpassword,confirmpassword,fullname,userrole } = inputsReg;
+    const { regusername,regpassword,confirmpassword,fullname,userrole } = setInputsReg;
+  
+ 
    
   const loggingIn = useSelector((state) => state.authenticationData.loggingIn);
   const dispatch = useDispatch();
@@ -31,7 +33,7 @@ export default function Login() {
   }, []);
 
   function handleChangeLogin(e) {
-      
+     
     const { name, value } = e.target;
     //console.log(name,value);
     setInputsLogin((inputs) => ({ ...inputs, [name]: value }));
@@ -42,26 +44,29 @@ export default function Login() {
     setInputsReg((inputs) => ({ ...inputs, [name]: value }));
   }
   function handleSubmit(e) {
-    
+   //console.log(inputsLogin.username, inputsLogin.password);
     e.preventDefault();
    
     setSubmitted(true);
-    if (username && password) {
-      // get return url from location state or default to home page
-      const { from } = location.state || { from: { pathname: "/login" } };
+   console.log(inputsLogin.username, inputsLogin.password);
+   if (inputsLogin.username && inputsLogin.password) {
+     // get return url from location state or default to home page
+     const { from } = location.state || { from: { pathname: "/login" } };
 
-      dispatch(userActions.login(username, password, from));
-    }
-    if (regusername && regpassword && confirmpassword) {
+     dispatch(
+       userActions.login(inputsLogin.username, inputsLogin.password, from)
+     );
+   }
+    if (inputsReg.regusername && inputsReg.regpassword && inputsReg.confirmpassword) {
       // get return url from location state or default to home page
       const { from } = location.state || { from: { pathname: "/login" } };
       dispatch(
         userActions.register(
-          username,
-          password,
-          confirmpassword,
-          fullname,
-          userrole,
+          inputsReg.username,
+          inputsReg.password,
+          inputsReg.confirmpassword,
+          inputsReg.fullname,
+          inputsReg.userrole,
           from
         )
       );

@@ -60,6 +60,7 @@ const deleteBranch = (request, response) => {
     }
   );
 };
+/////////////////////////////////////////////
 const getAllDesignations = (request, response) => {
   pool.query("SELECT * FROM designation ;", (error, results) => {
     if (error) {
@@ -114,6 +115,131 @@ const deleteDesignation = (request, response) => {
     }
   );
 };
+//////////////////////////////////////////////
+const createBrand = (request, response) => {
+  const { brand } = request.body;
+
+  pool.query(
+    "INSERT INTO brands (brandname) VALUES ($1)",
+    [brand.brandname],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+const getAllBrands = (request, response) => {
+  pool.query("SELECT * FROM brands ;", (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(200).json(results.rows);
+  });
+};
+const updateBrand = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { brand } = request.body;
+
+  pool.query(
+    "UPDATE brands SET brandname = $1 WHERE id = $2",
+    [brand.brandname,brand.id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response
+        .status(200)
+        .json(`Brand modified with ID: ${id}->${brand.brandname}`);
+    }
+  );
+};
+const deleteBrand = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM brands where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+///////////////////////////////////////
+const createSource = (request, response) => {
+  const { source } = request.body;
+  console.log(source)
+ 
+  pool.query(
+    "INSERT INTO source (ordername, orderno,orderdate,noofitems) VALUES ($1,$2,$3,$4)",
+    [source.ordername, source.orderno, source.orderdate, source.noofitems],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+const getAllSources = (request, response) => {
+  pool.query("SELECT * FROM source", (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(200).json(results.rows);
+  });
+};
+const updateSource = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { source } = request.body;
+
+  pool.query(
+    "UPDATE source SET ordername = $1, orderno = $2, orderdate= $3, noofitems=$4 WHERE id = $5",
+    [
+      source.ordername,
+      source.orderno,
+      source.orderdate,
+      source.noofitems,
+      source.id,
+    ],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response
+        .status(200)
+        .json(`Branch modified with ID: ${id}->${ordername}`);
+    }
+  );
+};
+const deleteSource = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM source where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
+
+
+////////////////////////////////////////
 const getAllSets = (request, response) => {
   pool.query("SELECT * FROM set order by id", (error, results) => {
     if (error) {
@@ -388,6 +514,14 @@ module.exports = {
   createBranch,
   deleteBranch,
   updateBranch,
+  getAllBrands,
+  createBrand,
+  deleteBrand,
+  updateBrand,
+  getAllSources,
+  createSource,
+  deleteSource,
+  updateSource,
   getAllDesignations,
   createDesignation,
   deleteDesignation,

@@ -20,6 +20,7 @@ export const inventoryActions = {
   transferSet,
   moveSetToStore,
   allocateSetFromStore,
+  addNewInventoryItem,
 };
 
 function getStoreInventory() {
@@ -373,6 +374,32 @@ function addNewSet(set) {
     return { type: invConstants.ADD_SET_FALIURE, error };
   }
 }
+
+function addNewInventoryItem(set) {
+  return (dispatch) => {
+    dispatch(request());
+
+    inventoryService.addNewInventoryItem(set).then(
+      (set) => {
+        dispatch(success(set));
+        dispatch(inventoryActions.getAllSets());
+      },
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: invConstants.ADD_SET_REQUEST };
+  }
+  function success(set) {
+    return { type: invConstants.ADD_SET_SUCCESS, set };
+  }
+  function failure(error) {
+    return { type: invConstants.ADD_SET_FALIURE, error };
+  }
+}
+
+
 function _deleteSet(setid) {
   return (dispatch) => {
     dispatch(request(setid));

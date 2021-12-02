@@ -72,7 +72,7 @@ function AddDesignation(props) {
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => updateDesignation(e)}
+                      onClick={(e) => updateDesignation()}
                       className='btn btn-warning'
                     >
                       Update User
@@ -81,7 +81,7 @@ function AddDesignation(props) {
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => addNewDesignation(e)}
+                      onClick={(e) => addNewDesignation()}
                       className='btn btn-warning'
                     >
                       Add Designation

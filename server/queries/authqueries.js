@@ -48,7 +48,7 @@ const { username, password } = request.body
       })
     }else{
 
-        response.status(200).send({auth:false,message:'No Such User'})
+        response.status(200).json({auth:false,message:'No Such User'})
 
     }
    

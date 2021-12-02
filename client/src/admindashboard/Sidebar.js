@@ -10,23 +10,22 @@ import {
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import jwtDecode from "jwt-decode";
 import "react-pro-sidebar/dist/css/styles.css";
-import React, {useContext, useState} from "react";
-import { UserContext } from "../UserContext";
+import React, {useState} from "react";
+import { userActions } from "../_actions";
+import {useSelector, useDispatch}  from "react-redux"
 import { Link } from "react-router-dom";
 
 function Sidebar() {
-  const [userOName, setUserOName] = useState("Guest");
+  const dispatch = useDispatch()
+  const userInfo = useSelector((state)=>state.authenticationData)
+ 
   const [showSideBar, setShowSideBar] = useState(true)
-  const token = localStorage.getItem("token");
-  var decoded=''
-  if (token) {
-   decoded = jwtDecode(token);
-    
-    }
+  
+ 
   const closeSideBar=()=>{
     setShowSideBar(!showSideBar)
   }
-  const User = useContext(UserContext);
+ 
   return (
     <div
       style={{
@@ -52,9 +51,9 @@ function Sidebar() {
               <div className='user-info'>
                 <span className='user-name'>
                   {" "}
-                  <strong>{decoded.fullname}</strong>
+                  <strong>{userInfo.userName}</strong>
                 </span>
-                {User.isAdmin ? (
+                {userInfo.userRole === "Admin" ? (
                   <span className='user-role'>Administrator</span>
                 ) : (
                   <span className='user-role'>User</span>
@@ -105,11 +104,11 @@ function Sidebar() {
                 </MenuItem>
                 <MenuItem>
                   Source
-                  <Link to='/addsource' />
+                  <Link to='/viewsources' />
                 </MenuItem>
                 <MenuItem>
                   Brands
-                  <Link to='/addbrands' />
+                  <Link to='/viewbrands' />
                 </MenuItem>
               </SubMenu>
               <SubMenu title='Stocks'>
@@ -143,7 +142,7 @@ function Sidebar() {
               </SubMenu>
               <MenuItem>
                 Logout
-                <Link to='/logout' />
+                {dispatch(userActions.logout())}
               </MenuItem>
             </Menu>
           </SidebarContent>
