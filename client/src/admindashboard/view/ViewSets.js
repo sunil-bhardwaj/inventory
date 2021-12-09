@@ -259,10 +259,11 @@ function ViewSets() {
               .filter((val) => {
                 if (searchKeywords === "") return val;
                 else if (
-                  val.setname
+                  val.setname 
                     .toLowerCase()
                     .includes(searchKeywords.toLowerCase())
                 )
+              
                   return val;
               })
               .map((set, index) => (

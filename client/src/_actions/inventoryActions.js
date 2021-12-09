@@ -21,8 +21,71 @@ export const inventoryActions = {
   moveSetToStore,
   allocateSetFromStore,
   addNewInventoryItem,
+  getBarChartData,
+  getBarChartData2,
+  getAllInventoryReport,
 };
+function getBarChartData() {
+  return (dispatch) => {
+    dispatch(request());
 
+    inventoryService.getBarChartData().then(
+      (chartdata) => dispatch(success(chartdata)),
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: invConstants.GET_BAR_CHART_DATA_REQUEST };
+  }
+  function success(chartdata) {
+    return { type: invConstants.GET_BAR_CHART_DATA_SUCCESS, chartdata };
+  }
+  function failure(error) {
+    return { type: invConstants.GET_BAR_CHART_DATA_FALIURE, error };
+  }
+}
+function getBarChartData2() {
+  return (dispatch) => {
+    dispatch(request());
+
+    inventoryService.getBarChartData2().then(
+      (chartdata2) => dispatch(success(chartdata2)),
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: invConstants.GET_BAR_CHART_DATA2_REQUEST };
+  }
+  function success(chartdata2) {
+    return { type: invConstants.GET_BAR_CHART_DATA2_SUCCESS, chartdata2 };
+  }
+  function failure(error) {
+    return { type: invConstants.GET_BAR_CHART_DATA2_FALIURE, error };
+  }
+}
+
+function getAllInventoryReport() {
+  return (dispatch) => {
+    dispatch(request());
+
+    inventoryService.getAllInventoryReport().then(
+      (report) => dispatch(success(report)),
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: invConstants.GETALL_INVENTORY_REPORT_REQUEST };
+  }
+  function success(report) {
+    return { type: invConstants.GETALL_INVENTORY_REPORT_SUCCESS, report };
+  }
+  function failure(error) {
+    return { type: invConstants.GETALL_INVENTORY_REPORT_FALIURE, error };
+  }
+}
 function getStoreInventory() {
   return (dispatch) => {
     dispatch(request());

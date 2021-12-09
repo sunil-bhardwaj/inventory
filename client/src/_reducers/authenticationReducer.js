@@ -1,5 +1,6 @@
 import { userConstants } from "../_constants";
 import jwtDecode from "jwt-decode";
+import { history } from "../_helpers";
 let user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { loggedIn: true, user } : {}
 
@@ -20,7 +21,7 @@ export function authentication(state = initialState, action) {
     case userConstants.LOGIN_FAILURE:
       return {};
     case userConstants.LOGOUT:
-      return {};
+      return {}
     default:
       return state;
   }

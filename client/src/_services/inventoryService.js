@@ -19,9 +19,32 @@ export const inventoryService = {
   transferSet,
   moveSetToStore,
   allocateSetFromStore,
+  getBarChartData,
+  getBarChartData2,
+  getAllInventoryReport,
 };
 
+function getBarChartData() {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
 
+  return fetch(`http://10.146.19.127:3001/api/inventory/charts/bar/1`, requestOptions).then(
+    handleResponse
+  );
+}
+function getBarChartData2() {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://10.146.19.127:3001/api/inventory/charts/bar/2`,
+    requestOptions
+  ).then(handleResponse);
+}
 function getAllInventory() {
   const requestOptions = {
     method: "GET",
@@ -31,6 +54,17 @@ function getAllInventory() {
   return fetch(`http://10.146.19.127:3001/api/inventory/all`, requestOptions).then(
     handleResponse
   );
+}
+function getAllInventoryReport() {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://10.146.19.127:3001/api/inventory/all`,
+    requestOptions
+  ).then(handleReportResponse);
 }
 function getStoreInventory() {
   const requestOptions = {
@@ -231,7 +265,32 @@ function handleResponse(response) {
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);
     }
-    
+   
     return data;
+  });
+}
+
+
+
+function handleReportResponse(response) {
+  return response.text().then((text) => {
+     var len = text.length;
+        var bytes = new Uint8Array( len );
+        for (var i = 0; i < len; i++){
+            bytes[i] = text.charCodeAt(i);
+        }
+         const renderPdf = bytes.buffer;
+    if (!response.ok) {
+      if (response.status === 401) {
+        // auto logout if 401 response returned from api
+        userActions.logout();
+        Location.reload(true);
+      }
+
+      const error = (renderPdf && renderPdf.message) || response.statusText;
+      return Promise.reject(error);
+    }
+    
+    return renderPdf;
   });
 }

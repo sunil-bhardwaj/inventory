@@ -1,6 +1,6 @@
 import { invConstants } from "../_constants";
 const initialState = {
-  setUpdated:false,
+  setUpdated: false,
   inventoryList: [],
   set: { id: "", setname: "", setremark: "" },
   sets: [],
@@ -8,6 +8,9 @@ const initialState = {
   storeItems: [],
   loading: false,
   error: false,
+  chartdata: [],
+  chartdata2: [],
+  reportdata:[],
 };
 export function inventory(state = initialState, action) {
   switch (action.type) {
@@ -188,7 +191,47 @@ export function inventory(state = initialState, action) {
       return { ...state, set: action.set, error: false, loading: false };
     case invConstants.GET_SET_BYID_FAILURE:
       return { ...state, error: true, loading: false };
+    /////////////////////////////////
+    case invConstants.GET_BAR_CHART_DATA_REQUEST:
+      return { ...state, error: false, loading: true };
+    case invConstants.GET_BAR_CHART_DATA_SUCCESS:
+      return {
+        ...state,
+        chartdata: action.chartdata,
+        error: false,
+        loading: false,
+      };
 
+    case invConstants.GET_BAR_CHART_DATA_FALIURE:
+      return { ...state, error: true, loading: false };
+    //////////////////////////////////////
+    /////////////////////////////////
+    case invConstants.GETALL_INVENTORY_REPORT_REQUEST:
+      return { ...state, error: false, loading: true };
+    case invConstants.GETALL_INVENTORY_REPORT_SUCCESS:
+      return {
+        ...state,
+        reportdata: action.report,
+        error: false,
+        loading: false,
+      };
+
+    case invConstants.GETALL_INVENTORY_REPORT_FALIURE:
+      return { ...state, error: true, loading: false };
+    //////////////////////////////////////
+
+    case invConstants.GET_BAR_CHART_DATA2_REQUEST:
+      return { ...state, error: false, loading: true };
+    case invConstants.GET_BAR_CHART_DATA2_SUCCESS:
+      return {
+        ...state,
+        chartdata2: action.chartdata2,
+        error: false,
+        loading: false,
+      };
+
+    case invConstants.GET_BAR_CHART_DATA2_FALIURE:
+      return { ...state, error: true, loading: false };
     default:
       return state;
   }

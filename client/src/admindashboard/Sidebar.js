@@ -8,20 +8,21 @@ import {
   SubMenu,
 } from "react-pro-sidebar";
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
-import jwtDecode from "jwt-decode";
 import "react-pro-sidebar/dist/css/styles.css";
 import React, {useState} from "react";
 import { userActions } from "../_actions";
 import {useSelector, useDispatch}  from "react-redux"
 import { Link } from "react-router-dom";
-
+/* {dispatch(userActions.logout())} */
 function Sidebar() {
   const dispatch = useDispatch()
   const userInfo = useSelector((state)=>state.authenticationData)
  
   const [showSideBar, setShowSideBar] = useState(true)
   
- 
+ const logout = ()=>{
+   dispatch(userActions.logout())
+ }
   const closeSideBar=()=>{
     setShowSideBar(!showSideBar)
   }
@@ -135,15 +136,14 @@ function Sidebar() {
                 <MenuItem>Component 2</MenuItem>
               </SubMenu>
               <SubMenu title='Reports'>
-                <MenuItem>Component 1</MenuItem>
-                <MenuItem>Component 2</MenuItem>
+                <MenuItem>User Wise</MenuItem>
+                <Link to='/userwisereport' />
+                <MenuItem>Qurery Builder</MenuItem>
+                <Link to='/querybuilder' />
                 <MenuItem>Component 1</MenuItem>
                 <MenuItem>Component 2</MenuItem>
               </SubMenu>
-              <MenuItem>
-                Logout
-                {dispatch(userActions.logout())}
-              </MenuItem>
+              <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
           </SidebarContent>
           <SidebarFooter>
@@ -164,7 +164,7 @@ function Sidebar() {
                 <i className='fa fa-cog'></i>
                 <span className='badge-sonar'></span>
               </Link>
-              <Link to='/logout'>
+              <Link to='#' onClick={logout}>
                 <i className='fa fa-power-off'></i>
               </Link>
             </div>

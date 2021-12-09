@@ -24,7 +24,7 @@ const getInventoryById = (request, response) => {
 const getAllInventory = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
-    "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,mapping.instore,\
+    "SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,itemstypes.id as typeid,users.id,brands.brandname,mapping.id as mappingid,mapping.instore,\
   mapping.isdeallocated,mapping.userid,mapping.setid,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
   inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
   RIGHT JOIN public.mapping ON users.id=mapping.setid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
@@ -44,6 +44,45 @@ const getAllInventory = (request, response) => {
   );
 };
 
+const getBarChartData = (request, response) => {
+  const id = parseInt(request.params.id);
+  pool.query(
+    " select  itemstypes.itemname, count(itemstypes.itemname) as itemcount from itemstypes \
+    inner join items on itemstypes.id = items.typeid inner join inventory on items.id = inventory.itemid  \
+    group by itemstypes.itemname order by itemcount desc ",
+    (error, results) => {
+      if (error) {
+        console.log("Inside GetUsers Error");
+        throw error;
+      }
+
+      // console.log(request.user);
+      //console.log("Inside GetUsers ");
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+const getBarChartData2 = (request, response) => {
+  const id = parseInt(request.params.id);
+  pool.query(
+    "select  itemstypes.itemname, count(itemstypes.itemname) as itemcount from itemstypes inner join items \
+    on itemstypes.id = items.typeid inner join inventory on items.id = inventory.itemid inner join mapping \
+    on inventory.id = mapping.inventoryid  where mapping.instore = 't'  group by itemstypes.itemname \
+    order by itemcount desc LIMIT 20",
+    (error, results) => {
+      if (error) {
+        console.log("Inside GetUsers Error");
+        throw error;
+      }
+
+      // console.log(request.user);
+      //console.log("Inside GetUsers ");
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
 const getStoreInventory = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
@@ -59,7 +98,7 @@ const getStoreInventory = (request, response) => {
         console.log("Inside GetUsers Error");
         throw error;
       }
-       console.log("7897897789");
+      
       // console.log(request.user);
       //console.log("Inside GetUsers ");
 
@@ -108,4 +147,6 @@ module.exports = {
   updateInventory,
   deleteInventory,
   getStoreInventory,
+  getBarChartData,
+  getBarChartData2,
 };

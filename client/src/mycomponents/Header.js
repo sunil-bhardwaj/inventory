@@ -1,31 +1,69 @@
-import React,{useContext} from "react";
-
+import React,{useState} from "react";
+import Navbar from "../mycomponents/Navbar";
+import jwtDecode from 'jwt-decode'
 import { Link } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import Sidebar from "../admindashboard/Sidebar";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   // const [loginStatus, setLoginStatus] = useState(false);
-
+   var [decoded, setdecoded] = useState({
+     userrole: "",
+     username: "",
+     fullname: "",
+   });
+   var { userrole, username, fullname } = setdecoded;
+   // const token =  localStorage.getItem('token')
+   const User = useSelector((state) => state.authenticationData);
+ if (User) {
+  
+   if (User.loggedIn) {
+     decoded = jwtDecode(User.user.token);
+     userrole = decoded.userrole;
+     username = decoded.username;
+     fullname = decoded.fullname;
+   }
+ }
+ 
+  
+ 
   // const token =  localStorage.getItem('token')
- const User = useContext(UserContext);
+ 
   return (
     <>
+      {userrole === "admin" ? (
+        <Sidebar />
+      ) : userrole === "user" ? (
+        <Navbar status={User.user.loggedIn} />
+      ) : null}
       <nav className='navbar navbar-expand-lg navbar-dark mx-background-top-linear'>
         <div className='container'>
-          {User.isAdmin
-          ?
-          <Link className='navbar-brand' rel='nofollow' target='_blank' to='#'>
-            HP HIGH COURT
-          </Link>
-          :
-          <Link className='navbar-brand' rel='nofollow' target='_blank' to='#'>
-            HP HIGH COURT- INVENTORY (Welcome: {User.userName})
-          </Link>
-          }
-          
+          {userrole === "admin" ? (
+            <Link
+              className='navbar-brand'
+              rel='nofollow'
+              target='_blank'
+              to='#'
+            >
+              HP HIGH COURT ADMIN
+            </Link>
+          ) : (
+            <Link
+              className='navbar-brand'
+              rel='nofollow'
+              target='_blank'
+              to='#'
+            >
+              {userrole == null
+                ? `HP HIGH COURT- INVENTORY`
+                : `HP HIGH COURT- INVENTORY (Welcome: ${username})`}
+            </Link>
+          )}
         </div>
       </nav>
       <div className='fixed-top'>
+       
+       
         <header className='topbar'>
           <div className='container'>
             <div className='row'>
