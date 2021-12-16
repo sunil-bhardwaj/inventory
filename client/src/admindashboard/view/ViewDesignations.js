@@ -1,26 +1,62 @@
 import React, { useEffect, useState } from "react";
-
+import { confirmAlert } from "react-confirm-alert"; 
 import ListGroup from "react-bootstrap/ListGroup";
 import RightBar from "../../mycomponents/RightBar";
 import EditIcon from "@material-ui/icons/Assignment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import { adminActions } from "../../_actions";
+import { adminActions, alertActions } from "../../_actions";
 import AddDesignation from "../add/AddDesignation";
 
 function ViewDesignations(props) {
   const dispatch = useDispatch();
-  const designationInfo = useSelector((state) => state.adminData.designationList);
-  const [searchKeywords, setSearchKeywords] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
+  const [designation, setDesignation] = useState([]);
+  const designationInfo = useSelector(
+    (state) => state.adminData.designationList
+  );
+  const [searchKeywords, setSearchKeywords] = useState("");
+const alert = useSelector((state) => state.helperData);
   const [newDesignationsWindow, setnewDesignationWindow] = useState(false);
   useEffect(() => {
     dispatch(adminActions.viewAllDesignations());
   }, []);
-
-  const add = () => {
+  const add = (e) => {
+    setDesignation([]);
+    e.preventDefault();
+    dispatch(alertActions.clear());
+    setIsUpdate(false);
     setnewDesignationWindow(!newDesignationsWindow);
   };
+  const updateDesignation = (selecteddesignation) => {
+    dispatch(alertActions.clear());
+    setDesignation(selecteddesignation);
+    setIsUpdate(true);
+    setnewDesignationWindow(!newDesignationsWindow);
+  };
+const deleteDesignation = (selecteddesignation) => {
+  dispatch(alertActions.clear());
+  setDesignation(selecteddesignation);
+  setIsUpdate(false);
+  {
+    const { action } = { action: { action: "deletedesignation" } };
+    confirmAlert({
+      title: "Delete Designation Request",
+      message: `Delete Designation '${selecteddesignation.designame}'`,
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            dispatch(adminActions.deleteDesignation(selecteddesignation, action));
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
+  }
+};
   return (
     <div className='container'>
       <div className='row'>
@@ -30,7 +66,7 @@ function ViewDesignations(props) {
           <button
             className='btn btn-success'
             style={{ marginBottom: "6px", marginRight: "50%" }}
-            onClick={() => add()}
+            onClick={add}
           >
             Add New
           </button>
@@ -51,6 +87,7 @@ function ViewDesignations(props) {
             value={searchKeywords}
             onChange={(e) => {
               setSearchKeywords(e.target.value);
+               dispatch(alertActions.clear());
             }}
             className='input'
             placeholder='Search...'
@@ -61,9 +98,11 @@ function ViewDesignations(props) {
       <div className='row'>
         <div className='col-md-8'>
           <div style={{ display: "block", width: 700, padding: 30 }}>
+            <p className={alert.type}>{alert.message}</p>
             <ListGroup>
               {designationInfo
                 .filter((val) => {
+                 
                   if (searchKeywords === "") return val;
                   else if (
                     val.designame
@@ -86,6 +125,7 @@ function ViewDesignations(props) {
                         cursor: "pointer",
                       }}
                       color='primary'
+                      onClick={() => updateDesignation(designation)}
                     />
                     <DeleteIcon
                       style={{
@@ -94,6 +134,7 @@ function ViewDesignations(props) {
                         color: "red",
                         cursor: "pointer",
                       }}
+                      onClick={() => deleteDesignation(designation)}
                     />
                   </ListGroup.Item>
                 ))}
@@ -103,7 +144,11 @@ function ViewDesignations(props) {
 
         <div className='col-md-4'>
           {newDesignationsWindow ? (
-            <AddDesignation closehandler={() => add()} isupdate={isUpdate} />
+            <AddDesignation
+              closehandler={add}
+              designation={designation}
+              isUpdate={isUpdate}
+            />
           ) : null}
         </div>
       </div>

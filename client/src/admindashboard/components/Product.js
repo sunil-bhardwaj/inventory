@@ -23,7 +23,7 @@ import "./Product.css";
 
 function Product(props) {
 
-  
+  console.log(props.product)
   const dispatch = useDispatch()
   const [showDescriptionTab, setShowDescriptionTab] = useState(false);
   const [showRemovebutton, setShowRemovebutton] = useState(false);

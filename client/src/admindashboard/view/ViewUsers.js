@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../../_actions";
+import { userActions, alertActions } from "../../_actions";
 
 import { useLocation } from "react-router-dom";
 import "../css/admin.css";
 import ListGroup from "react-bootstrap/ListGroup";
 import Icon from "@material-ui/core/Icon";
-
+import { confirmAlert } from "react-confirm-alert"; 
 import EditIcon from "@material-ui/icons/Assignment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddUser from "../add/AddUser";
 function ViewUsers(props) {
-
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.userData.userList);
   const location = useLocation();
@@ -19,17 +18,51 @@ function ViewUsers(props) {
   const [submitted, setSubmitted] = useState(false);
   const { from } = location.state || { from: { pathname: "/viewusers" } };
   const [searchKeywords, setSearchKeywords] = useState("");
-   const [newUserWindow, setnewUserWindow] = useState(false);
-   const [userId, setUserId] = useState("");
+  const [newUserWindow, setnewUserWindow] = useState(false);
+  const [user, setUser] = useState([]);
   useEffect(() => {
-    dispatch(userActions.getAll())
+    dispatch(userActions.getAll());
   }, []);
- const add = (e) => {
-    e.preventDefault()
+  const alert = useSelector((state) => state.helperData);
+  const add = (e) => {
+    dispatch(alertActions.clear());
+    setUser([])
+    e.preventDefault();
+    setIsUpdate(false);
     setnewUserWindow(!newUserWindow);
- 
- };
-
+  };
+ const updateUser = (selecteduser)=>{
+ //  console.log(selecteduser)
+ dispatch(alertActions.clear());
+   setUser(selecteduser);
+   setIsUpdate(true)
+   setnewUserWindow(!newUserWindow);
+ }
+ const deleteUser = (selecteduser) => {
+     console.log(selecteduser)
+   dispatch(alertActions.clear());
+   setUser(selecteduser);
+   setIsUpdate(false);
+   {
+     
+     const { action } = { action: { action: "deleteuser" } };
+     confirmAlert({
+       title: "Delete User Request",
+       message: `Delete User '${selecteduser.username}'. All alloted items to ${selecteduser.username} set will go to store! Are You Sure?`,
+       buttons: [
+         {
+           label: "Yes",
+           onClick: () => {
+             dispatch(userActions.delete(selecteduser, action));
+           },
+         },
+         {
+           label: "No",
+         },
+       ],
+     });
+   }
+ };;
   return (
     <>
       {!props.redirected ? (
@@ -62,6 +95,7 @@ function ViewUsers(props) {
                 value={searchKeywords}
                 onChange={(e) => {
                   setSearchKeywords(e.target.value);
+                  dispatch(alertActions.clear());
                 }}
                 className='input'
                 placeholder='Search...'
@@ -72,12 +106,13 @@ function ViewUsers(props) {
           <div className='row'>
             <div className='col-md-8'>
               <div style={{ display: "block", width: 700, padding: 30 }}>
+                <p className={alert.type}>{alert.message}</p>
                 <ListGroup>
                   {userInfo
                     .filter((val) => {
                       if (searchKeywords === "") return val;
                       else if (
-                        val.name
+                        val.username
                           .toLowerCase()
                           .includes(searchKeywords.toLowerCase())
                       )
@@ -85,12 +120,13 @@ function ViewUsers(props) {
                     })
                     .map((user, index) => (
                       <ListGroup.Item
-                        key={user.id}
+                        key={user.userid}
                         style={{ backgroundColor: "#e7f3f3" }}
                       >
-                        {user.id}
-                        --{user.name}
+                        {user.userid}
+                        --{user.username}
                         <EditIcon
+                          onClick={() => updateUser(user)}
                           style={{
                             marginLeft: "3rem",
                             float: "right",
@@ -105,6 +141,7 @@ function ViewUsers(props) {
                             color: "red",
                             cursor: "pointer",
                           }}
+                          onClick={() => deleteUser(user)}
                         />
                       </ListGroup.Item>
                     ))}
@@ -113,7 +150,7 @@ function ViewUsers(props) {
             </div>
             <div className='col-md-4'>
               {newUserWindow ? (
-                <AddUser closehandler={add}  isupdate={isUpdate} />
+                <AddUser closehandler={add} user={user} isUpdate={isUpdate} />
               ) : null}
             </div>
           </div>
@@ -159,7 +196,7 @@ function ViewUsers(props) {
                       .filter((val) => {
                         if (searchKeywords === "") return val;
                         else if (
-                          val.name
+                          val.username
                             .toLowerCase()
                             .includes(searchKeywords.toLowerCase())
                         )
@@ -167,7 +204,7 @@ function ViewUsers(props) {
                       })
                       .map((user, index) => (
                         <ListGroup.Item
-                          key={user.id + index}
+                          key={user.userid + index}
                           style={{
                             backgroundColor: "#e7f3f3",
                           }}
@@ -179,7 +216,7 @@ function ViewUsers(props) {
                             })
                           }
                         >
-                          {user.id}--{user.name}
+                          {user.userid}--{user.username}
                         </ListGroup.Item>
                       ))}
                   </ListGroup>

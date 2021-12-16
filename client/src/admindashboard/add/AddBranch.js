@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userActions,adminActions } from "../../_actions";
+import { alertActions,adminActions } from "../../_actions";
 import { useLocation } from "react-router-dom";
 import "../css/admin.css";
 
 function AddBranch(props) {
   const dispatch = useDispatch();
+  const alert = useSelector((state) => state.helperData);
   const newBranch = useSelector((state) => state.userData.branch);
   const location = useLocation();
   const [submitted, setSubmitted] = useState(false);
   const { from } = location.state || { from: { pathname: "/addbranch" } };
   const [branch, setInputsBranch] = useState({
-    branchname: "",
+    branchname: props.branch.branchname ? props.branch.branchname : '',
    
     
   });
+  const [branchid, setBranchId] = useState(props.branch.id ? props.branch.id : '')
   const {
    
     branchname,
@@ -23,7 +25,7 @@ function AddBranch(props) {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    //console.log(name,value);
+    dispatch(alertActions.clear());
     setInputsBranch((inputs) => ({ ...inputs, [name]: value }));
   }
   useEffect(() => {
@@ -34,7 +36,8 @@ function AddBranch(props) {
    
     e.preventDefault();
     setSubmitted(true);
-
+  dispatch(alertActions.loading("Please Wait While Branch being Saved."));
+  setSubmitted(true);
     if (branch.branchname) {
      
       dispatch(adminActions.addNewBranch(branch, from));
@@ -43,9 +46,10 @@ function AddBranch(props) {
   const updateBranch= (e) => {
     e.preventDefault();
     setSubmitted(true);
-
+ dispatch(alertActions.loading("Please Wait While Branch being Updated."));
+ setSubmitted(true);
     if (branch.branchname) {
-      dispatch(adminActions.updateBranch(branch, from));
+      dispatch(adminActions.updateBranch(branchid,branch, from));
     }
   };
 
@@ -56,7 +60,7 @@ function AddBranch(props) {
           <div className='form-content'>
             <div className='form-items'>
               {props.isUpdate ? <h3>Update Branch</h3> : <h3>Add New Branch</h3>}
-
+              <p className={alert.type}>{alert.message}</p>
               <p>Fill in the data below.</p>
               <form className='requires-validation'>
                 <div className='col-md-12'>
@@ -66,7 +70,7 @@ function AddBranch(props) {
                     type='text'
                     name='branchname'
                     placeholder='Branch Name'
-                    value={branchname}
+                    value={branch.branchname}
                     onChange={handleChange}
                   />
                  
@@ -79,16 +83,16 @@ function AddBranch(props) {
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => updateBranch(e)}
+                      onClick={updateBranch}
                       className='btn btn-warning'
                     >
-                      Update User
+                      Update Branch
                     </button>
                   ) : (
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => addNewBranch(e)}
+                      onClick={addNewBranch}
                       className='btn btn-warning'
                     >
                       Add Branch

@@ -21,7 +21,13 @@ function Description(props) {
             </div>
             <div className='postcard__bar'></div>
             <div className='postcard__preview-txt'>
-              This Item Is Alloted To {}
+              <p>This Item Is Belongs To Set :- {props.product.setid?props.product.setid:'N/A'}</p>
+              <p>Warranty Ends On :- {props.product.warranty_end_date?props.product.warranty_end_date:'N/A'}</p>
+              <p>This Item Is Belongs To User :- {props.product.name?props.product.name:'N/A'}</p>
+              <p>This Item Is Belongs Order Number :- {props.product.ordername?props.product.ordername:'N/A'}</p>
+              <p>This Item unique Serial No :- {props.product.serialno?props.product.serialno:'N/A'}</p>
+              <p>This Item Type is :- {props.product.itemtype?props.product.itemtype:'N/A'}</p>
+              <p>This Item Name is :- {props.product.itemname?props.product.itemname:'N/A'}</p>
             </div>
             <ul className='postcard__tagbox'>
               <li className='tag__item'>
@@ -33,7 +39,7 @@ function Description(props) {
                 {props.product.itemtype}
               </li>
               <li className='tag__item play blue'>
-                <i className='fas fa-play mr-2'></i>Play Episode
+                <i className='fas fa-play mr-2'></i>{props.product.ordername}
               </li>
             </ul>
           </div>

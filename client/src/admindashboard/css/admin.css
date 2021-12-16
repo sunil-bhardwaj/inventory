@@ -410,3 +410,18 @@ i.icon {
   text-align: center !important;
   display: block ruby;
 }
+.alert-danger {
+    color: #ffffff;
+    background-color: #bd3844;
+    border-color: #f5c2c7;
+}
+.alert-success {
+    color: #ffffff;
+    background-color: #3a6e57;
+    border-color: #badbcc;
+}
+.alert-info {
+    color: #ffffff;
+    background-color: #342dcf;
+    border-color: #badbcc;
+}

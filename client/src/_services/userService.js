@@ -9,7 +9,7 @@ export const userService = {
   update,
   delete: _delete,
   addNewUser,
-  
+  updateUser,
 };
 
 function login(username, password) {
@@ -36,7 +36,18 @@ function logout() {
 
       
 }
+function updateUser(id,user) {
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+  };
 
+  return fetch(
+    `http://10.146.19.127:3001/api/users/update/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
 function getAll() {
   const requestOptions = {
     method: "GET",
@@ -98,14 +109,16 @@ function update(user) {
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
+function _delete(userid) {
+  console.log(userid)
+ 
   const requestOptions = {
     method: "DELETE",
     headers: authHeader(),
   };
 
   return fetch(
-    `http://10.146.19.127:3001/api/users/delete/${id}`,
+    `http://10.146.19.127:3001/api/users/delete/${userid}`,
     requestOptions
   ).then(handleResponse);
 }

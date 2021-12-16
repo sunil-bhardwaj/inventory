@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-
+import { alertActions } from "../../_actions";
 import ListGroup from "react-bootstrap/ListGroup";
+import { confirmAlert } from "react-confirm-alert";
+import AddBrand from "../add/AddBrand";
 import RightBar from "../../mycomponents/RightBar";
 import EditIcon from "@material-ui/icons/Assignment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import { adminActions } from "../../_actions";
-import AddBrand from "../add/AddBrand";
 
 function ViewBrands(props) {
   const dispatch = useDispatch();
@@ -14,23 +15,56 @@ function ViewBrands(props) {
   const [searchKeywords, setSearchKeywords] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
   const [newBrandWindow, setnewBrandWindow] = useState(false);
+  const [brand, setBrand] = useState([]);
   useEffect(() => {
     dispatch(adminActions.viewAllBrands());
   }, []);
-
-  const add = () => {
+  const alert = useSelector((state) => state.helperData);
+  const add = (e) => {
+    e.preventDefault();
+    dispatch(alertActions.clear());
+    setIsUpdate(false);
     setnewBrandWindow(!newBrandWindow);
+  };
+  const updateBrand = (selectedbrand) => {
+    dispatch(alertActions.clear());
+    setBrand(selectedbrand);
+    setIsUpdate(true);
+    setnewBrandWindow(!newBrandWindow);
+  };
+  const deleteBrand = (selectedbrand) => {
+    dispatch(alertActions.clear());
+    setBrand(selectedbrand);
+    setIsUpdate(false);
+    {
+      const { action } = { action: { action: "deletebrand" } };
+      confirmAlert({
+        title: "Delete Brand Request",
+        message: `Delete Brand '${selectedbrand.brandname}'`,
+        buttons: [
+          {
+            label: "Yes",
+            onClick: () => {
+              dispatch(adminActions.deleteBrand(selectedbrand, action));
+            },
+          },
+          {
+            label: "No",
+          },
+        ],
+      });
+    }
   };
   return (
     <div className='container'>
       <div className='row'>
-        <h4>Existing Designations</h4>
+        <h4>Existing Brands</h4>
 
         <div className='col-md-4 float-left'>
           <button
             className='btn btn-success'
             style={{ marginBottom: "6px", marginRight: "50%" }}
-            onClick={(e) => add()}
+            onClick={add}
           >
             Add New
           </button>
@@ -50,6 +84,7 @@ function ViewBrands(props) {
             type='search'
             value={searchKeywords}
             onChange={(e) => {
+              dispatch(alertActions.clear());
               setSearchKeywords(e.target.value);
             }}
             className='input'
@@ -61,6 +96,7 @@ function ViewBrands(props) {
       <div className='row'>
         <div className='col-md-8'>
           <div style={{ display: "block", width: 700, padding: 30 }}>
+            <p className={alert.type}>{alert.message}</p>
             <ListGroup>
               {brandsInfo
                 .filter((val) => {
@@ -86,6 +122,7 @@ function ViewBrands(props) {
                         cursor: "pointer",
                       }}
                       color='primary'
+                      onClick={() => updateBrand(brand)}
                     />
                     <DeleteIcon
                       style={{
@@ -94,6 +131,7 @@ function ViewBrands(props) {
                         color: "red",
                         cursor: "pointer",
                       }}
+                      onClick={() => deleteBrand(brand)}
                     />
                   </ListGroup.Item>
                 ))}
@@ -103,7 +141,7 @@ function ViewBrands(props) {
 
         <div className='col-md-4'>
           {newBrandWindow ? (
-            <AddBrand closehandler={add} isupdate={isUpdate} />
+            <AddBrand closehandler={add} brand={brand} isUpdate={isUpdate} />
           ) : null}
         </div>
       </div>

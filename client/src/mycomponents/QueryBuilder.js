@@ -6,7 +6,7 @@ import Createable from "react-select/creatable";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 import { useDispatch, useSelector } from "react-redux";
-import { inventoryActions, userActions } from "../_actions";
+import { alertActions, inventoryActions, userActions } from "../_actions";
 
 function arrayMove(array, from, to) {
   array = array.slice();
@@ -15,11 +15,7 @@ function arrayMove(array, from, to) {
 }
 
 const SortableMultiValue = SortableElement((props) => {
-  // this prevents the menu from being opened/closed when the user clicks
-  // on a value to begin dragging it. ideally, detecting a click (instead of
-  // a drag) would still focus the control and toggle the menu, but that
-  // requires some magic with refs that are out of scope for this example
-  // console.log(props)
+ 
   const onMouseDown = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -38,64 +34,66 @@ function QueryBuilder() {
   }, []);
   var filterOptions = [];
   var columnOptions = [];
+  
   const dispatch = useDispatch();
   const inventoryInfo = useSelector((state) => state.inventoryData);
   const userInfo = useSelector((state) => state.userData);
-  
+  const alert = useSelector((state)=>state.helperData);
+  const [initOption, setInitOption] = useState('1')
   const [selected, setSelected] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [filterType, setFilterType] = useState('0');
   const onFilterOptionsChange = (selectedOptions) => {
     setSelected(selectedOptions);
   };
-  
+  const onChangeOptionValue = (event) => {
+    setInitOption(event.target.value);
+  };
   const onColumnOptionsChange = (selectedOptions) => {
     setSelectedColumns(selectedOptions);
   };
   const onFilterTypeChange = (e) => {
-    //console.log(e.target.value)
+  
     setFilterType(e.target.value);
     
   };
   if (filterType === "0") {
     filterOptions = [];
     columnOptions = [
-      { value: "inventoryid", label: "Inventory Id" },
-      { value: "itemtype", label: "Item Type" },
-      { value: "id", label: "User Id" },
-      { value: "brandname", label: "Brand Name" },
-      { value: "mappingid", label: "Mapping Id" },
-      { value: "instore", label: "In Store Status" },
-      { value: "isdeallocated", label: "Deallocation Status" },
-      { value: "setid", label: "Set Id" },
-      { value: "orderno", label: "Order No" },
-      { value: "ordername", label: "Order Name" },
-      { value: "serialno", label: "Serial No" },
-      { value: "image", label: "Inventory Image" },
-      { value: "warranty_ends_on", label: "Warranty End Date" },
-      { value: "itemname", label: "Item Name" },
-      { value: "name", label: "User Name" },
+      { value: "inventoryid", label: "InventoryId" },
+      { value: "itemtype", label: "ItemType" },
+      { value: "id", label: "UserId" },
+      { value: "brandname", label: "BrandName" },
+      { value: "mappingid", label: "MappingId" },
+      { value: "instore", label: "InStore" },
+      { value: "isdeallocated", label: "Deallocated" },
+      { value: "setid", label: "SetId" },
+      { value: "orderno", label: "OrderNo" },
+      { value: "ordername", label: "OrderName" },
+      { value: "serialno", label: "SerialNo" },
+      { value: "image", label: "InventoryImage" },
+      { value: "warranty_ends_on", label: "WarrantyEndDate" },
+      { value: "itemname", label: "ItemName" },
+      { value: "name", label: "UserName" },
     ];
-    /*SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,itemstypes.id as typeid,users.id,brands.brandname,mapping.id as mappingid,mapping.instore,\
-  mapping.isdeallocated,mapping.userid,mapping.setid,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
-  inventory.image,inventory.warranty_ends_on, items.itemname,  users.name */
+   
   } else if (filterType === "1") {
     columnOptions = [
-      { value: "inventoryid", label: "Inventory Id" },
-      { value: "itemtype", label: "Item Type" },
-      { value: "id", label: "User Id" },
-      { value: "brandname", label: "Brand Name" },
-      { value: "mappingid", label: "Mapping Id" },
-      { value: "instore", label: "In Store Status" },
-      { value: "isdeallocated", label: "Deallocation Status" },
-      { value: "setid", label: "Set Id" },
-      { value: "orderno", label: "Order No" },
-      { value: "ordername", label: "Order Name" },
-      { value: "serialno", label: "Serial No" },
-      { value: "image", label: "Inventory Image" },
-      { value: "warranty_ends_on", label: "Warranty End Date" },
-      { value: "itemname", label: "Item Name" },
-      { value: "name", label: "User Name" },
+      { value: "inventoryid", label: "InventoryId" },
+      { value: "itemtype", label: "ItemType" },
+      { value: "id", label: "UserId" },
+      { value: "brandname", label: "BrandName" },
+      { value: "mappingid", label: "MappingId" },
+      { value: "instore", label: "InStore" },
+      { value: "isdeallocated", label: "Deallocated" },
+      { value: "setid", label: "SetId" },
+      { value: "orderno", label: "OrderNo" },
+      { value: "ordername", label: "OrderName" },
+      { value: "serialno", label: "SerialNo" },
+      { value: "image", label: "InventoryImage" },
+      { value: "warranty_ends_on", label: "WarrantyEndDate" },
+      { value: "itemname", label: "ItemName" },
+      { value: "name", label: "UserName" },
     ];
     filterOptions = [];
     userInfo.userList.map((el) => {
@@ -104,27 +102,35 @@ function QueryBuilder() {
     });
   } else if (filterType === "2") {
     columnOptions = [
-      { value: "inventoryid", label: "Inventory Id" },
-      { value: "itemtype", label: "Item Type" },
-      { value: "id", label: "User Id" },
-      { value: "brandname", label: "Brand Name" },
-      { value: "mappingid", label: "Mapping Id" },
-      { value: "instore", label: "In Store Status" },
-      { value: "isdeallocated", label: "Deallocation Status" },
-      { value: "setid", label: "Set Id" },
-      { value: "orderno", label: "Order No" },
-      { value: "ordername", label: "Order Name" },
-      { value: "serialno", label: "Serial No" },
-      { value: "image", label: "Inventory Image" },
-      { value: "warranty_ends_on", label: "Warranty End Date" },
-      { value: "itemname", label: "Item Name" },
-      { value: "name", label: "User Name" },
+      { value: "inventoryid", label: "InventoryId" },
+      { value: "itemtype", label: "ItemType" },
+      { value: "id", label: "UserId" },
+      { value: "brandname", label: "BrandName" },
+      { value: "mappingid", label: "MappingId" },
+      { value: "instore", label: "InStore" },
+      { value: "isdeallocated", label: "Deallocated" },
+      { value: "setid", label: "SetId" },
+      { value: "orderno", label: "OrderNo" },
+      { value: "ordername", label: "OrderName" },
+      { value: "serialno", label: "SerialNo" },
+      { value: "image", label: "InventoryImage" },
+      { value: "warranty_ends_on", label: "WarrantyEndDate" },
+      { value: "itemname", label: "ItemName" },
+      { value: "name", label: "UserName" },
     ];
     filterOptions = [];
-    inventoryInfo.inventoryList.map((el) => {
-      var temp = { value: el.typeid, label: el.itemtype, isFixed: true };
-      filterOptions.push(temp);
-    });
+    
+    const map = new Map();
+    for (const item of inventoryInfo.inventoryList) {
+      if (!map.has(item.typeid)) {
+        map.set(item.typeid, true); // set any value to Map
+        filterOptions.push({
+          value: item.typeid,
+          label: item.itemtype,
+        });
+      }
+    }
+   
   }
   
   const onSortEnd = ({ oldIndex, newIndex }) => {
@@ -135,10 +141,35 @@ function QueryBuilder() {
       newValue.map((i) => i.value)
     );
   };
-  console.log(selected,selectedColumns)
+ 
+ 
+ 
    const savePDF = () => {
+     
+    if (selectedColumns.length < 2)
+    {
+      dispatch(alertActions.error("Select Atleast Three Columns To build Report!"))
+      return 
+    }
+    var selectopt1 = true;
+    var selectopt2 = false
+    switch (initOption) {
+      case '1': selectopt1 = true
+              selectopt2 = false
+        break;
+      case '2': selectopt1 = false;
+              selectopt2 =false
+        break;
+      case '3': selectopt1 =true
+               selectopt2 = true
+        break;
+
+      default:
+        break;
+    }
+    console.log(initOption,selectopt1,selectopt2)
     var doc = new jsPDF();
-    var cols = [];
+    var cols = ["Index"];
    
     selectedColumns.forEach((column) => {
       var temp = column.label;
@@ -147,35 +178,71 @@ function QueryBuilder() {
     
     var rows = [];
     if(filterType === '0'){
-      inventoryInfo.inventoryList.sort((a, b) => (a.itemtype > b.itemtype ? 1 : -1));
-      inventoryInfo.inventoryList.forEach((element) => {
-         var temp = []
-        selectedColumns.forEach((col) => {
-          console.log(col.value, element[col.value]);
-
-          temp.push([element[col.value]])
-
-         
-        });
-           rows.push(temp);
-           
-           
-         })
+       inventoryInfo.inventoryList.sort((a, b) => (a.itemtype > b.itemtype ? 1 : -1))
+       .filter((inventory) => inventory.instore === selectopt1 || inventory.instore === selectopt2 )
+          .forEach((element,index) => {
+            var temp = [];
+            temp.push(index+1)
+            selectedColumns.forEach((col) => {
+              temp.push([element[col.value]]);
+            });
+            rows.push(temp);
+          });
+       
+   
+      
         
-        console.log(rows);
-      console.log(cols)   
+      
       doc.autoTable(cols, rows, { startY: 10 });
     }
      if (filterType === "1") {
-       inventoryInfo.inventoryList.sort((a, b) => (a.id > b.id ? 1 : -1));
+       var srno = 1;
+       
+       inventoryInfo.inventoryList.sort((a, b) => (a.id > b.id ? 1 : -1))
+       .filter((inventory) => inventory.instore === selectopt1 || inventory.instore === selectopt2 )
          inventoryInfo.inventoryList.forEach((element) => {
-           
-           if (selected.length > 0) {
+          if (selected.length > 0) {
              selected.forEach((selement) => {
-               // console.log(selement.value, element.id);
+                console.log(selement.value, element.id);
                if (selement.value === element.id) {
-               
+                   
                    var temp = [];
+                   temp.push(srno);
+                   selectedColumns.forEach((col) => {
+                     console.log(col.value, element[col.value]);
+                      srno++
+                      console.log(srno)
+                     temp.push([element[col.value]]);
+                   });
+                   rows.push(temp);
+                   
+               }
+             });
+           } else {
+               var temp = [];
+               selectedColumns.forEach((col) => {
+                 console.log(col.value, element[col.value]);
+
+                 temp.push([element[col.value]]);
+               });
+               rows.push(temp);
+          
+           }
+         });
+      
+        doc.autoTable(cols, rows, { startY: 10 });
+     }
+     if (filterType === "2") {
+       inventoryInfo.inventoryList.sort((a, b) => (a.id > b.id ? 1 : -1))
+       .filter((inventory) => inventory.instore === selectopt1 || inventory.instore === selectopt2 )
+         inventoryInfo.inventoryList.forEach((element) => {
+          if (selected.length > 0) {
+             selected.forEach((selement,index) => {
+               
+               if (selement.value === element.typeid) {
+                console.log(selement.value, element.typeid);
+                   var temp = [];
+                   temp.push(index + 1);
                    selectedColumns.forEach((col) => {
                      console.log(col.value, element[col.value]);
 
@@ -198,7 +265,7 @@ function QueryBuilder() {
       
         doc.autoTable(cols, rows, { startY: 10 });
      }
-   if (filterType === "2") {
+   /*if (filterType === "2") {
      inventoryInfo.inventoryList.forEach((element) => {
          var temp = [];
          selectedColumns.forEach((col) => {
@@ -210,18 +277,66 @@ function QueryBuilder() {
      
      });
      doc.autoTable(cols, rows, { startY: 10 });
-   }
+   }*/
 
     // doc.autoTable(col1, rows1, { startY: 60 });
-    doc.save("Test.pdf");
+    var string = doc.output("datauristring");
+    /*var iframe =
+      "<iframe width='100%' height='100%' src='" + string + "'></iframe>";
+    var x = window.open();
+    x.document.open();
+    x.document.write(iframe);
+    x.document.close();*/
+    //var string = doc.output("datauristring");
+    doc = addWaterMark(doc);
+    
+     const frame = document.getElementById("pdfFrame");
+     console.log(frame);
+     frame.src = doc.output("datauristring")
+    
+    doc.save("Report.pdf");
+    dispatch(
+      alertActions.success("Report Generated Scucessfully")
+    );
+    return string
    
   }
+  function addWaterMark(doc) {
+    var totalPages = doc.internal.getNumberOfPages();
+
+    for (var i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      //doc.addImage(imgData, 'PNG', 40, 40, 75, 75);
+      doc.setTextColor(150);
+      doc.setFont("helvetica");
+     // doc.setFontType("bold");
+      doc.setFontSize(70);
+      doc.text(50, doc.internal.pageSize.height - 70, "HP HIGH COURT",null,45);
+    }
+
+    return doc;
+  }
+ 
   return (
     <>
       <div className='container'>
         <div className='row'>
-          <div className='col-md-9'>
+          <div className='col-md-5'>
             <div id='my-table'>
+              Select Options
+              <div className='col-md-12' style={{ display: "flex" }}>
+                <div onChange={onChangeOptionValue}>
+                  <span style={{ marginRight: "15px" }}>
+                    <input type='radio' value='1' name='reptype' /> All
+                  </span>
+                  <span style={{ marginRight: "15px" }}>
+                    <input type='radio' value='2' name='reptype' /> Allocated
+                  </span>
+                  <span style={{ marginRight: "15px" }}>
+                    <input type='radio' value='3' name='reptype' /> InStore
+                  </span>
+                </div>
+              </div>
               Select Filter Type
               <select
                 value={filterType}
@@ -269,10 +384,20 @@ function QueryBuilder() {
                 }}
               />
             </div>
-
+            <p class={alert.type}>{alert.message}</p>
             <button type='primary' onClick={savePDF}>
               Download PDF
             </button>
+          </div>
+          <div className='col-md-7' style={{boxShadow:'inset 0px 11px 8px -10px black,inset 0px -11px 8px -10px black' }}>
+            <iframe
+            
+              title='pdfFrame'
+              id='pdfFrame'
+              width='900'
+              height='1000'
+              border='4px solid red'
+            ></iframe>
           </div>
         </div>
       </div>

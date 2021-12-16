@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userActions, adminActions } from "../../_actions";
+import { alertActions, adminActions } from "../../_actions";
 import { useLocation } from "react-router-dom";
 import "../css/admin.css";
 
 function AddBrand(props) {
   const dispatch = useDispatch();
+  const alert = useSelector((state) => state.helperData);
   const newBrand = useSelector((state) => state.userData.brand);
   const location = useLocation();
   const [submitted, setSubmitted] = useState(false);
   const { from } = location.state || { from: { pathname: "/addbrand" } };
   const [brand, setInputsBrand] = useState({
-    brandname: "",
+    brandname: props.brand.brandname ? props.brand.brandname : "",
   });
+  const [brandid, setBrandId] = useState(
+    props.brand.id ? props.brand.id : ""
+  );
   const { brandname } = setInputsBrand;
 
   function handleChange(e) {
     const { name, value } = e.target;
-    //console.log(name,value);
+    dispatch(alertActions.clear());
     setInputsBrand((inputs) => ({ ...inputs, [name]: value }));
   }
   useEffect(() => {
@@ -27,7 +31,8 @@ function AddBrand(props) {
   const addNewBrand = (e) => {
     e.preventDefault();
     setSubmitted(true);
-
+    dispatch(alertActions.loading("Please Wait While Brand being Saved."));
+    setSubmitted(true);
     if (brand.brandname) {
       dispatch(adminActions.addNewBrand(brand, from));
     }
@@ -35,9 +40,10 @@ function AddBrand(props) {
   const updateBrand = (e) => {
     e.preventDefault();
     setSubmitted(true);
-
+    dispatch(alertActions.loading("Please Wait While Brand being Updated."));
+    setSubmitted(true);
     if (brand.brandname) {
-      dispatch(adminActions.updateBrand(brand, from));
+      dispatch(adminActions.updateBrand(brandid, brand, from));
     }
   };
 
@@ -52,7 +58,7 @@ function AddBrand(props) {
               ) : (
                 <h3>Add New Brand</h3>
               )}
-
+              <p className={alert.type}>{alert.message}</p>
               <p>Fill in the data below.</p>
               <form className='requires-validation'>
                 <div className='col-md-12'>
@@ -62,7 +68,7 @@ function AddBrand(props) {
                     type='text'
                     name='brandname'
                     placeholder='Brand Name'
-                    value={brandname}
+                    value={brand.brandname}
                     onChange={handleChange}
                   />
                 </div>
@@ -74,7 +80,7 @@ function AddBrand(props) {
                       onClick={updateBrand}
                       className='btn btn-warning'
                     >
-                      Update User
+                      Update Brand
                     </button>
                   ) : (
                     <button

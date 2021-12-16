@@ -28,11 +28,13 @@ function addNewBranch(branch, from) {
     adminService.addNewBranch(branch).then(
       (branch) => {
         dispatch(success(branch));
+        dispatch(alertActions.success("Branch Added Scucessfully"));
         dispatch(adminActions.viewBranches())
         // history.push("/");
       },
       (error) => {
         dispatch(failure(error.toString()));
+        dispatch(alertActions.error("Error Saving Branch"));
         dispatch(alertActions.error(error.toString()));
       }
     );
@@ -54,7 +56,7 @@ function viewBranches() {
     dispatch(request());
 
     adminService.getAllBranches().then(
-      (branches) => dispatch(success(branches)),
+      (branches) => {dispatch(success(branches))},
       (error) => dispatch(failure(error.toString()))
     );
   };
@@ -69,46 +71,63 @@ function viewBranches() {
     return { type: adminConstants.VIEW_BRANCH_FALIURE, error };
   }
 }
-function updateBranch(id) {
+function updateBranch(id,branch) {
   return (dispatch) => {
     dispatch(request(id));
 
-    adminService.update(id).then(
-      (branch) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.updateBranch(id, branch).then(
+      (branch) => {
+        dispatch(success(id));
+        dispatch(adminActions.viewBranches());
+        dispatch(alertActions.success("Branch Updated Scucessfully"));
+      },
+      (error) => {
+        dispatch(failure(id, error.toString()));
+        dispatch(alertActions.error("Error Updating Branch"));
+      }
     );
   };
 
   function request(id) {
-    return { type: adminConstants.UPDATE_BRANCH__REQUEST, id };
+    return { type: adminConstants.UPDATE_BRANCH_REQUEST, id };
   }
   function success(id) {
-    return { type: adminConstants.UPDATE_BRANCH__SUCCESS, id };
+    return { type: adminConstants.UPDATE_BRANCH_SUCCESS, id };
   }
   function failure(id, error) {
-    return { type: adminConstants.UPDATE_BRANCH__FAILURE, id, error };
+    return { type: adminConstants.UPDATE_BRANCH_FAILURE, id, error };
   }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _deleteBranch(id) {
+function _deleteBranch(branch) {
   return (dispatch) => {
-    dispatch(request(id));
+    dispatch(request(branch.id));
 
-    adminService.delete(id).then(
-      (branch) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.deleteBranch(branch.id).then(
+      (id) => {
+          dispatch(success(id));
+           dispatch(adminActions.viewBranches())
+            dispatch(alertActions.success("Branch Deleted Scucessfully"));
+      }
+     ,
+      (error) => {
+         dispatch(failure(branch.id, error.toString()));
+         dispatch(alertActions.error("Branch Deleted Scucessfully"));
+      }
+      
+     
     );
   };
 
   function request(id) {
-    return { type: adminConstants.DELETE_BRANCH__REQUEST, id };
+    return { type: adminConstants.DELETE_BRANCH_REQUEST, id };
   }
   function success(id) {
-    return { type: adminConstants.DELETE_BRANCH__SUCCESS, id };
+    return { type: adminConstants.DELETE_BRANCH_SUCCESS, id };
   }
   function failure(id, error) {
-    return { type: adminConstants.DELETE_BRANCH__FAILURE, id, error };
+    return { type: adminConstants.DELETE_BRANCH_FAILURE, id, error };
   }
 }
 function addNewDesignation(designation, from) {
@@ -119,11 +138,13 @@ function addNewDesignation(designation, from) {
       (designation) => {
         dispatch(success(designation));
          dispatch(adminActions.viewAllDesignations())
+         dispatch(alertActions.success("Designation Saved Scucessfully"));
         
       },
       (error) => {
         dispatch(failure(error.toString()));
         dispatch(alertActions.error(error.toString()));
+        dispatch(alertActions.error("Error Saving Designation"));
       }
     );
   };
@@ -159,35 +180,51 @@ function viewAllDesignations() {
     return { type: adminConstants.VIEW_DESIGNATION_FALIURE, error };
   }
 }
-function updateDesignation(id) {
+function updateDesignation(id,designation,from) {
   return (dispatch) => {
     dispatch(request(id));
 
-    adminService.updateDesignation(id).then(
-      (designation) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.updateDesignation(id, designation).then(
+      (designation) => {
+        dispatch(success(id));
+        dispatch(adminActions.viewAllDesignations());
+        dispatch(alertActions.success("Designation Updated Scucessfully"));
+      },
+      (error) => {
+        dispatch(failure(id, error.toString()));
+        dispatch(alertActions.error("Error Updating Designation"));
+      }
     );
   };
 
   function request(id) {
-    return { type: adminConstants.UPDATE_DESIGNATION__REQUEST, id };
+    return { type: adminConstants.UPDATE_DESIGNATION_REQUEST, id };
   }
   function success(id) {
-    return { type: adminConstants.UPDATE_DESIGNATION__SUCCESS, id };
+    return { type: adminConstants.UPDATE_DESIGNATION_SUCCESS, id };
   }
   function failure(id, error) {
-    return { type: adminConstants.UPDATE_DESIGNATION__FAILURE, id, error };
+    return { type: adminConstants.UPDATE_DESIGNATION_FAILURE, id, error };
   }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _deleteDesignation(id) {
+function _deleteDesignation(designation) {
   return (dispatch) => {
-    dispatch(request(id));
+    dispatch(request(designation.id));
 
-    adminService.delete(id).then(
-      (designation) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.deleteDesignation(designation.id).then(
+      (id) => {
+          dispatch(success(id));
+          dispatch(adminActions.viewAllDesignations());
+          dispatch(alertActions.success("Designation Deleted Scucessfully"));
+      }
+      
+      ,
+      (error) =>{
+           dispatch(failure(designation.id, error.toString()));
+           dispatch(alertActions.error("Error Deleting Designation"));
+      }
     );
   };
 
@@ -212,10 +249,13 @@ function addNewBrand(brand, from) {
       (brand) => {
         dispatch(success(brand));
         dispatch(adminActions.viewAllBrands());
+        
+        dispatch(alertActions.success("Brand Addition Scucessfull"));
       },
       (error) => {
         dispatch(failure(error.toString()));
         dispatch(alertActions.error(error.toString()));
+         dispatch(alertActions.success("Error Adding Brand"));
       }
     );
   };
@@ -251,13 +291,21 @@ function viewAllBrands() {
     return { type: adminConstants.VIEW_BRAND_FALIURE, error };
   }
 }
-function updateBrand(id) {
+function updateBrand(brandid,brand,from) {
+  
   return (dispatch) => {
-    dispatch(request(id));
+    dispatch(request(brandid));
 
-    adminService.updateBrand(id).then(
-      (brand) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.updateBrand(brandid, brand).then(
+      (brand) => {
+        dispatch(success(brandid));
+        dispatch(adminActions.viewAllBrands());
+        dispatch(alertActions.success("Brand Updation Scucessfull"));
+      },
+      (error) => {
+        dispatch(failure(brandid, error.toString()));
+        dispatch(alertActions.error("Brand Updation Faliure"));
+      }
     );
   };
 
@@ -278,8 +326,15 @@ function _deleteBrand(id) {
     dispatch(request(id));
 
     adminService.deleteBrand(id).then(
-      (brand) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+      (brand) =>{
+        dispatch(success(id));
+        dispatch(adminActions.viewAllBrands());
+        dispatch(alertActions.success("Brand Updation Scucessfull"));
+      } ,
+      (error) =>{
+        dispatch(failure(id, error.toString()));
+        dispatch(alertActions.error("Brand Updation Faliure"));
+      } 
     );
   };
 
@@ -296,18 +351,21 @@ function _deleteBrand(id) {
 
 ///////////////////////////////////////////
 
-function addNewSource(source, from) {
+function addNewSource(source,orderdate, from) {
+  console.log(source, orderdate);
   return (dispatch) => {
     dispatch(request());
 
-    adminService.addNewSource(source).then(
+    adminService.addNewSource(source, orderdate).then(
       (source) => {
         dispatch(success(source));
         dispatch(adminActions.viewAllSources());
+        dispatch(alertActions.success("Source Addition Scucessfull"));
       },
       (error) => {
         dispatch(failure(error.toString()));
         dispatch(alertActions.error(error.toString()));
+        dispatch(alertActions.error("Eror Adding Source"));
       }
     );
   };
@@ -344,13 +402,20 @@ function viewAllSources() {
     return { type: adminConstants.VIEW_SOURCE_FALIURE, error };
   }
 }
-function updateSource(id) {
+function updateSource(updatesourceid, source, orderdate) {
   return (dispatch) => {
-    dispatch(request(id));
+    dispatch(request(updatesourceid));
 
-    adminService.updateSource(id).then(
-      (source) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.updateSource(updatesourceid, source, orderdate).then(
+      (updatesourceid) =>{
+         dispatch(success(updatesourceid));
+          dispatch(adminActions.viewAllSources());
+         dispatch(alertActions.success("Source Updation Scucessfull"));
+      } ,
+      (error) =>{
+        dispatch(alertActions.error("Source Updation Faliure"));
+        dispatch(failure(updatesourceid, error.toString()));
+      } 
     );
   };
 
@@ -366,13 +431,21 @@ function updateSource(id) {
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _deleteSource(id) {
+function _deleteSource(source) {
   return (dispatch) => {
-    dispatch(request(id));
+    dispatch(request(source.id));
 
-    adminService.deleteSource(id).then(
-      (source) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    adminService.deleteSource(source.id).then(
+      (source) =>{
+
+          dispatch(success(source.id));
+           dispatch(adminActions.viewAllSources());
+           dispatch(alertActions.success("Source Deletion Scucessfull"));
+      } ,
+      (error) =>{
+          dispatch(failure(source.id, error.toString()));
+         dispatch(alertActions.error("Error Deleting Source"));
+      } 
     );
   };
 

@@ -41,7 +41,7 @@ const updateBranch = (request, response) => {
       }
       response
         .status(200)
-        .send(`Branch modified with ID: ${id}->${branchname}`);
+        .json(`Branch modified with ID: ${id}->${branchname}`);
     }
   );
 };
@@ -62,7 +62,7 @@ const deleteBranch = (request, response) => {
 };
 /////////////////////////////////////////////
 const getAllDesignations = (request, response) => {
-  pool.query("SELECT * FROM designation ;", (error, results) => {
+  pool.query("SELECT * FROM designation", (error, results) => {
     if (error) {
       throw error;
     }
@@ -88,7 +88,7 @@ const createDesignation = (request, response) => {
 const updateDesignation = (request, response) => {
   const id = parseInt(request.params.id);
   const { designame } = request.body;
-
+ 
   pool.query(
     "UPDATE designation SET designame = $1 WHERE id = $2",
     [designame, id],
@@ -96,7 +96,7 @@ const updateDesignation = (request, response) => {
       if (error) {
         throw error;
       }
-      response.status(200).send(`Designation modified with ID: ${id}->${designame}`);
+      response.status(200).json(`Designation modified with ID: ${id}->${designame}`);
     }
   );
 };
@@ -141,19 +141,20 @@ const getAllBrands = (request, response) => {
   });
 };
 const updateBrand = (request, response) => {
+  console.log(request.body);
   const id = parseInt(request.params.id);
-  const { brand } = request.body;
+  const { brandname } = request.body;
 
   pool.query(
     "UPDATE brands SET brandname = $1 WHERE id = $2",
-    [brand.brandname,brand.id],
+    [brandname,id],
     (error, results) => {
       if (error) {
         throw error;
       }
       response
         .status(200)
-        .json(`Brand modified with ID: ${id}->${brand.brandname}`);
+        .json(`Brand modified with ID: ${id}->${brandname}`);
     }
   );
 };
@@ -174,12 +175,12 @@ const deleteBrand = (request, response) => {
 };
 ///////////////////////////////////////
 const createSource = (request, response) => {
-  const { source } = request.body;
+  const { source, orderdate } = request.body;
   console.log(source)
  
   pool.query(
     "INSERT INTO source (ordername, orderno,orderdate,noofitems) VALUES ($1,$2,$3,$4)",
-    [source.ordername, source.orderno, source.orderdate, source.noofitems],
+    [source.ordername, source.orderno, orderdate, source.noofitems],
     (error, results) => {
       if (error) {
         throw error;
@@ -199,17 +200,18 @@ const getAllSources = (request, response) => {
   });
 };
 const updateSource = (request, response) => {
+  console.log(request.body);
   const id = parseInt(request.params.id);
-  const { source } = request.body;
+  const { source,orderdate } = request.body;
 
   pool.query(
     "UPDATE source SET ordername = $1, orderno = $2, orderdate= $3, noofitems=$4 WHERE id = $5",
     [
       source.ordername,
       source.orderno,
-      source.orderdate,
+      orderdate,
       source.noofitems,
-      source.id,
+      id,
     ],
     (error, results) => {
       if (error) {
@@ -217,7 +219,7 @@ const updateSource = (request, response) => {
       }
       response
         .status(200)
-        .json(`Branch modified with ID: ${id}->${ordername}`);
+        .json(`Branch modified with ID: ${id}->${source.ordername}`);
     }
   );
 };
@@ -329,7 +331,7 @@ const addItemToSet = (request, response) => {
         throw error;
       }
       
-      response.status(200).send(JSON.stringify(results.rowCount));
+      response.status(200).json(JSON.stringify(results.rowCount));
     }
   );
 };
@@ -344,7 +346,7 @@ const removeItemFromSet = (request, response) => {
         throw error;
       }
      
-      response.status(200).send(JSON.stringify(results.rowCount));
+      response.status(200).json(JSON.stringify(results.rowCount));
     }
   );
 };
@@ -359,7 +361,7 @@ const releaseAllSetItems = (request, response) => {
         throw error;
       }
 
-      response.status(200).send(JSON.stringify(results.rowCount));
+      response.status(200).json(JSON.stringify(results.rowCount));
     }
   );
 };
@@ -384,7 +386,7 @@ const transferSet = (request, response) => {
  }
  
  )
- response.status(200).send(JSON.stringify("Success"));
+ response.status(200).json(JSON.stringify("Success"));
   
  
 };
@@ -415,7 +417,7 @@ const moveSetToStore = (request, response) => {
     );
  
   
-  response.status(200).send(JSON.stringify("Success"));
+  response.status(200).json(JSON.stringify("Success"));
 
 }
 const allocateSet = (request, response) => {
@@ -443,7 +445,7 @@ const allocateSet = (request, response) => {
     }
   );
 
-  response.status(200).send(JSON.stringify("Success"));
+  response.status(200).json(JSON.stringify("Success"));
 };
 
 const updateSet = (request, response) => {
@@ -459,7 +461,7 @@ const updateSet = (request, response) => {
       }
       response
         .status(200)
-        .send(`Branch modified with ID: ${id}->${setname}`);
+        .json(`Branch modified with ID: ${id}->${setname}`);
     }
   );
 };
@@ -501,9 +503,9 @@ publishQuery =
             throw error;
           }
 
-          response.status(200).send(`Set Published with ID: ${id}`);
+          response.status(200).json(`Set Published with ID: ${id}`);
         });
-      // response.status(200).send(`Set Published with ID: ${id}`);
+      // response.status(200).json(`Set Published with ID: ${id}`);
      });
   })
  

@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userActions, adminActions } from "../../_actions";
+import { alertActions, adminActions } from "../../_actions";
 import { useLocation } from "react-router-dom";
 import "../css/admin.css";
 
 function AddDesignation(props) {
   const dispatch = useDispatch();
+  const alert = useSelector((state) => state.helperData);
   const newDesignation = useSelector((state) => state.userData.designation);
   const location = useLocation();
   const [submitted, setSubmitted] = useState(false);
   const { from } = location.state || { from: { pathname: "/adddesignation" } };
   const [designation, setInputsDesignation] = useState({
-    designame: "",
+    designame: props.designation.designame ? props.designation.designame : '',
   });
+  const [designationid, setDesignationId] = useState(
+    props.designation.id ? props.designation.id : ''
+  );
   const { designame } = setInputsDesignation;
 
   function handleChange(e) {
+    console.log(e.target.value)
     const { name, value } = e.target;
-    //console.log(name,value);
+    //dispatch(alertActions.clear());
     setInputsDesignation((inputs) => ({ ...inputs, [name]: value }));
   }
   useEffect(() => {
@@ -25,10 +30,10 @@ function AddDesignation(props) {
   }, []);
 
   const addNewDesignation = (e) => {
-    
     e.preventDefault();
     setSubmitted(true);
-
+    dispatch(alertActions.loading("Please Wait While Designation being Saved."));
+    setSubmitted(true);
     if (designation.designame) {
       dispatch(adminActions.addNewDesignation(designation, from));
     }
@@ -36,12 +41,13 @@ function AddDesignation(props) {
   const updateDesignation = (e) => {
     e.preventDefault();
     setSubmitted(true);
-
+    dispatch(alertActions.loading("Please Wait While Designation being Updated."));
+    setSubmitted(true);
     if (designation.designame) {
-      dispatch(adminActions.updateDesignation(designation, from));
+      dispatch(adminActions.updateDesignation(designationid, designation, from));
     }
   };
-
+console.log(designation)
   return (
     <div className='form-body'>
       <div className='row'>
@@ -53,7 +59,7 @@ function AddDesignation(props) {
               ) : (
                 <h3>Add New Designation</h3>
               )}
-
+              <p className={alert.type}>{alert.message}</p>
               <p>Fill in the data below.</p>
               <form className='requires-validation'>
                 <div className='col-md-12'>
@@ -63,7 +69,7 @@ function AddDesignation(props) {
                     type='text'
                     name='designame'
                     placeholder='Designation Name'
-                    value={designame}
+                    value={designation.designame}
                     onChange={handleChange}
                   />
                 </div>
@@ -72,16 +78,16 @@ function AddDesignation(props) {
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => updateDesignation()}
+                      onClick={updateDesignation}
                       className='btn btn-warning'
                     >
-                      Update User
+                      Update Designation
                     </button>
                   ) : (
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => addNewDesignation()}
+                      onClick={addNewDesignation}
                       className='btn btn-warning'
                     >
                       Add Designation

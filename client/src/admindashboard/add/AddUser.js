@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userActions, adminActions } from "../../_actions";
+import { userActions, adminActions, alertActions } from "../../_actions";
 import { useLocation } from "react-router-dom";
 import "../css/admin.css";
 
 function AddUser(props) {
-  const dispatch = useDispatch();
   
+  const dispatch = useDispatch();
+  const alert = useSelector((state)=>state.helperData)
   const branchesInfo = useSelector((state) => state.adminData.branchList);
  const designationInfo = useSelector((state) => state.adminData.designationList);
   const location = useLocation();
   const [submitted, setSubmitted] = useState(false);
   const { from } = location.state || { from: { pathname: "/addusers" } };
+  const [updateuserid, serUpdateUserId] = useState( props.user.userid ? props.user.userid : '')
   const [user, setInputsUser] = useState({
-    username: "",
-    phoneno: "",
-    email: "",
-    designationid: "",
-    branchid: "",
-    usertype:""
+    username: props.user.username ? props.user.username : '',
+    phoneno: props.user.phoneno?props.user.phoneno:'',
+    email: props.user.email?props.user.email:'',
+    designationid: props.user.designationid?props.user.designationid:null,
+    branchid: props.user.branchid?props.user.branchid:null,
   });
-  const { username,phoneno,email,designationid,branchid,usertype} = setInputsUser;
-
+             /* username = props.user.name
+              phoneno=props.user.phoneno
+              email= props.user.email
+              designationid=props.user.designationid
+              branchid= props.user.branchid*/
+  const { username,phoneno,email,designationid,branchid} = setInputsUser;
+ 
   function handleChange(e) {
     e.preventDefault();
+    dispatch(alertActions.clear());
     const { name, value } = e.target;
     //console.log(name,value);
     setInputsUser((inputs) => ({ ...inputs, [name]: value }));
@@ -35,8 +42,9 @@ function AddUser(props) {
   }, []);
 
   const addNewUser = (e) => {
-   
+    
     e.preventDefault();
+   dispatch(alertActions.loading("Please Wait While User being Saved."))
     setSubmitted(true);
 
     if (user.username) {
@@ -46,21 +54,32 @@ function AddUser(props) {
   };
   const updateUser = (e) => {
    e.preventDefault();
+    dispatch(alertActions.loading("Please Wait While Updating User."));
     setSubmitted(true);
 
     if (user.username) {
-      dispatch(userActions.updateUser(user, from));
+      dispatch(userActions.updateUser(updateuserid,user, from));
     }
   };
-
+   console.log(user, updateuserid);
   return (
     <div className='form-body'>
       <div className='row'>
         <div className='form-holder'>
           <div className='form-content'>
             <div className='form-items'>
-              {props.isUpdate ? <h3>Update User</h3> : <h3>Add New User</h3>}
-
+              {props.isUpdate 
+              ? 
+              <>
+              <h3>Update User</h3> 
+              
+              
+             
+              </>
+              : 
+              <h3>Add New User</h3>
+              }
+              <p class = {alert.type}>{alert.message}</p>
               <p>Fill in the data below.</p>
               <form className='requires-validation'>
                 <div className='col-md-12'>
@@ -70,7 +89,7 @@ function AddUser(props) {
                     type='text'
                     name='username'
                     placeholder='User Name'
-                    value={username}
+                    value={user.username}
                     onChange={handleChange}
                   />
                   <input
@@ -79,7 +98,7 @@ function AddUser(props) {
                     type='text'
                     name='email'
                     placeholder='User Email'
-                    value={email}
+                    value={user.email}
                     onChange={handleChange}
                   />
                   <input
@@ -88,10 +107,10 @@ function AddUser(props) {
                     type='text'
                     name='phoneno'
                     placeholder='User Phone No'
-                    value={phoneno}
+                    value={user.phoneno}
                     onChange={handleChange}
                   />
-                  <select value={designationid}  onChange={handleChange} name='designationid' className='list-group-item-action btn-style-1  rounded'>
+                  <select value={user.designationid}  onChange={handleChange} name='designationid' className='list-group-item-action btn-style-1  rounded'>
                     <option value='null'> Select Designation</option>
                     {designationInfo.map((designation, index) => (
                       <option
@@ -103,41 +122,26 @@ function AddUser(props) {
                       </option>
                     ))}
                   </select>
-                  <select  value={branchid}  onChange={handleChange} name = 'branchid' className='list-group-item-action btn-style-1  rounded'>
+                  <select  value={user.branchid}  onChange={handleChange} name = 'branchid' className='list-group-item-action btn-style-1  rounded'>
                     <option value='null'> Select Branch</option>
                     {branchesInfo.map((branch, index) => (
                       <option
                         className='list-group-item-action btn-style-1  rounded'
-                        value={`${branch.id}`}
+                        value={branch.id}
                         key={index}
                       >
                         {branch.branchname}
                       </option>
                     ))}
                   </select>
-                  <select  value={usertype} onChange={handleChange} name='usertype' className='list-group-item-action btn-style-1  rounded'>
-                    <option value='null'> Select Type</option>
-
-                    <option
-                      className='list-group-item-action btn-style-1  rounded'
-                      value='1'
-                    >
-                      Admin
-                    </option>
-                    <option
-                      className='list-group-item-action btn-style-1  rounded'
-                      value='0'
-                    >
-                      User
-                    </option>
-                  </select>
+                  
                 </div>
                 <div className='form-button mt-3'>
                   {props.isUpdate ? (
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => updateUser()}
+                      onClick={updateUser}
                       className='btn btn-warning'
                     >
                       Update User
@@ -146,7 +150,7 @@ function AddUser(props) {
                     <button
                       id='submit'
                       type='submit'
-                      onClick={(e) => addNewUser()}
+                      onClick={addNewUser}
                       className='btn btn-warning'
                     >
                       Add User

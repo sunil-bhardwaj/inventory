@@ -11,7 +11,7 @@ import { Suspense, lazy } from "react";
 import { Router } from "react-router";
 import {  Route, Switch } from "react-router-dom";
 import Pagenotfound from "./mycomponents/Pagenotfound";
-
+import {alertActions} from './_actions'
 import {PrivateRoute} from "./PrivateRoute";
 import UsersWiseReport from "./dashboard/Users";
 
@@ -56,7 +56,7 @@ function App() {
   useEffect(() => {
     history.listen((location, action) => {
       // clear alert on location change
-      // dispatch(alertActions.clear());
+      dispatch(alertActions.clear());
     });
   }, []);
 

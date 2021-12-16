@@ -66,7 +66,7 @@ function getBranchById(id) {
 
 
 
-function updateBranch(branch) {
+function updateBranch(id,branch) {
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ function updateBranch(branch) {
   };
 
   return fetch(
-    `http://10.146.19.127:3001/api/admin/branches/update/${branch.id}`,
+    `http://10.146.19.127:3001/api/admin/branches/update/${id}`,
     requestOptions
   ).then(handleResponse);
 }
@@ -129,44 +129,41 @@ function getDesignationById(id) {
   ).then(handleResponse);
 }
 
-function updateDesignation(branch) {
+function updateDesignation(id,designation) {
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(branch),
+    body: JSON.stringify(designation),
   };
 
   return fetch(
-    `http://10.146.19.127:3001/api/admin/designation/update/${branch.id}`,
+    `http://10.146.19.127:3001/api/admin/designation/update/${id}`,
     requestOptions
   ).then(handleResponse);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _deleteDesignation(id) {
+function _deleteDesignation(designationid) {
   const requestOptions = {
     method: "DELETE",
     headers: authHeader(),
   };
 
   return fetch(
-    `http://localhost:3001/api/admin/designation/delete/${id}`,
+    `http://localhost:3001/api/admin/designation/delete/${designationid}`,
     requestOptions
   ).then(handleResponse);
 }
 
 /////////////////////////////
-function addNewSource(source) {
+function addNewSource(source, orderdate) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ source }),
+    body: JSON.stringify({ source, orderdate }),
   };
 
-  return fetch(
-    `http://localhost:3001/api/admin/source/add`,
-    requestOptions
-  )
+  return fetch(`http://localhost:3001/api/admin/source/add`, requestOptions)
     .then(handleResponse)
     .then((source) => {
       return source;
@@ -197,15 +194,16 @@ function getSourceById(id) {
   ).then(handleResponse);
 }
 
-function updateSource(source) {
+function updateSource(updatesourceid, source, orderdate) {
+  console.log(updatesourceid, source, orderdate);
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(source),
+    body: JSON.stringify({source, orderdate}),
   };
 
   return fetch(
-    `http://10.146.19.127:3001/api/admin/source/update/${source.id}`,
+    `http://10.146.19.127:3001/api/admin/source/update/${updatesourceid}`,
     requestOptions
   ).then(handleResponse);
 }
@@ -266,7 +264,8 @@ function getBrandById(id) {
   ).then(handleResponse);
 }
 
-function updateBrand(brand) {
+function updateBrand(brandid,brand) {
+  
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
@@ -274,7 +273,7 @@ function updateBrand(brand) {
   };
 
   return fetch(
-    `http://10.146.19.127:3001/api/admin/designation/update/${brand.id}`,
+    `http://10.146.19.127:3001/api/admin/brand/update/${brandid}`,
     requestOptions
   ).then(handleResponse);
 }

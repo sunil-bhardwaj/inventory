@@ -111,6 +111,18 @@ function Sidebar() {
                   Brands
                   <Link to='/viewbrands' />
                 </MenuItem>
+                <MenuItem>
+                  Locations
+                  <Link to='/viewlocations' />
+                </MenuItem>
+                <MenuItem>
+                  Items
+                  <Link to='/viewitems' />
+                </MenuItem>
+                <MenuItem>
+                  Item Types
+                  <Link to='/viewitemtypes' />
+                </MenuItem>
               </SubMenu>
               <SubMenu title='Stocks'>
                 <MenuItem>

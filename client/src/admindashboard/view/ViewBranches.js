@@ -1,26 +1,62 @@
 import React, {  useEffect, useState } from "react";
-
+import { alertActions } from "../../_actions";
 import ListGroup from "react-bootstrap/ListGroup";
-import ReactPaginate from "react-paginate";
+import { confirmAlert } from "react-confirm-alert"; 
 import AddBranch from "../add/AddBranch";
 import RightBar from "../../mycomponents/RightBar";
 import EditIcon from "@material-ui/icons/Assignment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import { adminActions } from "../../_actions";
-const token = localStorage.getItem("token");
+
 
 function ViewBranches(props) {
   const dispatch = useDispatch();
   const branchesInfo = useSelector((state) => state.adminData.branchList);
   const [searchKeywords, setSearchKeywords] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
- const [newBranchWindow, setnewBranchWindow] = useState(false);
-  useEffect(() => {dispatch(adminActions.viewBranches());}, []);
-
-  const add = () => {
-  setnewBranchWindow(!newBranchWindow);
-};
+  const [newBranchWindow, setnewBranchWindow] = useState(false);
+  const [branch, setBranch] = useState([]);
+  useEffect(() => {
+    dispatch(adminActions.viewBranches());
+  }, []);
+ const alert = useSelector((state)=>state.helperData)
+  const add = (e) => {
+    e.preventDefault();
+    dispatch(alertActions.clear());
+    setIsUpdate(false);
+    setnewBranchWindow(!newBranchWindow);
+  };
+  const updateBranch = (selectedbranch) => {
+    dispatch(alertActions.clear());
+    setBranch(selectedbranch);
+    setIsUpdate(true);
+    setnewBranchWindow(!newBranchWindow);
+  };
+  const deleteBranch = (selectedbranch) => {
+    
+    dispatch(alertActions.clear());
+    setBranch(selectedbranch);
+    setIsUpdate(false);
+    {
+      const { action } = { action: { action: "deletebranch" } };
+      confirmAlert({
+        title: "Delete Branch Request",
+        message: `Delete Branch '${selectedbranch.branchname}'` ,
+          buttons: [
+          {
+            label: "Yes",
+            onClick: () => {
+              dispatch(adminActions.deleteBranch(selectedbranch, action));
+            },
+          },
+          {
+            label: "No",
+          },
+        ],
+      });
+    }
+  };
   return (
     <div className='container'>
       <div className='row'>
@@ -30,7 +66,7 @@ function ViewBranches(props) {
           <button
             className='btn btn-success'
             style={{ marginBottom: "6px", marginRight: "50%" }}
-            onClick={()=>add()}
+            onClick={add}
           >
             Add New
           </button>
@@ -50,6 +86,7 @@ function ViewBranches(props) {
             type='search'
             value={searchKeywords}
             onChange={(e) => {
+              dispatch(alertActions.clear())
               setSearchKeywords(e.target.value);
             }}
             className='input'
@@ -61,6 +98,7 @@ function ViewBranches(props) {
       <div className='row'>
         <div className='col-md-8'>
           <div style={{ display: "block", width: 700, padding: 30 }}>
+            <p className={alert.type}>{alert.message}</p>
             <ListGroup>
               {branchesInfo
                 .filter((val) => {
@@ -86,6 +124,7 @@ function ViewBranches(props) {
                         cursor: "pointer",
                       }}
                       color='primary'
+                      onClick={() => updateBranch(branch)}
                     />
                     <DeleteIcon
                       style={{
@@ -94,18 +133,18 @@ function ViewBranches(props) {
                         color: "red",
                         cursor: "pointer",
                       }}
+                      onClick={() => deleteBranch(branch)}
                     />
                   </ListGroup.Item>
                 ))}
             </ListGroup>
           </div>
         </div>
-        
-          <div className='col-md-4'>
-            {newBranchWindow ? (
-              <AddBranch closehandler={() => add()} isupdate={isUpdate} />
-            ) : null}
-         
+
+        <div className='col-md-4'>
+          {newBranchWindow ? (
+            <AddBranch closehandler={add} branch={branch} isUpdate={isUpdate} />
+          ) : null}
         </div>
       </div>
     </div>

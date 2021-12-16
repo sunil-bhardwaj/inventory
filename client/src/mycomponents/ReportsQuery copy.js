@@ -29,7 +29,7 @@ const SortableMultiValue = SortableElement((props) => {
 });
 const SortableSelect = SortableContainer(Createable);
 
-function QueryBuilderCopy1() {
+function QueryBuilder() {
   useEffect(() => {
     dispatch(inventoryActions.getAllInventory());
     dispatch(userActions.getAll());
@@ -37,17 +37,27 @@ function QueryBuilderCopy1() {
   }, []);
   var filterOptions = [];
   var columnOptions = [];
+  /*const initcheckoptions = [
+    { name: "All", value: 1, },
+    { name: "Allocated", value: 2 },
+    { name: "InStore", value: 3 },
+  ];*/
   const dispatch = useDispatch();
   const inventoryInfo = useSelector((state) => state.inventoryData);
   const userInfo = useSelector((state) => state.userData);
-
+  /*const [checkedState, setCheckedState] = useState(
+    new Array(initcheckoptions.length).fill(false)
+  );*/
+  const [initOption, setInitOption] = useState("1");
   const [selected, setSelected] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [filterType, setFilterType] = useState("0");
   const onFilterOptionsChange = (selectedOptions) => {
     setSelected(selectedOptions);
   };
-
+  const onChangeOptionValue = (event) => {
+    setInitOption(event.target.value);
+  };
   const onColumnOptionsChange = (selectedOptions) => {
     setSelectedColumns(selectedOptions);
   };
@@ -60,7 +70,7 @@ function QueryBuilderCopy1() {
     columnOptions = [
       { value: "inventoryid", label: "Inventory Id" },
       { value: "itemtype", label: "Item Type" },
-      { value: "usersid", label: "User Id" },
+      { value: "id", label: "User Id" },
       { value: "brandname", label: "Brand Name" },
       { value: "mappingid", label: "Mapping Id" },
       { value: "instore", label: "In Store Status" },
@@ -74,13 +84,50 @@ function QueryBuilderCopy1() {
       { value: "itemname", label: "Item Name" },
       { value: "name", label: "User Name" },
     ];
+    /*SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,itemstypes.id as typeid,users.id,brands.brandname,mapping.id as mappingid,mapping.instore,\
+  mapping.isdeallocated,mapping.userid,mapping.setid,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
+  inventory.image,inventory.warranty_ends_on, items.itemname,  users.name */
   } else if (filterType === "1") {
+    columnOptions = [
+      { value: "inventoryid", label: "Inventory Id" },
+      { value: "itemtype", label: "Item Type" },
+      { value: "id", label: "User Id" },
+      { value: "brandname", label: "Brand Name" },
+      { value: "mappingid", label: "Mapping Id" },
+      { value: "instore", label: "In Store Status" },
+      { value: "isdeallocated", label: "Deallocation Status" },
+      { value: "setid", label: "Set Id" },
+      { value: "orderno", label: "Order No" },
+      { value: "ordername", label: "Order Name" },
+      { value: "serialno", label: "Serial No" },
+      { value: "image", label: "Inventory Image" },
+      { value: "warranty_ends_on", label: "Warranty End Date" },
+      { value: "itemname", label: "Item Name" },
+      { value: "name", label: "User Name" },
+    ];
     filterOptions = [];
     userInfo.userList.map((el) => {
       var temp = { value: el.id, label: el.name, isFixed: true };
       filterOptions.push(temp);
     });
   } else if (filterType === "2") {
+    columnOptions = [
+      { value: "inventoryid", label: "Inventory Id" },
+      { value: "itemtype", label: "Item Type" },
+      { value: "id", label: "User Id" },
+      { value: "brandname", label: "Brand Name" },
+      { value: "mappingid", label: "Mapping Id" },
+      { value: "instore", label: "In Store Status" },
+      { value: "isdeallocated", label: "Deallocation Status" },
+      { value: "setid", label: "Set Id" },
+      { value: "orderno", label: "Order No" },
+      { value: "ordername", label: "Order Name" },
+      { value: "serialno", label: "Serial No" },
+      { value: "image", label: "Inventory Image" },
+      { value: "warranty_ends_on", label: "Warranty End Date" },
+      { value: "itemname", label: "Item Name" },
+      { value: "name", label: "User Name" },
+    ];
     filterOptions = [];
     inventoryInfo.inventoryList.map((el) => {
       var temp = { value: el.typeid, label: el.itemtype, isFixed: true };
@@ -96,49 +143,62 @@ function QueryBuilderCopy1() {
       newValue.map((i) => i.value)
     );
   };
-  console.log(selected, selectedColumns);
-  const savePDF = () => {
-    var doc = new jsPDF();
-    var col0 = [
-      "Sr. No.",
-      "Item Name",
-      "Item Type",
-      "Serial No",
-      "Warranty Ends",
-    ];
-    var col1 = [
-      "Sr. No.",
-      "User Name",
-      "Item Name",
-      "Item Type",
-      "Serial No",
-      "Warranty Ends",
-    ];
-    var col2 = [
-      "Sr. No.",
-      "Item Name",
-      "Item Type",
-      "Serial No",
-      "Warranty Ends",
-    ];
+  /* const handleOnCheckedChange = (position) => {
+    const updatedCheckedState = checkedState.map((item, index) =>
+      index === position ? !item : item
+    );
 
+    setCheckedState(updatedCheckedState);
+  }*/
+
+  const savePDF = () => {
+    var instorevar1 = true;
+    var instorevar2 = false;
+    switch (initOption) {
+      case 1:
+        instorevar1 = true;
+        instorevar2 = false;
+
+        break;
+      case 2:
+        instorevar1 = false;
+        instorevar2 = false;
+        break;
+      case 3:
+        instorevar1 = true;
+        instorevar2 = true;
+        break;
+
+      default:
+        break;
+    }
+    var doc = new jsPDF();
+    var cols = ["Index"];
+
+    selectedColumns.forEach((column) => {
+      var temp = column.label;
+      cols.push(temp);
+    });
+    console.log(cols);
     var rows = [];
     if (filterType === "0") {
-      inventoryInfo.inventoryList.sort((a, b) =>
-        a.itemtype > b.itemtype ? 1 : -1
-      );
-      inventoryInfo.inventoryList.forEach((element) => {
-        var temp = [
-          element.index,
-          element.itemname,
-          element.itemtype,
-          element.serialno,
-          element.warranty_ends_on,
-        ];
-        rows.push(temp);
-      });
+      inventoryInfo.inventoryList
+        .sort((a, b) => (a.itemtype > b.itemtype ? 1 : -1))
+        .filter(
+          (inventory) =>
+            inventory.instore === instorevar1 ||
+            inventory.instore === instorevar2
+        )
+        .forEach((element, index) => {
+          var temp = [];
+          temp.push(index + 1);
+          selectedColumns.forEach((col) => {
+            temp.push([element[col.value]]);
+          });
+          rows.push(temp);
+        });
 
-      doc.autoTable(col0, rows, { startY: 10 });
+      doc.autoTable(cols, rows, { startY: 10 });
     }
     if (filterType === "1") {
       inventoryInfo.inventoryList.sort((a, b) => (a.id > b.id ? 1 : -1));
@@ -147,61 +207,85 @@ function QueryBuilderCopy1() {
           selected.forEach((selement) => {
             // console.log(selement.value, element.id);
             if (selement.value === element.id) {
-              console.log(selement.value, element.id);
-              var temp = [
-                element.index,
-                element.name,
-                element.itemname,
-                element.itemtype,
-                element.serialno,
+              var temp = [];
+              selectedColumns.forEach((col) => {
+                console.log(col.value, element[col.value]);
 
-                element.warranty_ends_on,
-              ];
-
+                temp.push([element[col.value]]);
+              });
               rows.push(temp);
             }
           });
         } else {
-          var temp = [
-            element.index,
-            element.name,
-            element.itemname,
-            element.itemtype,
-            element.serialno,
+          var temp = [];
+          selectedColumns.forEach((col) => {
+            console.log(col.value, element[col.value]);
 
-            element.warranty_ends_on,
-          ];
-
+            temp.push([element[col.value]]);
+          });
           rows.push(temp);
         }
       });
 
-      doc.autoTable(col1, rows, { startY: 10 });
+      doc.autoTable(cols, rows, { startY: 10 });
     }
     if (filterType === "2") {
       inventoryInfo.inventoryList.forEach((element) => {
-        var temp = [
-          element.index,
-          element.itemname,
-          element.itemtype,
-          element.serialno,
-          element.warranty_ends_on,
-        ];
+        var temp = [];
+        selectedColumns.forEach((col) => {
+          console.log(col.value, element[col.value]);
 
+          temp.push([element[col.value]]);
+        });
         rows.push(temp);
       });
-      doc.autoTable(col2, rows, { startY: 10 });
+      doc.autoTable(cols, rows, { startY: 10 });
     }
 
     // doc.autoTable(col1, rows1, { startY: 60 });
-    doc.save("Test.pdf");
+    var string = doc.output("datauristring");
+    var iframe =
+      "<iframe width='100%' height='100%' src='" + string + "'></iframe>";
+    var x = window.open();
+    x.document.open();
+    x.document.write(iframe);
+    x.document.close();
+    //var string = doc.output("datauristring");
+
+    doc.save("Report.pdf");
   };
+
   return (
     <>
       <div className='container'>
         <div className='row'>
           <div className='col-md-9'>
             <div id='my-table'>
+              Select Options
+              <div className='col-md-12' style={{ display: "flex" }}>
+                <div onChange={onChangeOptionValue}>
+                  <input type='radio' value='1' name='reptype' /> All
+                  <input type='radio' value='2' name='reptype' /> Allocated
+                  <input type='radio' value='3' name='reptype' /> InStore
+                </div>
+
+                {/*initcheckoptions.map(({ name, price }, index) => {
+                  return (
+                    <div className='col-md4' style={{ paddingRight: "50px" }}>
+                      <input
+                        type='checkbox'
+                        id={`custom-checkbox-${index}`}
+                        name={name}
+                        value={name}
+                        checked={checkedState[index]}
+                        onChange={() => handleOnCheckedChange(index)}
+                      />
+
+                      <label htmlFor={`custom-checkbox-${index}`}>{name}</label>
+                    </div>
+                  );
+                })*/}
+              </div>
               Select Filter Type
               <select
                 value={filterType}
@@ -253,10 +337,11 @@ function QueryBuilderCopy1() {
             <button type='primary' onClick={savePDF}>
               Download PDF
             </button>
+            <iframe title='pdfFrame'></iframe>
           </div>
         </div>
       </div>
     </>
   );
 }
-export default QueryBuilderCopy1;
+export default QueryBuilder;
