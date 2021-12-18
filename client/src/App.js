@@ -16,6 +16,9 @@ import {PrivateRoute} from "./PrivateRoute";
 import UsersWiseReport from "./dashboard/Users";
 
 import ViewBranch from "./admindashboard/view/ViewBranches";
+import ViewLocations from "./admindashboard/view/ViewLocations";
+import ViewItems from "./admindashboard/view/ViewItems";
+import ViewItemTypes from "./admindashboard/view/ViewItemTypes";
 import ViewUsers from "./admindashboard/view/ViewUsers";
 import ViewStore from "./admindashboard/view/ViewStore";
 import ViewInventory from "./admindashboard/view/ViewInventory";
@@ -69,6 +72,9 @@ function App() {
         <Route path='/login' component={LoginPage} />
         <Route exact path='/userwisereport' component={UsersWiseReport}></Route>
         <Route exact path='/viewbranch' component={ViewBranch}></Route>
+        <Route exact path='/viewlocations' component={ViewLocations}></Route>
+        <Route exact path='/viewitems' component={ViewItems}></Route>
+        <Route exact path='/viewitemtypes' component={ViewItemTypes}></Route>
         <Route exact path='/viewusers' component={ViewUsers}></Route>
         <Route exact path='/querybuilder' component={QueryBuilder}></Route>
         <Route

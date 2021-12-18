@@ -21,6 +21,22 @@ export const adminService = {
   getSourceById,
   updateSource,
   deleteSource: _deleteSource,
+
+  addNewLocation,
+  viewAllLocations,
+  getLocationById,
+  updateLocation,
+  deleteLocation: _deleteLocation,
+  addNewItem,
+  viewAllItems,
+  getItemById,
+  updateItem,
+  deleteItem: _deleteItem,
+  addNewItemType,
+  viewAllItemTypes,
+  getItemTypeById,
+  updateItemType,
+  deleteItemType: _deleteItemType,
 };
 
 function addNewBranch(branch) {
@@ -222,7 +238,7 @@ function _deleteSource(id) {
 }
 
 
-////////////////////////////////
+//////////////BRAND//////////////////
 function addNewBrand(brand) {
   const requestOptions = {
     method: "POST",
@@ -287,6 +303,210 @@ function _deleteBrand(id) {
 
   return fetch(
     `http://localhost:3001/api/admin/brand/delete/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+//////////////LOCATIONS//////////////////
+function addNewLocation(location) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ location }),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/locations/add`,
+    requestOptions
+  )
+    .then(handleResponse)
+    .then((location) => {
+      return location;
+    });
+}
+
+function viewAllLocations() {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/locations/all`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+function getLocationById(id) {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/locations/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+function updateLocation(locationid,location) {
+  
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify({location}),
+  };
+
+  return fetch(
+    `http://10.146.19.127:3001/api/admin/locations/update/${locationid}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+// prefixed function name with underscore because delete is a reserved word in javascript
+function _deleteLocation(id) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/locations/delete/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+//////////////ITEMS//////////////////
+function addNewItem(item) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item }),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/items/add`,
+    requestOptions
+  )
+    .then(handleResponse)
+    .then((item) => {
+      return item;
+    });
+}
+
+function viewAllItems() {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/items/all`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+function getItemById(id) {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/items/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+function updateItem(itemid,item) {
+  
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(item),
+  };
+
+  return fetch(
+    `http://10.146.19.127:3001/api/admin/items/update/${itemid}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+// prefixed function name with underscore because delete is a reserved word in javascript
+function _deleteItem(id) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/items/delete/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+//////////////ITEM TYPES//////////////////
+function addNewItemType(itemtype) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ itemtype }),
+  };
+
+  return fetch(`http://localhost:3001/api/admin/itemtypes/add`, requestOptions)
+    .then(handleResponse)
+    .then((itemtype) => {
+      return itemtype;
+    });
+}
+
+function viewAllItemTypes() {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/itemtypes/all`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+function getItemTypeById(id) {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/itemtypes/${id}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+function updateItemType(typeid,itemtype) {
+  
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify({itemtype}),
+  };
+
+  return fetch(
+    `http://10.146.19.127:3001/api/admin/itemtypes/update/${typeid}`,
+    requestOptions
+  ).then(handleResponse);
+}
+
+// prefixed function name with underscore because delete is a reserved word in javascript
+function _deleteItemType(id) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `http://localhost:3001/api/admin/itemtypes/delete/${id}`,
     requestOptions
   ).then(handleResponse);
 }

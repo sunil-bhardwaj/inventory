@@ -14,6 +14,22 @@ adminRouter
   .post("/source/add", db.createSource)
   .put("/source/update/:id", db.updateSource)
   .delete("/source/delete/:id", db.deleteSource)
+
+  .get("/locations/all", db.getAllLocations)
+  .post("/locations/add", db.createLocation)
+  .put("/locations/update/:id", db.updateLocation)
+  .delete("/locations/delete/:id", db.deleteLocation)
+
+  .get("/items/all", db.getAllItems)
+  .post("/items/add", db.createItem)
+  .put("/items/update/:id", db.updateItem)
+  .delete("/items/delete/:id", db.deleteItem)
+
+  .get("/itemtypes/all", db.getAllItemTypes)
+  .post("/itemtypes/add", db.createItemType)
+  .put("/itemtypes/update/:id", db.updateItemType)
+  .delete("/itemtypes/delete/:id", db.deleteItemType)
+
   .get("/designation/all", db.getAllDesignations)
   .post("/designation/add", db.createDesignation)
   .put("/designation/update/:id", db.updateDesignation)

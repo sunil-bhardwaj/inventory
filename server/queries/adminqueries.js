@@ -254,7 +254,7 @@ const getAllSets = (request, response) => {
 const getSetItemsById = (request, response) => {
   const id = parseInt(request.params.id)
  
-    pool.query('SELECT  inventory.id as inventoryid,itemstypes.itemname as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
+    pool.query('SELECT  inventory.id as inventoryid,itemstypes.typename as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
   mapping.isdeallocated,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
   inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
   RIGHT JOIN public.mapping ON users.id=mapping.userid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
@@ -509,8 +509,184 @@ publishQuery =
      });
   })
  
-};
+}
+///////////////////////////////////////////////////////////////
+const createLocation = (request, response) => {
+  const { location } = request.body;
+ 
 
+  pool.query(
+    "INSERT INTO locations (locationname) VALUES ($1)",
+    [location.locationname],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+const getAllLocations = (request, response) => {
+  pool.query("SELECT * FROM locations", (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(200).json(results.rows);
+  });
+};
+const updateLocation = (request, response) => {
+  
+  const id = parseInt(request.params.id);
+  const { location } = request.body;
+
+  pool.query(
+    "UPDATE locations SET locationname = $1 WHERE id = $2",
+    [location.locationname, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response
+        .status(200)
+        .json(`Location modified with ID: ${id}->${location.locationname}`);
+    }
+  );
+};
+const deleteLocation = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM locations where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+///////////////////////////////////////////////////////////////
+const createItem = (request, response) => {
+  const { item } = request.body;
+ 
+
+  pool.query(
+    "INSERT INTO items (itemname, typeid) VALUES ($1, $2)",
+    [item.itemname, item.typeid],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+const getAllItems = (request, response) => {
+  pool.query("SELECT items.id,items.itemname,items.typeid,itemstypes.typename FROM items inner join itemstypes ON items.typeid = itemstypes.id", (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(200).json(results.rows);
+  });
+};
+const updateItem = (request, response) => {
+  
+  const id = parseInt(request.params.id);
+  const { item } = request.body;
+
+  pool.query(
+    "UPDATE items SET itemname = $1 WHERE id = $2",
+    [item.itemname, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response
+        .status(200)
+        .json(`Item modified with ID: ${id}->${item.itemname}`);
+    }
+  );
+};
+const deleteItem = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM items where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
+///////////////////////////////////////////////////////////////
+const createItemType = (request, response) => {
+  const { itemtype } = request.body;
+ console.log(itemtype)
+
+  pool.query(
+    "INSERT INTO itemstypes (typename) VALUES ($1)",
+    [itemtype.typename],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rowCount);
+    }
+  );
+};
+const getAllItemTypes = (request, response) => {
+  pool.query("SELECT * FROM itemstypes", (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(200).json(results.rows);
+  });
+};
+const updateItemType = (request, response) => {
+  
+  const id = parseInt(request.params.id);
+  const { itemtype } = request.body;
+
+  pool.query(
+    "UPDATE itemstypes SET typename = $1 WHERE id = $2",
+    [itemtype.typename, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response
+        .status(200)
+        .json(`Item Type modified with ID: ${id}->${itemtype.typename}`);
+    }
+  );
+};
+const deleteItemType = (request, response) => {
+  const id = parseInt(request.params.id);
+
+  pool.query(
+    "DELETE  FROM itemstypes where id = ($1) ;",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      response.status(200).json(results.rows);
+    }
+  );
+};
 module.exports = {
   getAllBranches,
   createBranch,
@@ -541,4 +717,16 @@ module.exports = {
   transferSet,
   moveSetToStore,
   allocateSet,
+  createLocation,
+  getAllLocations,
+  updateLocation,
+  deleteLocation,
+  createItem,
+  getAllItems,
+  updateItem,
+  deleteItem,
+  createItemType,
+getAllItemTypes,
+updateItemType,
+deleteItemType,
 };

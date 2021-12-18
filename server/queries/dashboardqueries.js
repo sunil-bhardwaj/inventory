@@ -3,7 +3,7 @@ const pool = require("../db");
 const getInventoryById = (request, response) => {
   pool.query(
     "SELECT  users.name as username,set.setname,set.id as setid,users.id as userid,inventory.id as inventoryid, \
-    itemstypes.itemname as itemtype,itemstypes.id as typeid,brands.brandname,mapping.id as mappingid,mapping.instore, \
+    itemstypes.typename as itemtype,itemstypes.id as typeid,brands.brandname,mapping.id as mappingid,mapping.instore, \
   mapping.isdeallocated,mapping.setid,source.orderno,source.ordername,inventory.serialno,mapping.isdeallocated, \
   inventory.image,inventory.warranty_ends_on, items.itemname  FROM public.inventory INNER JOIN public.mapping \
   ON inventory.id=mapping.inventoryid  INNER JOIN public.items ON items.id = inventory.itemid \
@@ -27,7 +27,7 @@ const getAllInventory = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
     "SELECT  users.name as username,set.setname,set.id as setid,users.id as userid,inventory.id as inventoryid, \
-    itemstypes.itemname as itemtype,itemstypes.id as typeid,brands.brandname,mapping.id as mappingid,mapping.instore, \
+    itemstypes.typename as itemtype,itemstypes.id as typeid,brands.brandname,mapping.id as mappingid,mapping.instore, \
   mapping.isdeallocated,mapping.setid,source.orderno,source.ordername,inventory.serialno,mapping.isdeallocated, \
   inventory.image,inventory.warranty_ends_on, items.itemname  FROM public.inventory INNER JOIN public.mapping \
   ON inventory.id=mapping.inventoryid  INNER JOIN public.items ON items.id = inventory.itemid \
@@ -50,9 +50,9 @@ const getAllInventory = (request, response) => {
 const getBarChartData = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
-    " select  itemstypes.itemname, count(itemstypes.itemname) as itemcount from itemstypes \
+    " select  itemstypes.typename, count(itemstypes.typename) as itemcount from itemstypes \
     inner join items on itemstypes.id = items.typeid inner join inventory on items.id = inventory.itemid  \
-    group by itemstypes.itemname order by itemcount desc ",
+    group by itemstypes.typename order by itemcount desc ",
     (error, results) => {
       if (error) {
         console.log("Inside GetUsers Error");
@@ -69,9 +69,9 @@ const getBarChartData = (request, response) => {
 const getBarChartData2 = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
-    "select  itemstypes.itemname, count(itemstypes.itemname) as itemcount from itemstypes inner join items \
+    "select  itemstypes.typename, count(itemstypes.typename) as itemcount from itemstypes inner join items \
     on itemstypes.id = items.typeid inner join inventory on items.id = inventory.itemid inner join mapping \
-    on inventory.id = mapping.inventoryid  where mapping.instore = 't'  group by itemstypes.itemname \
+    on inventory.id = mapping.inventoryid  where mapping.instore = 't'  group by itemstypes.typename \
     order by itemcount desc LIMIT 20",
     (error, results) => {
       if (error) {
@@ -90,7 +90,7 @@ const getStoreInventory = (request, response) => {
   const id = parseInt(request.params.id);
   pool.query(
     "SELECT  users.name as username,set.setname,set.id as setid,users.id as userid,inventory.id as inventoryid, \
-    itemstypes.itemname as itemtype,itemstypes.id as typeid,brands.brandname,mapping.id as mappingid,mapping.instore, \
+    itemstypes.typename as itemtype,itemstypes.id as typeid,brands.brandname,mapping.id as mappingid,mapping.instore, \
   mapping.isdeallocated,mapping.setid,source.orderno,source.ordername,inventory.serialno,mapping.isdeallocated, \
   inventory.image,inventory.warranty_ends_on, items.itemname  FROM public.inventory INNER JOIN public.mapping \
   ON inventory.id=mapping.inventoryid  INNER JOIN public.items ON items.id = inventory.itemid \
