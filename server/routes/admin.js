@@ -34,18 +34,21 @@ adminRouter
   .post("/designation/add", db.createDesignation)
   .put("/designation/update/:id", db.updateDesignation)
   .delete("/designation/delete/:id", db.deleteDesignation)
-  .get("/sets/all", db.getAllSets)
-  .get("/sets/view/:id", db.getSetItemsById)
-  .get("/sets/edit/view/:id", db.getSetById)
-  .post("/sets/add", db.createSet)
-  .put("/sets/additem", db.addItemToSet)
-  .put("/sets/removeitem", db.removeItemFromSet)
-  .put("/sets/removeallitems", db.releaseAllSetItems)
-  .put("/sets/transfer", db.transferSet)
-  .put("/sets/movetostore", db.moveSetToStore)
-  .put("/sets/allocate", db.allocateSet)
-  .put("/sets/update/:id", db.updateSet)
-  .post("/sets/publish/:id", db.publishSet)
-  .delete("/sets/delete/:id", db.deleteSet);
+
+
+ 
+      .get("/sets/all", db.getAllSets)
+      .get("/sets/view/:id", db.getSetItemsById)
+      .get("/sets/edit/view/:id", db.getSetById)
+      .post("/sets/add", db.createSet)
+      .put("/sets/additem", db.addItemToSet)
+      .put("/sets/removeitem", db.removeItemFromSet)
+      .put("/sets/removeallitems", db.releaseAllSetItems)
+      .put("/sets/transfer", db.transferSet)
+      .put("/sets/movetostore", db.moveSetToStore)
+      .put("/sets/allocate", db.allocateSet)
+      .put("/sets/update/:id", db.updateSet)
+      
+      .delete("/sets/delete/:id", db.deleteSet);
   
 module.exports = adminRouter;

@@ -22,6 +22,7 @@ export const inventoryService = {
   getBarChartData,
   getBarChartData2,
   getAllInventoryReport,
+  addNewInventoryItem,
 };
 
 function getBarChartData() {
@@ -85,6 +86,18 @@ function addNewSet(set) {
   };
 
   return fetch(`http://localhost:3001/api/admin/sets/add`, requestOptions).then(
+    handleResponse
+  );
+}
+function addNewInventoryItem(inventoryItem,warranty_ends_on, date_of_purchase) {
+ 
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({inventoryItem,warranty_ends_on, date_of_purchase}),
+  };
+
+  return fetch(`http://localhost:3001/api/inventory/inventoryitem/add`, requestOptions).then(
     handleResponse
   );
 }
@@ -167,6 +180,7 @@ function removeItemFromSet(itemId) {
   ).then(handleResponse);
 }
 function getSetItems(setId) {
+  
   const requestOptions = {
     method: "GET",
     headers: authHeader(),

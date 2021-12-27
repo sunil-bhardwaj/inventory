@@ -1,7 +1,7 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ListGroup from "react-bootstrap/ListGroup";
-import SideBar from "../Sidebar"
+import SideBar from "../Sidebar";
 import AddBranch from "../add/AddBranch";
 import StoreIcon from "@material-ui/icons/Store";
 import RightBar from "../../mycomponents/RightBar";
@@ -9,94 +9,83 @@ import EditIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddSet from "../add/AddSet";
-import ViewUsers from "./ViewUsers"
+import ViewUsers from "./ViewUsers";
 import { useLocation } from "react-router-dom";
 import Description from "../components/Description";
 import SetSideBar from "../components/SetSideBar";
 import { Redirect } from "react-router-dom";
-import {inventoryActions} from "../../_actions"
-import {useDispatch, useSelector} from "react-redux"
-import "./ViewSets.css"
-import { confirmAlert } from 'react-confirm-alert'; 
+import { inventoryActions } from "../../_actions";
+import { useDispatch, useSelector } from "react-redux";
+import "./ViewSets.css";
+import { confirmAlert } from "react-confirm-alert";
 
-
-function ViewSets() {
-  let redirected = 'false'
-  const location = useLocation()
-  if(location.state)
-  redirected = location.state.redirected
-  const dispatch = useDispatch()
-  const setsInfo = useSelector((state)=>state.inventoryData.sets) 
-  const [selectUser, setSelectUser] = useState(false)
-  const [userId, setUserId] = useState("")
+function viewsetscopy() {
+  let redirected = "false";
+  const location = useLocation();
+  if (location.state) redirected = location.state.redirected;
+  const dispatch = useDispatch();
+  const setsInfo = useSelector((state) => state.inventoryData.sets);
+  const [selectUser, setSelectUser] = useState(false);
+  const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
-  const setItemsInfo = useSelector((state)=>state.inventoryData.setItems)
+  const setItemsInfo = useSelector((state) => state.inventoryData.setItems);
   const inventoryInfo = useSelector((state) => state.inventoryData);
   const [newSetWindow, setnewSetWindow] = useState(false);
-   const [viewSetWindow, setViewSetWindow] = useState(false);
-   const [setId, setSetId] = useState("");
-   const [setName, setSetName] = useState(false);
+  const [viewSetWindow, setViewSetWindow] = useState(false);
+  const [setId, setSetId] = useState("");
+  const [setName, setSetName] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [searchKeywords, setSearchKeywords] = useState("");
-  console.log(redirected)
+  console.log(redirected);
   //const [showSetTab, setShowSetTab] = useState(false);
   let totitems = 0;
   useEffect(() => {
-   dispatch(inventoryActions.getAllInventory()); 
-   dispatch(inventoryActions.getAllSets())
-   
+    dispatch(inventoryActions.getAllInventory());
+    dispatch(inventoryActions.getAllSets());
   }, []);
- 
-  const add = (edit,set)=>{
-   
-      if(edit)
-      {
-         setSetId(set.id);
-         setSetName(set.setname);
-        setIsUpdate(true)
-        setnewSetWindow(!newSetWindow);
 
-      }else{
-        setIsUpdate(false);
-        setnewSetWindow(!newSetWindow);  
-      }
-  }
-  const viewsetitems = (set) => {
-      console.log(set)
+  const add = (edit, set) => {
+    if (edit) {
       setSetId(set.id);
       setSetName(set.setname);
-      setViewSetWindow(!viewSetWindow);
-   
-  }
-  const selectuser=(set,from)=>{
-   
-    if(from.action === '/storeicon')
-    {
-      console.log('From storeicon',set, from);
-      setSetId(set.id);
-      setSetName(set.setname);
+      setIsUpdate(true);
+      setnewSetWindow(!newSetWindow);
+    } else {
+      setIsUpdate(false);
+      setnewSetWindow(!newSetWindow);
     }
-     if (from.action === "/viewusers")
-      {
-       console.log("From viewusers", set, from);
-       console.log(set.userid, set.username, from.oldsetid, from.oldsetname);
-        allocateset(set.userid, set.username, from.oldsetid, from.oldsetname);
+  };
+  const viewsetitems = (set) => {
+    console.log(set);
+    setSetId(set.id);
+    setSetName(set.setname);
+    setViewSetWindow(!viewSetWindow);
+  };
+  const selectuser = (user, from) => {
+    if (from.action === "/storeicon") {
+      setSetId(user.id);
+      setSetName(user.setname);
+    }
+    if (from.action === "/viewusers") {
+      //console.log(user.id, user.name, from.oldsetid, from.oldsetname);
+      allocateset(user.id, user.name, from.oldsetid, from.oldsetname);
+    }
 
+    setSelectUser(!selectUser);
+  };
 
-      }
-    
-      setSelectUser(!selectUser);
-      
-     }
-         
-       
-  
   const allocateset = (newUserId, newUserName, oldUserId, oldUserName) => {
-    
     console.log(newUserId, newUserName, oldUserId, oldUserName);
     //e.preventDefault();
     const { action } = {
-      action: { action: "/allocateset", payload: { newsetid:newUserId, newsetname:newUserName, oldsetid:oldUserId } },
+      action: {
+        action: "/allocateset",
+        payload: {
+          newsetid: newUserId,
+          newsetname: newUserName,
+          oldsetid: oldUserId,
+        },
+      },
     };
     confirmAlert({
       title: "Allocate Set Request",
@@ -105,9 +94,7 @@ function ViewSets() {
         {
           label: "Yes",
           onClick: () => {
-           
-
-             dispatch(inventoryActions.getSetItems(oldUserId, action));
+            dispatch(inventoryActions.getSetItems(oldUserId, action));
           },
         },
         {
@@ -116,9 +103,8 @@ function ViewSets() {
       ],
     });
   };
-  
+
   const movesettostore = (set) => {
-    
     //e.preventDefault();
     const { action } = { action: { action: "/movesettostore" } };
     confirmAlert({
@@ -128,86 +114,78 @@ function ViewSets() {
         {
           label: "Yes",
           onClick: () => {
-            console.log("clicked")
-            
-           dispatch(inventoryActions.getSetItems(set.id,action));
-           
-          
+            console.log("clicked");
+
+            dispatch(inventoryActions.getSetItems(set.id, action));
           },
         },
         {
           label: "No",
         },
       ],
-    })
-    
+    });
   };
-  const deleteset = (e,set) => {
-    
-    e.preventDefault()
+  const deleteset = (e, set) => {
+    e.preventDefault();
     const { action } = { action: { action: "/deleteset" } };
-     confirmAlert({
-       title: "Delete Set Request",
-       message: `Delete Set '${set.setname}'. All alloted items to ${set.setname} set will go to store! Are You Sure?`,
-       buttons: [
-         {
-           label: "Yes",
-           onClick: () =>{ 
-             dispatch(inventoryActions.releaseAllSetItems(set.id, action));
-                         
-            },
+    confirmAlert({
+      title: "Delete Set Request",
+      message: `Delete Set '${set.setname}'. All alloted items to ${set.setname} set will go to store! Are You Sure?`,
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            dispatch(inventoryActions.releaseAllSetItems(set.id, action));
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
+  };
+  const filteredInventory = (setid) => {
+    return (totitems = inventoryInfo.inventoryList
+      .filter((stock) => stock.setid === setid)
+      .map((filteredStock, srno) => <>{invList(filteredStock, srno)}</>));
+  };
 
-         },
-         {
-           label: "No",
-         },
-       ],
-     });
- };
-   const filteredInventory = (setid) => {
-    
-     return (totitems = inventoryInfo.inventoryList
-       .filter((stock) => stock.setid === setid )
-       .map((filteredStock, srno) => <>{invList(filteredStock, srno)}</>));
-   };
- 
- const invList = (filteredStock, srno) => {
-   
-   return (
-     <li
-       key={filteredStock.uniqueId + srno}
-       data-toggle='tooltip'
-       data-placement='top'
-       title={`OrderNo/OrderName:${filteredStock.orderno}/${filteredStock.ordername}\n \
+  const invList = (filteredStock, srno) => {
+    return (
+      <li
+        key={filteredStock.uniqueId + srno}
+        data-toggle='tooltip'
+        data-placement='top'
+        title={`OrderNo/OrderName:${filteredStock.orderno}/${filteredStock.ordername}\n \
                                     Item Serial No:${filteredStock.serialno}\n \
                                     Warranty Ends:${filteredStock.warranty_ends_on}`}
-       className={filteredStock.isdeallocated ? "my-alert-danger" : ""}
-       style={{ fontSize: "12px" }}
-     >
-       {`${srno + 1} - ${filteredStock.itemname}`}
-       {!filteredStock.isdeallocated ? (
-         <i
-           className='fa fa-eye'
-           style={{
-             float: "right",
-             cursor: "pointer",
-           }}
-         />
-       ) : (
-         <>
-           <i
-             className='fa fa-eye-slash'
-             style={{
-               float: "right",
-               cursor: "pointer",
-             }}
-           />
-         </>
-       )}
-     </li>
-   );
- };
-  
+        className={filteredStock.isdeallocated ? "my-alert-danger" : ""}
+        style={{ fontSize: "12px" }}
+      >
+        {`${srno + 1} - ${filteredStock.itemname}`}
+        {!filteredStock.isdeallocated ? (
+          <i
+            className='fa fa-eye'
+            style={{
+              float: "right",
+              cursor: "pointer",
+            }}
+          />
+        ) : (
+          <>
+            <i
+              className='fa fa-eye-slash'
+              style={{
+                float: "right",
+                cursor: "pointer",
+              }}
+            />
+          </>
+        )}
+      </li>
+    );
+  };
+
   // console.log(Admin.branches);
   return (
     <div className='container'>
@@ -261,11 +239,10 @@ function ViewSets() {
               .filter((val) => {
                 if (searchKeywords === "") return val;
                 else if (
-                  val.setname 
+                  val.setname
                     .toLowerCase()
                     .includes(searchKeywords.toLowerCase())
                 )
-              
                   return val;
               })
               .map((set, index) => (
@@ -388,7 +365,6 @@ function ViewSets() {
           className='leftDiv'
           //style={{ border: "2px solid green" }}
         >
-          
           {newSetWindow ? (
             <AddSet
               closehandler={() => add()}
@@ -402,7 +378,7 @@ function ViewSets() {
               oldsetid={setId}
               oldsetname={setName}
               closehandler={selectuser}
-              redirected = {true}
+              redirected={true}
             />
           ) : null}
           {viewSetWindow ? (
@@ -413,11 +389,11 @@ function ViewSets() {
               }}
             />
           ) : null}
-          <RightBar/>
+          <RightBar />
         </div>
       </div>
     </div>
   );
 }
 
-export default ViewSets;
+export default viewsetscopy;

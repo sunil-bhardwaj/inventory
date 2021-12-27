@@ -7,8 +7,9 @@ import Product from "../components/Product";
 import {inventoryActions} from "../../_actions/"
 import SetSideBar from "../components/SetSideBar";
 import { useDispatch, useSelector } from "react-redux";
-function ViewStore(props) {
 
+function ViewStore(props) {
+  
   const dispatch = useDispatch();
    //const InventoryInfo = useSelector((state) => state.inventoryData.inventoryList)
    
@@ -58,15 +59,10 @@ function ViewStore(props) {
     return result2.some(function (o2) {
         return o1.id === o2.id; // return the ones with equal id
    });
-});*/
+});*/.filter((fstock,index)=> fstock.setid === null)
     .map((stock, srno) => (
       <>
-        {
-          /*Admin.box.find(()=>{
-            
-    })*/
-          // Admin.box.some((o2) => stock.inventoryId === o2.inventoryId?setInCart(true):setInCart(false))
-        }
+       
         <Product
           product={stock}
           in='viewstore'

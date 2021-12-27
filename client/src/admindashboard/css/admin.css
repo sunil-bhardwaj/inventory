@@ -83,7 +83,7 @@ body {
 .form-content input[type="password"],
 .form-content input[type="email"],
 .form-content select {
-  width: 100%;
+  width: 80%;
   padding: 9px 20px;
   text-align: left;
   border: 0;

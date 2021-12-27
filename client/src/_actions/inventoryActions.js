@@ -310,7 +310,7 @@ function getAllInventory() {
 
 function getSetItems(setid,from) {
   
- console.log(from)
+ console.log(setid,from)
   return (dispatch) => {
     dispatch(request());
 
@@ -438,27 +438,27 @@ function addNewSet(set) {
   }
 }
 
-function addNewInventoryItem(set) {
+function addNewInventoryItem(inventoryItem,warranty_ends_on, from,date_of_purchase) {
   return (dispatch) => {
     dispatch(request());
 
-    inventoryService.addNewInventoryItem(set).then(
-      (set) => {
-        dispatch(success(set));
-        dispatch(inventoryActions.getAllSets());
+    inventoryService.addNewInventoryItem(inventoryItem,warranty_ends_on, date_of_purchase).then(
+      (inventoryItem) => {
+        dispatch(success(inventoryItem));
+        dispatch(inventoryActions.getAllInventory());
       },
       (error) => dispatch(failure(error.toString()))
     );
   };
 
   function request() {
-    return { type: invConstants.ADD_SET_REQUEST };
+    return { type: invConstants.ADD_INVENTORY_ITEM_REQUEST };
   }
-  function success(set) {
-    return { type: invConstants.ADD_SET_SUCCESS, set };
+  function success(inventoryItem) {
+    return { type: invConstants.ADD_INVENTORY_ITEM_SUCCESS, inventoryItem };
   }
   function failure(error) {
-    return { type: invConstants.ADD_SET_FALIURE, error };
+    return { type: invConstants.ADD_INVENTORY_ITEM_FALIURE, error };
   }
 }
 

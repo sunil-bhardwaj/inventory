@@ -1,5 +1,6 @@
 import { adminConstants } from "../_constants";
 const initialState = {
+ 
   branchList: [],
   branch:'',
   designation:'',

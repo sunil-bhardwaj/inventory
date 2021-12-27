@@ -1,5 +1,6 @@
 import { invConstants } from "../_constants";
 const initialState = {
+  inventoryItem: [],
   setUpdated: false,
   inventoryList: [],
   set: { id: "", setname: "", setremark: "" },
@@ -10,7 +11,7 @@ const initialState = {
   error: false,
   chartdata: [],
   chartdata2: [],
-  reportdata:[],
+  reportdata: [],
 };
 export function inventory(state = initialState, action) {
   switch (action.type) {
@@ -205,6 +206,14 @@ export function inventory(state = initialState, action) {
     case invConstants.GET_BAR_CHART_DATA_FALIURE:
       return { ...state, error: true, loading: false };
     //////////////////////////////////////
+
+    case invConstants.ADD_INVENTORY_ITEM_REQUEST:
+      return { ...state, error: false, loading: true };
+    case invConstants.ADD_INVENTORY_ITEM_SUCCESS:
+      return { ...state, inventoryItem: action.inventoryItem, error: false, loading: false };
+    case invConstants.ADD_INVENTORY_ITEM_FALIURE:
+      return { ...state, error: true, loading: false };
+
     /////////////////////////////////
     case invConstants.GETALL_INVENTORY_REPORT_REQUEST:
       return { ...state, error: false, loading: true };

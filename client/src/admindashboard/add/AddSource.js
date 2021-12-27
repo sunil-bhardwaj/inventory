@@ -16,7 +16,7 @@ function AddSource(props) {
   const [updatesourceid, serUpdateSourceId] = useState(
     props.source.id ? props.source.id : ""
   );
-  const [orderdate, setOrderDate] = useState(new Date());
+  const [orderdate, setOrderDate] = useState(props.source.orderdate?Date.parse(props.source.orderdate):null);
   const [source, setInputsSource] = useState({
     ordername: props.source.ordername ? props.source.ordername : "",
     orderno: props.source.orderno ? props.source.orderno : "",
@@ -109,6 +109,7 @@ function AddSource(props) {
 
                   <DatePicker
                     selected={orderdate}
+                    dateFormat='yyyy-MM-dd'
                     // onChange={(date) => setOrderDate(date)}
                     onChange={(date) => setOrderDate(date)}
                   />

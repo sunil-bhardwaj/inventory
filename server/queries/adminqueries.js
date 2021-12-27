@@ -176,7 +176,7 @@ const deleteBrand = (request, response) => {
 ///////////////////////////////////////
 const createSource = (request, response) => {
   const { source, orderdate } = request.body;
-  console.log(source)
+  console.log(source, orderdate);
  
   pool.query(
     "INSERT INTO source (ordername, orderno,orderdate,noofitems) VALUES ($1,$2,$3,$4)",
@@ -254,12 +254,11 @@ const getAllSets = (request, response) => {
 const getSetItemsById = (request, response) => {
   const id = parseInt(request.params.id)
  
-    pool.query('SELECT  inventory.id as inventoryid,itemstypes.typename as itemtype,users.id,brands.brandname,mapping.id as mappingid,\
-  mapping.isdeallocated,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated,\
-  inventory.image,inventory.warranty_ends_on, items.itemname,  users.name  FROM public.users  \
-  RIGHT JOIN public.mapping ON users.id=mapping.userid  RIGHT JOIN inventory  ON inventory.id=mapping.inventoryid \
-   RIGHT JOIN public.items ON items.id = inventory.itemid    RIGHT JOIN public.itemstypes\
-    ON itemstypes.id = items.typeid INNER JOIN public.source ON source.id = inventory.sourceid \
+    pool.query('SELECT  *,inventory.id as inventoryid,itemstypes.typename as itemtype,brands.brandname,mapping.id as mappingid,\
+     mapping.isdeallocated,source.orderno,source.ordername,   inventory.serialno,mapping.isdeallocated, \
+  inventory.image,inventory.warranty_ends_on, items.itemname   FROM public.inventory  \
+  INNER JOIN public.mapping ON inventory.id=mapping.inventoryid  INNER JOIN public.items ON items.id = inventory.itemid \
+     INNER JOIN public.itemstypes   ON itemstypes.id = items.typeid INNER JOIN public.source ON source.id = inventory.sourceid \
     INNER JOIN public.brands ON brands.id = inventory.brandid where mapping.setid = $1 ORDER BY items.itemname', [id], (error, results) => {
       if (error) {
        
@@ -290,7 +289,7 @@ const createSet = (request, response) => {
   const { setname, setremark } = request.body;
 
   pool.query(
-    "INSERT INTO set (setname, setremark) VALUES ($1, $2)",
+    "INSERT INTO set (setname, setremark, instore, userid) VALUES ($1, $2, true, null)",
     [setname, setremark],
     (error, results) => {
       if (error) {
@@ -301,7 +300,21 @@ const createSet = (request, response) => {
     }
   );
 };
+const updateSet = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { setname, setremark } = request.body;
 
+  pool.query(
+    "UPDATE set SET setname = $1, setremark = $2 WHERE id = $3",
+    [setname, setremark, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(`Branch modified with ID: ${id}->${setname}`);
+    }
+  );
+};
 const deleteSet = (request, response) => {
   const id = parseInt(request.params.id);
 
@@ -318,7 +331,8 @@ const deleteSet = (request, response) => {
     }
   );
 };
-;
+
+
 const addItemToSet = (request, response) => {
   
   const { itemId, setId } = request.body;
@@ -330,10 +344,12 @@ const addItemToSet = (request, response) => {
       if (error) {
         throw error;
       }
+       response.status(200).json(JSON.stringify(results.rowCount));
       
-      response.status(200).json(JSON.stringify(results.rowCount));
+     
     }
-  );
+  )
+  
 };
 const removeItemFromSet = (request, response) => {
   const { itemId } = request.body;
@@ -364,13 +380,40 @@ const releaseAllSetItems = (request, response) => {
       response.status(200).json(JSON.stringify(results.rowCount));
     }
   );
+}
+const allocateSet = (request, response) => {
+  const { newsetid, items, oldsetid, newsetname } = request.body;
+  console.log(oldsetid);
+  items.forEach((item) => {
+    pool.query(
+      `update mapping set instore = 'f' where inventoryid = $1 and setid = $2`,
+      [item.inventoryid, oldsetid],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+      }
+    );
+  });
+
+  pool.query(
+    `update set set instore = 'f', userid = $2, setname=$3 where id = $1`,
+    [oldsetid, newsetid, newsetname],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+    }
+  );
+
+  response.status(200).json(JSON.stringify("Success"));
 };
 const transferSet = (request, response) => {
   const { oldUserId,newUserId,sidebarItems } = request.body;
  
  sidebarItems.forEach((element) =>{
     pool.query(
-      "UPDATE mapping SET setid = $2 WHERE setid = $1 and  inventoryid = $3",
+      "UPDATE set SET userid = $2 WHERE setid = $1 ",
       [oldUserId, newUserId, element.inventoryid],
       (error, results) => {
         if (error) {
@@ -420,96 +463,9 @@ const moveSetToStore = (request, response) => {
   response.status(200).json(JSON.stringify("Success"));
 
 }
-const allocateSet = (request, response) => {
-  const { newsetid, items, oldsetid,newsetname } = request.body;
-  console.log(oldsetid);
-  items.forEach((item) => {
-    pool.query(
-      `update mapping set instore = 'f' where inventoryid = $1 and setid = $2`,
-      [item.inventoryid,oldsetid],
-      (error, results) => {
-        if (error) {
-          throw error;
-        }
-      }
-    );
-  });
-
-  pool.query(
-    `update set set instore = 'f', userid = $2, setname=$3 where id = $1`,
-    [oldsetid, newsetid, newsetname],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-    }
-  );
-
-  response.status(200).json(JSON.stringify("Success"));
-};
-
-const updateSet = (request, response) => {
-  const id = parseInt(request.params.id);
-  const { setname, setremark } = request.body;
- 
-  pool.query(
-    "UPDATE set SET setname = $1, setremark = $2 WHERE id = $3",
-    [setname,setremark, id],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      response
-        .status(200)
-        .json(`Branch modified with ID: ${id}->${setname}`);
-    }
-  );
-};
-const publishSet = (request, response) => {
-  const id = parseInt(request.params.id);
-  const {box } = request.body;
-  const invids=[];
-  const exinvids = [];
-  var invstr = '0'
-  var exinvstr = "0";
-  box.map((val,index)=>(
-    invids.push(val.inventoryid)
-    
-  ))
-  invstr = invids.join()
-
-publishQuery =
-  `UPDATE mapping SET setid = $1 where inventoryid IN (${invstr})`;
 
 
-  pool.query("SELECT inventoryid from mapping where setid = $1", [id],(error,results)=>{
-    if(error){
-      throw error
-    }
-    results.rows.map(
-      (val, index) => exinvids.push(val.inventoryid)
-     
-    );
-    if(exinvids.length !== 0)
-      exinvstr = exinvids.join();
-    resetQuery = `UPDATE mapping SET setid = NULL where inventoryid IN (${exinvstr})`;  
-     pool.query(resetQuery, (error, results) => {
-       if (error) {
-         throw error;
-       }
-       
-        pool.query(publishQuery, [id], (error, results) => {
-          if (error) {
-            throw error;
-          }
 
-          response.status(200).json(`Set Published with ID: ${id}`);
-        });
-      // response.status(200).json(`Set Published with ID: ${id}`);
-     });
-  })
- 
-}
 ///////////////////////////////////////////////////////////////
 const createLocation = (request, response) => {
   const { location } = request.body;
@@ -709,7 +665,7 @@ module.exports = {
   getAllSets,
   deleteSet,
   getSetItemsById,
-  publishSet,
+  
   getSetById,
   addItemToSet,
   removeItemFromSet,
