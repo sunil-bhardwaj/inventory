@@ -18,11 +18,11 @@ import UsersWiseReport from "./dashboard/Users";
 import ViewBranch from "./admindashboard/view/ViewBranches";
 import ViewLocations from "./admindashboard/view/ViewLocations";
 import ViewItems from "./admindashboard/view/ViewItems";
-import ViewItemTypes from "./admindashboard/view/ViewItemTypes";
+import ViewItemTypes from "./admindashboard/view/ViewItemTypes"
 import ViewUsers from "./admindashboard/view/ViewUsers";
 import ViewStore from "./admindashboard/view/ViewStore";
 import ViewInventory from "./admindashboard/view/ViewInventory";
-import Testing from "./admindashboard/Testing";
+import Testing from "./admindashboard/view/TabView";
 
 
 import ViewSets from "./admindashboard/view/ViewSets";
@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import ViewDesignations from "./admindashboard/view/ViewDesignations";
 import ViewSource from "./admindashboard/view/ViewSource";
-import ViewBrands from "./admindashboard/view/ViewBrands";
+import ViewBrands from "./admindashboard/view/ViewBrands"
 
 
 
@@ -77,6 +77,8 @@ function App() {
         <Route exact path='/viewitemtypes' component={ViewItemTypes}></Route>
         <Route exact path='/viewusers' component={ViewUsers}></Route>
         <Route exact path='/querybuilder' component={QueryBuilder}></Route>
+        <Route path='/viewstore/:active_tab?' component={ViewStore} />
+
         <Route
           exact
           path='/viewdesignation'

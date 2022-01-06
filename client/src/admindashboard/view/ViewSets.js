@@ -20,7 +20,7 @@ import "./ViewSets.css"
 import { confirmAlert } from 'react-confirm-alert'; 
 
 
-function ViewSets() {
+function ViewSets(props) {
   let redirected = 'false'
   const location = useLocation()
   if(location.state)
@@ -38,7 +38,7 @@ function ViewSets() {
    const [setName, setSetName] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [searchKeywords, setSearchKeywords] = useState("");
-  console.log(redirected)
+ 
   //const [showSetTab, setShowSetTab] = useState(false);
   let totitems = 0;
   useEffect(() => {
@@ -62,7 +62,7 @@ function ViewSets() {
       }
   }
   const viewsetitems = (set) => {
-      console.log(set)
+      console.log(set, viewSetWindow,setName,setId);
       setSetId(set.id);
       setSetName(set.setname);
       setViewSetWindow(!viewSetWindow);
@@ -164,10 +164,10 @@ function ViewSets() {
        ],
      });
  };
-   const filteredInventory = (setid) => {
-    
+   const filteredInventory = (set) => {
+   
      return (totitems = inventoryInfo.inventoryList
-       .filter((stock) => stock.setid === setid )
+       .filter((stock) => stock.setid === set.id )
        .map((filteredStock, srno) => <>{invList(filteredStock, srno)}</>));
    };
  
@@ -208,7 +208,7 @@ function ViewSets() {
    );
  };
   
-  // console.log(Admin.branches);
+ 
   return (
     <div className='container'>
       <div className='row'>
@@ -261,12 +261,20 @@ function ViewSets() {
               .filter((val) => {
                 if (searchKeywords === "") return val;
                 else if (
-                  val.setname 
+                  val.setname
                     .toLowerCase()
                     .includes(searchKeywords.toLowerCase())
                 )
-              
                   return val;
+              })
+              .filter((fstock) => {
+                if (props.redirectedfromtabs) {
+                  if (fstock.instore) {
+                    return fstock;
+                  }
+                } else {
+                  return fstock;
+                }
               })
               .map((set, index) => (
                 <>
@@ -315,7 +323,6 @@ function ViewSets() {
                         }}
                       >
                         <p style={{ fontSize: "2.0rem" }}>
-                          {" "}
                           <AddIcon
                             style={{
                               //float: "right",
@@ -323,7 +330,7 @@ function ViewSets() {
                             }}
                             color='primary'
                             onClick={() => viewsetitems(set)}
-                          />{" "}
+                          />
                           <EditIcon
                             style={{
                               marginLeft: "2rem",
@@ -332,7 +339,7 @@ function ViewSets() {
                             }}
                             color='primary'
                             onClick={() => add(true, set)}
-                          />{" "}
+                          />
                           <DeleteIcon
                             onClick={(e) => deleteset(e, set)}
                             style={{
@@ -375,7 +382,7 @@ function ViewSets() {
                           <h5>ITEMS IN SET</h5>
                         </div>
                         <div style={{ backgroundColor: "#033a4c" }}>
-                          {filteredInventory(set.id)}
+                          {filteredInventory(set)}
                         </div>
                       </picture>
                     </article>
@@ -388,7 +395,6 @@ function ViewSets() {
           className='leftDiv'
           //style={{ border: "2px solid green" }}
         >
-          
           {newSetWindow ? (
             <AddSet
               closehandler={() => add()}
@@ -402,18 +408,18 @@ function ViewSets() {
               oldsetid={setId}
               oldsetname={setName}
               closehandler={selectuser}
-              redirected = {true}
+              redirected={true}
             />
           ) : null}
           {viewSetWindow ? (
             <Redirect
               to={{
-                pathname: `/viewstore/`,
+                pathname: `/viewstore/:active_tab?`,
                 state: { redirected: true, setName: setName, setId: setId },
               }}
             />
           ) : null}
-          <RightBar/>
+          <RightBar />
         </div>
       </div>
     </div>
